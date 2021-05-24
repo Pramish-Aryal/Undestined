@@ -1,0 +1,43 @@
+version(1);
+project_name = game.exe;
+patterns = {
+"*.c",
+"*.cpp",
+"*.h",
+"*.m",
+"*.bat",
+"*.sh",
+"*.4coder",
+"*.ps1",
+};
+
+blacklist_patterns = {
+".*",
+};
+
+load_paths_base = {
+ { ".", .relative = true, .recursive = true, },
+};
+
+load_paths = {
+ { load_paths_base, .os = "win", },
+ { load_paths_base, .os = "linux", },
+ { load_paths_base, .os = "mac", },
+};
+
+command_list = {
+ { .name = "build",
+   .out = "*compilation*", .footer_panel = true, .save_dirty_files = true,
+   .cmd = { { "pwsh -nop .\build.ps1" , .os = "win"   },
+            { "./build.sh", .os = "linux" },
+            { "./build.sh", .os = "mac"   }, }, },
+ { .name = "run",
+   .out = "*run*", .footer_panel = true, .save_dirty_files = false,
+   .cmd = { { "build\\game.exe", .os = "win"   },
+            { "build/game.exe" , .os = "linux" },
+            { "build/game.exe" , .os = "mac"   }, }, },
+};
+
+fkey_command[1] = "build";
+fkey_command[2] = "run";
+
