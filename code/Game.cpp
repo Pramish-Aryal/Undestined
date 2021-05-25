@@ -51,7 +51,8 @@ void Game::update(float dt)
 
 void Game::draw(Graphics& graphics)
 {
-	graphics.clear_screen(25, 100, 150);
+	graphics.clear_screen(50, 100, 120);
+	
 	
 	
 	graphics.display();
