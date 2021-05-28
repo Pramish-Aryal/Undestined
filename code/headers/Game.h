@@ -4,6 +4,7 @@ struct SDL_Window;
 struct SDL_Renderer;
 class Graphics;
 
+#include "Sprite.h"
 class Game
 {
 	public:
@@ -19,5 +20,6 @@ class Game
 	private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
+	Sprite player;
 };
 

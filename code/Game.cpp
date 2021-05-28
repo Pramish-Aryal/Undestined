@@ -6,12 +6,12 @@
 
 #include "Graphics.h"
 #include "Fatal.h"
+#include "Sprite.h"
 
 Game::Game()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		Fatal::fatal_error("Couldn't init SDL");
-	
 	game_loop();
 }
 
@@ -23,10 +23,9 @@ Game::~Game()
 void Game::game_loop()
 {
 	Graphics graphics;
-	
+	player = Sprite(graphics, "data\\rgba_tester.png");
 	bool game_is_running = true;
 	SDL_Event event;
-	
 	
 	while (game_is_running)
 	{
@@ -46,15 +45,12 @@ void Game::game_loop()
 
 void Game::update(float dt)
 {
-	
 }
 
 void Game::draw(Graphics& graphics)
 {
 	graphics.clear_screen(50, 100, 120);
-	
-	
-	
+	player.draw(graphics, 0, 0, 10.0f);
 	graphics.display();
 }
 

@@ -16,7 +16,7 @@ $include_path2 =  "..\code\extern\"
 $compiler_flags = "/nologo", "/EHsc", "/Zi", "/FC"
 # $linker_flags =
 
-$libraries = "SDL2.lib", "SDL2main.lib", "SDL2_image.lib", "shell32.lib"
+$libraries = "SDL2.lib", "SDL2main.lib", "shell32.lib"
 
 Push-Location .\build
 

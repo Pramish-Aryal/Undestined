@@ -33,3 +33,13 @@ void Graphics::display()
 {
 	SDL_RenderPresent(m_renderer);
 }
+
+SDL_Renderer* Graphics::get_renderer()
+{
+	return m_renderer;
+}
+
+void Graphics::blit_surface(SDL_Texture* texture, SDL_Rect src_rect, SDL_Rect dest_rect)
+{
+	SDL_RenderCopy(m_renderer, texture, &src_rect, &dest_rect);
+}
