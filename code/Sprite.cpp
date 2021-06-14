@@ -15,6 +15,7 @@ Sprite::Sprite(Graphics& graphics, std::string path)
 	m_texture = SDL_CreateTexture(graphics.get_renderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
 	
 	SDL_UpdateTexture(m_texture, 0, m_pixels, m_width * 4);
+	SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 }
 
 void Sprite::draw(Graphics& graphics, types::i32 dest_x, types::i32 dest_y, types::r32 scale)

@@ -9,7 +9,8 @@ struct SDL_Rect;
 
 class Graphics
 {
-	public:
+
+public:
 	Graphics();
 	~Graphics();
 	
@@ -19,7 +20,7 @@ class Graphics
 	SDL_Renderer* get_renderer();
 	void display();
 	
-	private:
+private:
 	SDL_Window* m_window;
 	SDL_Renderer* m_renderer;
 };
