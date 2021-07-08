@@ -20,7 +20,7 @@ Game::Game()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		Fatal::fatal_error("Couldn't init SDL");
-
+	
 	set_game_running(true);
 	game_loop();
 }
@@ -30,56 +30,100 @@ Game::~Game()
 	SDL_Quit();
 }
 
+static int x,y;
+
 void Game::game_loop()
 {
 	Graphics graphics;
-	player = AnimatedSprite(graphics, "data\\Run.png");
+	player = new AnimatedSprite(graphics, "data\\run2.png");
 	
-	types::u32 last_time_ms = SDL_GetTicks();
-
-	while (m_game_is_running)
+	types::r32 fixed_delta_time = FRAME_TIME;
+	types::r32 accumulator = 0;
+	types::r32 delta_time = fixed_delta_time;
+	types::r32 current_time_ms = SDL_GetTicks();
+	types::r32 last_time_ms = current_time_ms;
+	while(m_game_is_running)
 	{
-		types::u32 start_time_ms = SDL_GetTicks();
-
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			if (event.type == SDL_QUIT)
+				m_game_is_running = false;
+			
+			if (event.type == SDL_KEYDOWN)
+			{
+				if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+					m_game_is_running = false;
+				if(event.key.keysym.scancode == SDL_SCANCODE_D)
+					x+=10;
+				else if(event.key.keysym.scancode == SDL_SCANCODE_A)
+					x-=10;
+				if(event.key.keysym.scancode == SDL_SCANCODE_W)
+					y-=10;
+				if(event.key.keysym.scancode == SDL_SCANCODE_S)
+					y+=10;
+			}
+			
+			
+		}
 		input();
-
-		types::u32 current_time_ms = SDL_GetTicks();
-		types::i32 elapsed_time = current_time_ms - last_time_ms;
-		update(elapsed_time < MAX_FRAME_TIME ? elapsed_time : MAX_FRAME_TIME);
-		last_time_ms = current_time_ms;
-
+		accumulator += delta_time;
+		while(accumulator >= fixed_delta_time)
+		{
+			simulate(fixed_delta_time);
+			accumulator -= fixed_delta_time;
+		}
+		update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
 		draw(graphics);
-
-		elapsed_time = SDL_GetTicks() - start_time_ms;
-		if(elapsed_time < FRAME_TIME)
-			SDL_Delay(FRAME_TIME - elapsed_time);
+		
+		if((SDL_GetTicks() - current_time_ms) < FRAME_TIME)
+			SDL_Delay(FRAME_TIME - (SDL_GetTicks() - current_time_ms));
+		
+		current_time_ms = SDL_GetTicks();
+		delta_time = current_time_ms - last_time_ms;
+		last_time_ms = current_time_ms;
 	}
+	
+	/* 
+		while (m_game_is_running)
+		{
+			types::u32 start_time_ms = SDL_GetTicks();
+	
+			input();
+	
+			types::u32 current_time_ms = SDL_GetTicks();
+			types::i32 elapsed_time = current_time_ms - last_time_ms;
+			update(elapsed_time < MAX_FRAME_TIME ? elapsed_time : MAX_FRAME_TIME);
+			last_time_ms = current_time_ms;
+	
+			draw(graphics);
+	
+			elapsed_time = SDL_GetTicks() - start_time_ms;
+			if(elapsed_time < FRAME_TIME)
+				SDL_Delay(FRAME_TIME - elapsed_time);
+		}
+	 */
+}
+
+void Game::simulate(types::r32 dt)
+{
 }
 
 void Game::update(types::r32 dt)
 {
-	player.update(dt);
+	player->update(dt);
 }
 
 void Game::draw(Graphics& graphics)
 {
 	graphics.clear_screen(50, 100, 120);
-	player.draw(graphics);
+	player->draw(graphics, x, y, 3);
 	graphics.display();
 }
 
 void Game::input()
 {
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		if (event.type == SDL_QUIT)
-			m_game_is_running = false;
-		
-		if (event.type == SDL_KEYDOWN)
-			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-			m_game_is_running = false;
-	}
+	
 }
 
 bool Game::is_game_running()

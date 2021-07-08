@@ -4,28 +4,29 @@ struct SDL_Window;
 struct SDL_Renderer;
 class Graphics;
 
-#include "AnimatedSprite.h"
+#include "Sprite.h"
 #include "types.h"
 
 class Game
 {
-
-public:
+	
+	public:
 	Game();
 	~Game();
 	
 	private:
 	void game_loop();
+	void simulate(types::r32 dt);
 	void update(types::r32 dt);
 	void draw(Graphics& graphics);
 	void input();
 	bool is_game_running();
 	void set_game_running(bool value);
-
-private:
+	
+	private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
-	AnimatedSprite player;
+	Sprite* player;
 	bool m_game_is_running;
 };
 
