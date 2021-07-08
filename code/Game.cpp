@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "Input.h"
 #include "Graphics.h"
 #include "Fatal.h"
 #include "AnimatedSprite.h"
@@ -34,6 +35,7 @@ static int x,y;
 
 void Game::game_loop()
 {
+	Input input;
 	Graphics graphics;
 	player = new AnimatedSprite(graphics, "data\\run2.png");
 	
@@ -44,6 +46,7 @@ void Game::game_loop()
 	types::r32 last_time_ms = current_time_ms;
 	while(m_game_is_running)
 	{
+		input.begin_new_frame();
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
@@ -51,22 +54,13 @@ void Game::game_loop()
 				m_game_is_running = false;
 			
 			if (event.type == SDL_KEYDOWN)
-			{
-				if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-					m_game_is_running = false;
-				if(event.key.keysym.scancode == SDL_SCANCODE_D)
-					x+=10;
-				else if(event.key.keysym.scancode == SDL_SCANCODE_A)
-					x-=10;
-				if(event.key.keysym.scancode == SDL_SCANCODE_W)
-					y-=10;
-				if(event.key.keysym.scancode == SDL_SCANCODE_S)
-					y+=10;
-			}
+				input.key_down_event(event);
 			
+			if (event.type == SDL_KEYUP)
+				input.key_up_event(event);
 			
 		}
-		input();
+		handle_input(input);
 		accumulator += delta_time;
 		while(accumulator >= fixed_delta_time)
 		{
@@ -121,9 +115,18 @@ void Game::draw(Graphics& graphics)
 	graphics.display();
 }
 
-void Game::input()
+void Game::handle_input(Input& input)
 {
-	
+	if (input.key_held(SDL_SCANCODE_ESCAPE))
+		set_game_running(false);
+	if (input.key_held(SDL_SCANCODE_D))
+		x+=10;
+	else if (input.key_held(SDL_SCANCODE_A))
+		x-=10;
+	if (input.key_held(SDL_SCANCODE_W))
+		y-=10;
+	else if (input.key_held(SDL_SCANCODE_S))
+		y+=10;
 }
 
 bool Game::is_game_running()

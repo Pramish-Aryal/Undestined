@@ -2,7 +2,9 @@
 
 struct SDL_Window;
 struct SDL_Renderer;
+
 class Graphics;
+class Input;
 
 #include "Sprite.h"
 #include "types.h"
@@ -19,7 +21,7 @@ class Game
 	void simulate(types::r32 dt);
 	void update(types::r32 dt);
 	void draw(Graphics& graphics);
-	void input();
+	void handle_input(Input& input);
 	bool is_game_running();
 	void set_game_running(bool value);
 	

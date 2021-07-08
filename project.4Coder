@@ -25,19 +25,50 @@ load_paths = {
  { load_paths_base, .os = "mac", },
 };
 
-command_list = {
- { .name = "build",
-   .out = "*compilation*", .footer_panel = true, .save_dirty_files = true,
-   .cmd = { { "pwsh -nop .\build.ps1" , .os = "win"   },
-            { "./build.sh", .os = "linux" },
-            { "./build.sh", .os = "mac"   }, }, },
- { .name = "run",
-   .out = "*run*", .footer_panel = true, .save_dirty_files = false,
-   .cmd = { { "build\\game.exe", .os = "win"   },
-            { "build/game.exe" , .os = "linux" },
-            { "build/game.exe" , .os = "mac"   }, }, },
+command_list =
+{
+    {
+        .name = "build",
+        .out = "*compilation*",
+        .footer_panel = true,
+        .save_dirty_files = true,
+        .cursor_at_end = false,
+        .cmd =
+        {
+            { "pwsh -nop .\build.ps1", .os = "win" },
+            { "echo Linux build command not implemented for 4coder project.", .os = "linux" },
+        },
+    },
+    
+    {
+        .name = "run",
+        .out = "*compilation*",
+        .footer_panel = true,
+        .save_dirty_files = true,
+        .cursor_at_end = false,
+        .cmd =
+        {
+            { "build\\game.exe", .os = "win" },
+            { "echo Linux run command not implemented for 4coder project.", .os = "linux" },
+        },
+    },
+
+    {
+        .name = "build_and_run",
+        .out = "*compilation*",
+        .footer_panel = true,
+        .save_dirty_files = true,
+        .cursor_at_end = false,
+        .cmd =
+        {
+            { "pwsh -nop .\build.ps1 && build\\game.exe", .os = "win" },
+            { "echo Linux build_and_run command not implemented for 4coder project.", .os = "linux" },
+        },
+    },
+    
 };
 
 fkey_command[1] = "build";
 fkey_command[2] = "run";
+fkey_command[3] = "build_and_run";
 
