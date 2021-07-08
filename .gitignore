@@ -1,4 +1,4 @@
 /code/extern/
 /build/
 /libs/
-*.ps1
+.\build.ps1
