@@ -7,6 +7,8 @@
 class Graphics;
 struct SDL_Texture;
 
+using namespace types;
+
 class Sprite
 {
 	
@@ -15,8 +17,11 @@ class Sprite
 	Sprite(Graphics& graphics, std::string path);
 	virtual ~Sprite() {}
 	
-	virtual void draw(Graphics& graphics, types::i32 dest_x, types::i32 dest_y, types::r32 scale);
-	virtual void update(types::r32 dt) {}
+	virtual void draw(Graphics& graphics, i32 dest_x, i32 dest_y, r32 scale);
+	virtual void update(r32 dt) {}
+	
+	//static void load_sprite(char* path); //should I??
+	
 	protected:
 	SDL_Texture* m_texture;
 	types::i32 m_width, m_height;

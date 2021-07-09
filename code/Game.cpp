@@ -12,10 +12,12 @@
 
 namespace 
 {
-	const types::r32 FPS = 60.0f;
-	const types::r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
-	const types::r32 FRAME_TIME = 1000.0f / FPS;
+	const r32 FPS = 60.0f;
+	const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
+	const r32 FRAME_TIME = 1000.0f / FPS;
 }
+
+
 
 Game::Game()
 {
@@ -99,11 +101,11 @@ void Game::game_loop()
 	 */
 }
 
-void Game::simulate(types::r32 dt)
+void Game::simulate(r32 dt)
 {
 }
 
-void Game::update(types::r32 dt)
+void Game::update(r32 dt)
 {
 	player->update(dt);
 }

@@ -23,7 +23,7 @@ Graphics::~Graphics()
 		SDL_DestroyRenderer(m_renderer);
 }
 
-void Graphics::clear_screen(types::u8 r, types::u8 g, types::u8  b)
+void Graphics::clear_screen(u8 r, u8 g, u8  b)
 {
 	SDL_SetRenderDrawColor(m_renderer, r, g, b, 255);
 	SDL_RenderClear(m_renderer);

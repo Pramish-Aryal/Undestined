@@ -17,7 +17,7 @@ Sprite::Sprite(Graphics& graphics, std::string path)
 	SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 }
 
-void Sprite::draw(Graphics& graphics, types::i32 dest_x, types::i32 dest_y, types::r32 scale)
+void Sprite::draw(Graphics& graphics, i32 dest_x, i32 dest_y, r32 scale)
 {
 	graphics.blit_surface(m_texture, {dest_x, dest_y, m_width, m_height}, {dest_x, dest_y, m_width * (int)scale, m_height * (int)scale});
 }

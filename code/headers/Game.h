@@ -9,6 +9,8 @@ class Input;
 #include "Sprite.h"
 #include "types.h"
 
+using namespace types;
+
 class Game
 {
 	
@@ -18,8 +20,8 @@ class Game
 	
 	private:
 	void game_loop();
-	void simulate(types::r32 dt);
-	void update(types::r32 dt);
+	void simulate(r32 dt);
+	void update(r32 dt);
 	void draw(Graphics& graphics);
 	void handle_input(Input& input);
 	bool is_game_running();
