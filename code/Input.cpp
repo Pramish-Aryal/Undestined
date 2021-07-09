@@ -6,13 +6,13 @@ void Input::begin_new_frame()
 	m_released_keys.clear();
 }
 
-void Input::key_up_event(SDL_Event& event)
+void Input::key_up_event(SDL_Event &event)
 {
 	m_released_keys[event.key.keysym.scancode] = true;
 	m_held_keys[event.key.keysym.scancode] = false;
 }
 
-void Input::key_down_event(SDL_Event& event)
+void Input::key_down_event(SDL_Event &event)
 {
 	m_pressed_keys[event.key.keysym.scancode] = true;
 	m_held_keys[event.key.keysym.scancode] = true;
