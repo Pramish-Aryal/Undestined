@@ -14,11 +14,12 @@ class AnimatedSprite : public Sprite
 	float elapsed_time;
 	int current_frame;
 	std::string current_animation;
-
+	
 	std::map<std::string, std::vector<SDL_Rect>> animations;
 	std::map<std::string, types::r32> frame_times;
-
-public:
+	
+	public:
+	AnimatedSprite();
 	AnimatedSprite(Graphics &graphics, std::string path);
 	void update(types::r32 dt) override;
 	virtual void draw(Graphics &graphics, types::i32 dest_x, types::i32 dest_y, types::r32 scale) override;

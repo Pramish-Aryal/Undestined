@@ -6,6 +6,7 @@
 
 using namespace types;
 
+AnimatedSprite::AnimatedSprite(){}
 AnimatedSprite::AnimatedSprite(Graphics &graphics, std::string path) : Sprite(graphics, path), elapsed_time(0), current_frame(0), current_animation("") {}
 
 void AnimatedSprite::update(r32 dt)
@@ -26,7 +27,7 @@ void AnimatedSprite::draw(Graphics &graphics, i32 dest_x, i32 dest_y, r32 scale)
 	//SDL_Rect srcRect = {50 * current_frame, 37, 50, 37};
 	SDL_Rect srcRect = animations[current_animation][current_frame];
 	SDL_Rect destRect = {dest_x, dest_y, srcRect.w * (int)scale, srcRect.h * (int)scale};
-
+	
 	graphics.blit_surface(m_texture, srcRect, destRect, {srcRect.w / 2, destRect.h / 2}, flip);
 }
 
