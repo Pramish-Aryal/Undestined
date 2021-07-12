@@ -5,9 +5,9 @@ struct SDL_Renderer;
 
 class Graphics;
 class Input;
-class AnimatedSprite;
+class Player;
 
-#include "types.h"
+#include "utils.h"
 
 using namespace types;
 
@@ -30,6 +30,6 @@ private:
 private:
 	SDL_Window *_window;
 	SDL_Renderer *_renderer;
-	AnimatedSprite *player;
+	Player *player;
 	bool m_game_is_running;
 };

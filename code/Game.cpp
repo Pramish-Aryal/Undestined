@@ -8,7 +8,8 @@
 #include "Graphics.h"
 #include "Fatal.h"
 #include "AnimatedSprite.h"
-#include "types.h"
+#include "Player.h"
+#include "utils.h"
 
 namespace
 {
@@ -24,6 +25,12 @@ Game::Game()
 
 	set_game_running(true);
 	game_loop();
+
+	//test
+	// Vec2f thingy = {1.f, 2.f};
+
+	// std::cout << thingy.x << ',' << thingy.y << std::endl;
+	// std::cout << thingy.w << ',' << thingy.h << std::endl;
 }
 
 Game::~Game()
@@ -37,25 +44,21 @@ void Game::game_loop()
 {
 	Input input;
 	Graphics graphics;
-	player = new AnimatedSprite(graphics, "data\\HeroKnight.png");
+	player = new Player(graphics);
 
-	player->add_animation("idle", 0, 0, 100, 55, 8, 10);
-	player->add_animation("run", 8, 0, 100, 55, 10, 10);
-	player->add_animation("attack", 8, 1, 100, 55, 6, 10);
 	//player->add_animation("idle", 0, 0, 50, 37, 4, 10);
 	//player->add_animation("crouch", 4, 0, 50, 37, 4, 10);
 	//player->add_animation("run", 1, 1, 50, 37, 7, 10);
 	// player->add_animation("run and jump", 1, 1, 50, 37, 7, 10);
 	// player->add_animation("run and jump", 1, 1, 50, 37, 7, 10);
 	// player->add_animation("run and jump", 1, 1, 50, 37, 7, 10);
-	player->play_animation("idle");
 
-	types::r32 fixed_delta_time = FRAME_TIME;
-	types::r32 accumulator = 0;
-	types::r32 delta_time = fixed_delta_time;
-	types::r32 current_time_ms = SDL_GetTicks();
-	types::r32 last_time_ms = current_time_ms;
-	while (m_game_is_running)
+	r32 fixed_delta_time = FRAME_TIME;
+	r32 accumulator = 0;
+	r32 delta_time = fixed_delta_time;
+	r32 current_time_ms = SDL_GetTicks();
+	r32 last_time_ms = current_time_ms;
+	while (is_game_running())
 	{
 		input.begin_new_frame();
 		SDL_Event event;
@@ -89,7 +92,8 @@ void Game::game_loop()
 		last_time_ms = current_time_ms;
 	}
 
-	/* 
+#pragma region previous_game_loop
+/* 
 		while (m_game_is_running)
 		{
 			types::u32 start_time_ms = SDL_GetTicks();
@@ -108,6 +112,7 @@ void Game::game_loop()
 				SDL_Delay(FRAME_TIME - elapsed_time);
 		}
 	 */
+#pragma endregion
 }
 
 void Game::simulate(r32 dt)
@@ -122,7 +127,7 @@ void Game::update(r32 dt)
 void Game::draw(Graphics &graphics)
 {
 	graphics.clear_screen(50, 100, 120);
-	player->draw(graphics, x, y, 3);
+	player->draw(graphics);
 	graphics.display();
 }
 
@@ -131,31 +136,13 @@ void Game::handle_input(Input &input)
 	if (input.key_held(SDL_SCANCODE_ESCAPE))
 		set_game_running(false);
 	if (input.key_held(SDL_SCANCODE_D))
-	{
-		x += 5;
-		player->left = false;
-		player->play_animation("run");
-	}
+		player->move_right();
 	else if (input.key_held(SDL_SCANCODE_A))
-	{
-		x -= 5;
-		player->left = true;
-		player->play_animation("run");
-	}
+		player->move_left();
 	else if (input.key_held(SDL_SCANCODE_W))
-		y -= 10;
+		;
 	else if (input.key_held(SDL_SCANCODE_S))
-		y += 10;
-	else if (input.key_pressed(SDL_SCANCODE_R))
-		player->play_animation("idle");
-	else if (input.key_pressed(SDL_SCANCODE_T))
-		player->play_animation("crouch");
-	else if (input.key_pressed(SDL_SCANCODE_Y))
-		player->play_animation("run");
-	else if (input.key_held(SDL_SCANCODE_SPACE))
-		player->play_animation("attack");
-	else
-		player->play_animation("idle");
+		;
 }
 
 bool Game::is_game_running()

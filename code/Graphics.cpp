@@ -38,7 +38,7 @@ SDL_Renderer *Graphics::get_renderer()
 	return m_renderer;
 }
 
-void Graphics::blit_surface(SDL_Texture *texture, SDL_Rect src_rect, SDL_Rect dest_rect, SDL_Point center, bool left)
+void Graphics::blit_surface(SDL_Texture *texture, SDL_Rect src_rect, SDL_Rect dest_rect, SDL_Point center, bool flip)
 {
-	SDL_RenderCopyEx(m_renderer, texture, &src_rect, &dest_rect, 0, &center, left ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	SDL_RenderCopyEx(m_renderer, texture, &src_rect, &dest_rect, 0, &center, flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }

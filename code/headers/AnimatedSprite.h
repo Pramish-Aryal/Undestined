@@ -6,8 +6,6 @@
 #include <vector>
 #include <string>
 
-using namespace types;
-
 //forward declaring it here
 struct SDL_Rect;
 
@@ -18,14 +16,12 @@ class AnimatedSprite : public Sprite
 	std::string current_animation;
 
 	std::map<std::string, std::vector<SDL_Rect>> animations;
-	std::map<std::string, r32> frame_times;
+	std::map<std::string, types::r32> frame_times;
 
 public:
-	bool left = false;
-	AnimatedSprite() {}
 	AnimatedSprite(Graphics &graphics, std::string path);
-	void update(r32 dt) override;
-	virtual void draw(Graphics &graphics, i32 dest_x, i32 dest_y, r32 scale) override;
-	void AnimatedSprite::add_animation(std::string name, i32 srcX, i32 srcY, i32 w, i32 h, i32 frames, i32 frames_per_sec);
+	void update(types::r32 dt) override;
+	virtual void draw(Graphics &graphics, types::i32 dest_x, types::i32 dest_y, types::r32 scale) override;
+	void AnimatedSprite::add_animation(std::string name, types::i32 srcX, types::i32 srcY, types::i32 w, types::i32 h, types::i32 frames, types::i32 frames_per_sec);
 	void play_animation(std::string animation_name);
 };
