@@ -57,7 +57,7 @@ void Game::game_loop()
 	r32 current_time_ms = SDL_GetTicks();
 	r32 last_time_ms = current_time_ms;
 	
-#define TESTIN
+#define TESTING
 #ifdef TESTING
 	std::vector<Rect> rects;
 	
@@ -227,7 +227,7 @@ void Game::handle_input(Input &input)
 		set_game_running(false);
 	
 	
-	if(input.key_held(SDL_SCANCODE_SPACE))
+	if(input.key_held(SDL_SCANCODE_E))
 		player->attack();
 	else if (input.key_held(SDL_SCANCODE_D))
 		player->move_right();
@@ -237,21 +237,16 @@ void Game::handle_input(Input &input)
 		player->die();
 	else if (input.key_held(SDL_SCANCODE_Z))
 		player->get_hurt();
-	else if (input.key_held(SDL_SCANCODE_E))
-		player->block();
 	else if (input.key_held(SDL_SCANCODE_Q))
 		player->block_idle();
-	else if (input.key_held(SDL_SCANCODE_C))
+	else if (input.key_held(SDL_SCANCODE_SPACE))
 		player->jump();
-	else if (input.key_held(SDL_SCANCODE_F))
+	else if (input.key_held(SDL_SCANCODE_S))
 		player->roll();
+	else if (input.key_held(SDL_SCANCODE_F))
+		player->fall();
 	else
 		player->stop_moving();
-	
-	if (input.key_held(SDL_SCANCODE_W))
-		;
-	else if (input.key_held(SDL_SCANCODE_S))
-		;
 }
 
 bool Game::is_game_running()

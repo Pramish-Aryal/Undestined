@@ -59,8 +59,7 @@ struct Vec2Generic
 	Vec2Generic(const Vec2Generic& vec) : x(vec.x), y(vec.y) {}
 	
 	T dot(const Vec2Generic& vec) 					 { return x * vec.x + y * vec.y;                         }
-	T magnitude() {return sqrt(x*x+y*y);}
-	//T magnitude() 								     { return Math::fast_sqrt(x * x + y * y);                }
+	T magnitude() 								     { return Math::fast_sqrt(x * x + y * y);                }
 	Vec2Generic perpendicular()					    { return Vec2Generic(-y, x);			                }
 	Vec2Generic normal()					           { T r = 1 / magnitude(); return Vec2Generic(x*r, y*r);  }
 	Vec2Generic operator+(const Vec2Generic& vec) const{ return Vec2Generic(x + vec.x, y + vec.y);             }

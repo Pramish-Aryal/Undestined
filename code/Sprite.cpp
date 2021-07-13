@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 
 #include "Fatal.h"
-#include <string_view>
+#include <string>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -11,11 +11,11 @@
 
 using namespace types;
 
-Sprite::Sprite(Graphics &graphics, std::string_view path)
+Sprite::Sprite(Graphics &graphics, std::string path)
 {
 	int n;
 	m_pixels = NULL;
-	m_pixels = stbi_load(std::string(path).c_str(), &m_width, &m_height, &n, 4);
+	m_pixels = stbi_load(path.c_str(), &m_width, &m_height, &n, 4);
 	if (!m_pixels)
 		Fatal::fatal_error("Can't load image");
 	m_texture = SDL_CreateTexture(graphics.get_renderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
