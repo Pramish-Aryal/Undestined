@@ -39,6 +39,12 @@ Game::~Game()
 	SDL_Quit();
 }
 
+//testing
+#include "Collision.h"
+#include <vector>
+#include <algorithm>
+#include <utility>
+
 void Game::game_loop()
 {
 	Input input;
@@ -50,6 +56,38 @@ void Game::game_loop()
 	r32 delta_time = fixed_delta_time;
 	r32 current_time_ms = SDL_GetTicks();
 	r32 last_time_ms = current_time_ms;
+	
+#define TESTIN
+#ifdef TESTING
+	std::vector<Rect> rects;
+	
+	rects.push_back({{10.f, 10.f}, {10.f, 30.f}});
+	
+	rects.push_back({{10.f,200.f}, {20.f, 20.f}});
+	rects.push_back({{30.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{50.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{70.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{90.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{110.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{130.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{150.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{170.f, 200.f}, {20.f, 20.f}});
+	rects.push_back({{190.f, 200.f}, {20.f, 20.f}});
+	
+	rects.push_back({{5.f, 150.f}, {5.f, 70.f}});
+	rects.push_back({{210.f, 150.f}, {5.f, 70.f}});
+	
+	rects.push_back({{100.f, 20.f}, {30.f, 100.f}});
+	rects.push_back({{50.f, 60.f}, {100.f, 30.f}});
+	
+	rects.push_back({{150.f, 30.f}, {5.f, 5.f}});
+	
+	Vec2f vel = {0,0};
+	bool left_clicked = false;
+#endif
+	
+	
+	
 	while (is_game_running())
 	{
 		input.begin_new_frame();
@@ -64,6 +102,14 @@ void Game::game_loop()
 			
 			if (event.type == SDL_KEYUP)
 				input.key_up_event(event);
+#ifdef TESTING
+			if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
+				left_clicked = true;
+			if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT)
+				left_clicked = false;
+			
+			
+#endif
 		}
 		handle_input(input);
 		accumulator += delta_time;
@@ -75,7 +121,58 @@ void Game::game_loop()
 		
 		update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
 		
+#ifdef TESTING
+		//testing
+		SDL_Renderer* renderer = graphics.get_renderer();
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		
+		
+		SDL_RenderClear(renderer);
+		
+		int x,y;
+		SDL_GetMouseState(&x, &y);
+		Vec2f mouse = {(r32)x, (r32)y};
+		
+		if(left_clicked)
+			vel += (mouse - rects[0].pos).normal() * 0.001f * delta_time;
+		
+		Collider collider;
+		
+		Vec2f cp, cn;
+		r32 t;
+		
+		std::vector<std::pair<int, float>> z;
+		
+		
+		for(int i = 1; i < rects.size(); i++)
+		{
+			if(collider.dynamic_rect_vs_rect(&rects[0], vel, &rects[i], cp, cn, t, delta_time))
+				z.push_back({i, t});
+			//vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
+		}
+		
+		
+		std::sort(z.begin(), z.end(), [](const std::pair<int, float>& a, const std::pair<int, float>& b) { return a.second < b.second;});
+		
+		for(auto j : z)
+		{
+			if(collider.dynamic_rect_vs_rect(&rects[0], vel, &rects[j.first], cp, cn, t, delta_time))
+				vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
+		}
+		
+		rects[0].pos += vel * delta_time;
+		
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		for (const auto& r: rects)
+		{
+			SDL_Rect rect = {(i32)r.pos.x, (i32)r.pos.y, (i32)r.size.w, (i32)r.size.h};
+			SDL_RenderDrawRect(renderer, &rect);
+		}
+		
+		SDL_RenderPresent(renderer);
+#else
 		draw(graphics);
+#endif
 		
 		if ((SDL_GetTicks() - current_time_ms) < FRAME_TIME)
 			SDL_Delay(FRAME_TIME - (SDL_GetTicks() - current_time_ms));
@@ -130,12 +227,24 @@ void Game::handle_input(Input &input)
 		set_game_running(false);
 	
 	
-	if (input.key_held(SDL_SCANCODE_D))
+	if(input.key_held(SDL_SCANCODE_SPACE))
+		player->attack();
+	else if (input.key_held(SDL_SCANCODE_D))
 		player->move_right();
 	else if (input.key_held(SDL_SCANCODE_A))
 		player->move_left();
-	else if(input.key_held(SDL_SCANCODE_SPACE))
-		player->attack();
+	else if (input.key_held(SDL_SCANCODE_X))
+		player->die();
+	else if (input.key_held(SDL_SCANCODE_Z))
+		player->get_hurt();
+	else if (input.key_held(SDL_SCANCODE_E))
+		player->block();
+	else if (input.key_held(SDL_SCANCODE_Q))
+		player->block_idle();
+	else if (input.key_held(SDL_SCANCODE_C))
+		player->jump();
+	else if (input.key_held(SDL_SCANCODE_F))
+		player->roll();
 	else
 		player->stop_moving();
 	

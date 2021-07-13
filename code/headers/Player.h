@@ -21,6 +21,16 @@ class Player
 	void stop_moving();
 	void attack();
 	void jump();
+	void fall();
+	void roll();
+	void get_hurt();
+	void die();
+	void block();
+	void block_idle();
+	
+	
+	
+	
 	
 	private:
 	void setup_animations();

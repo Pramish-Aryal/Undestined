@@ -18,13 +18,27 @@ namespace types
 	typedef double r64;
 }
 
+#define MAX(a, b) (a > b ? a : b)
+#define MIN(a, b) (a < b ? a : b)
+#define ABS(a) ((a) > 0 ? (a) : (-a))
+
+template<typename T>
+void swap(T& a, T& b)
+{
+	T temp = a;
+	a = b;
+	b = temp;;
+}
 
 class Math
 {
+	public:
 	//Fast inverse square root from Quake3:
 	static types::r32 Q_rsqrt( types::r32 number);
 	static types::r32 fast_sqrt(types::r32 number);
 };
+
+#include <cmath>
 
 template <typename T>
 struct Vec2Generic
@@ -40,18 +54,30 @@ struct Vec2Generic
 			T w, h;
 		};
 	};
-
+	
 	Vec2Generic(T x = 0, T y = 0) : x(x), y(y) {}
 	Vec2Generic(const Vec2Generic& vec) : x(vec.x), y(vec.y) {}
-
-	T dot(const Vec2Generic& vec) 							{ return x * vec.x + y * vec.y; }
-	T mag() 												{ return Math::fast_sqrt(x * x + y * y);	}
-	Vec2Generic normal()									{ return Vec2Generic(-y, x);				}
-	Vec2Generic operator+(const Vec2Generic& vec) const		{ return Vec2Generic(x + vec.x, y + vec.y);	}
-	Vec2Generic operator-(const Vec2Generic& vec) const		{ return Vec2Generic(x - vec.x, y - vec.y);	}
-	Vec2Generic operator*(const float& a) 		   const	{ return Vec2Generic(x * a, y * a);			}
-	Vec2Generic operator/(const float& a) 		   const	{ return Vec2Generic(x / a, y / a);			}
+	
+	T dot(const Vec2Generic& vec) 					 { return x * vec.x + y * vec.y;                         }
+	T magnitude() {return sqrt(x*x+y*y);}
+	//T magnitude() 								     { return Math::fast_sqrt(x * x + y * y);                }
+	Vec2Generic perpendicular()					    { return Vec2Generic(-y, x);			                }
+	Vec2Generic normal()					           { T r = 1 / magnitude(); return Vec2Generic(x*r, y*r);  }
+	Vec2Generic operator+(const Vec2Generic& vec) const{ return Vec2Generic(x + vec.x, y + vec.y);             }
+	Vec2Generic operator-(const Vec2Generic& vec) const{ return Vec2Generic(x - vec.x, y - vec.y);             }
+	Vec2Generic operator*(const T& a) 	 	   const{ return Vec2Generic(x * a, y * a);		             }
+	Vec2Generic operator*(const Vec2Generic& vec) const{ return Vec2Generic(x * vec.x, y * vec.y);             }
+	Vec2Generic operator/(const T& a) 	 	   const{ return Vec2Generic(x / a, y / a);		             }
+	Vec2Generic operator/(const Vec2Generic& vec) const{ return Vec2Generic(x / vec.x, y / vec.y);             }
+	Vec2Generic operator+=(const Vec2Generic& vec)     { x += vec.x; y += vec.y; return *this;                 }
 };
+
+template<typename T>
+inline Vec2Generic<T> operator/(const types::r32& fl, const Vec2Generic<T>& vec){ return Vec2Generic<T> ((T)(fl / (types::r64)vec.x),(T)(fl / (types::r64)vec.y)); }
+
+
+template<typename T>
+inline Vec2Generic<T> operator*(const types::r32& fl, const Vec2Generic<T>& vec){ return Vec2Generic<T> ((T)(fl * (types::r32)vec.x),(T)(fl * (types::r32)vec.y)); }
 
 typedef Vec2Generic<types::r32> Vec2f;
 typedef Vec2Generic<types::i32> Vec2i;
