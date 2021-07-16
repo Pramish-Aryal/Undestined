@@ -1,9 +1,11 @@
 #pragma once
 
 #include "utils.h"
+#include "Collision.h"
 
 class AnimatedSprite;
 class Graphics;
+class Map;
 
 class Player
 {
@@ -12,7 +14,7 @@ class Player
 	~Player();
 	
 	void draw(Graphics &graphics);
-	void simulate(types::r32 dt);
+	void simulate(types::r32 dt, Map& map);
 	void update(types::r32 dt);
 	
 	//player movement
@@ -28,22 +30,21 @@ class Player
 	void block();
 	void block_idle();
 	
-	
-	
-	
-	
 	private:
 	void setup_animations();
 	
 	private:
+	
 	Vec2f pos;
+	Rect collider;
 	// TODO(Pramish): Implement basic jumping and movement physics using them i.e. eqns of motion
 	Vec2f vel;
 	Vec2f accn;
 	Vec2f vMax;
-  float gravity;
-  float friction;
-  bool is_jumping = false;
+	Vec2f offsets;
+	float gravity;
+	float friction;
+	bool is_jumping = false;
 	AnimatedSprite *sprite;
-	types::r32 scale = 3;
+	types::r32 scale = 1.f;
 };
