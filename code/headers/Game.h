@@ -6,6 +6,7 @@ struct SDL_Renderer;
 class Graphics;
 class Input;
 class Player;
+class Map;
 
 #include "utils.h"
 
@@ -13,12 +14,12 @@ using namespace types;
 
 class Game
 {
-
-public:
+	
+	public:
 	Game();
 	~Game();
-
-private:
+	
+	private:
 	void game_loop();
 	void simulate(r32 dt);
 	void update(r32 dt);
@@ -26,10 +27,11 @@ private:
 	void handle_input(Input &input);
 	bool is_game_running();
 	void set_game_running(bool value);
-
-private:
+	
+	private:
 	SDL_Window *_window;
 	SDL_Renderer *_renderer;
 	Player *player;
+	Map* map;
 	bool m_game_is_running;
 };

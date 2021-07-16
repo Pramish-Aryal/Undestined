@@ -4,12 +4,13 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "utils.h"
 #include "Input.h"
 #include "Graphics.h"
 #include "Fatal.h"
 #include "AnimatedSprite.h"
 #include "Player.h"
-#include "utils.h"
+#include "Map.h"
 
 namespace
 {
@@ -43,12 +44,14 @@ void Game::game_loop()
 	Input input;
 	Graphics graphics;
 	player = new Player(graphics);
-	
+	map = new Map(graphics);
+	map->load_map("");
 	r32 fixed_delta_time = FRAME_TIME;
 	r32 accumulator = 0;
 	r32 delta_time = fixed_delta_time;
 	r32 current_time_ms = SDL_GetTicks();
 	r32 last_time_ms = current_time_ms;
+	
 	
 #define TESTIN
 #ifdef TESTING
@@ -207,6 +210,7 @@ void Game::update(r32 dt)
 void Game::draw(Graphics &graphics)
 {
 	graphics.clear_screen(50, 100, 120);
+	map->draw(graphics);
 	player->draw(graphics);
 	graphics.display();
 }
