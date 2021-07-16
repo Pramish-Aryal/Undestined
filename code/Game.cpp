@@ -1,5 +1,4 @@
 #include "Game.h"
-//hello this is change
 
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -26,12 +25,6 @@ Game::Game()
 	
 	set_game_running(true);
 	game_loop();
-	
-	//test
-	// Vec2f thingy = {1.f, 2.f};
-	
-	// std::cout << thingy.x << ',' << thingy.y << std::endl;
-	// std::cout << thingy.w << ',' << thingy.h << std::endl;
 }
 
 Game::~Game()
@@ -57,36 +50,35 @@ void Game::game_loop()
 	r32 current_time_ms = SDL_GetTicks();
 	r32 last_time_ms = current_time_ms;
 	
-#define TESTING
+#define TESTIN
 #ifdef TESTING
 	std::vector<Rect> rects;
 	
-	rects.push_back({{10.f, 10.f}, {10.f, 30.f}});
+	rects.push_back({{10.f * 3, 10.f * 3}, {10.f * 3, 30.f * 3}});
 	
-	rects.push_back({{10.f,200.f}, {20.f, 20.f}});
-	rects.push_back({{30.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{50.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{70.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{90.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{110.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{130.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{150.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{170.f, 200.f}, {20.f, 20.f}});
-	rects.push_back({{190.f, 200.f}, {20.f, 20.f}});
+	//rects.push_back({{10.f,200.f}, {20.f, 20.f}});
+	rects.push_back({{30.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{50.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{70.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{90.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{110.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{130.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{150.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{170.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
+	rects.push_back({{190.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
 	
-	rects.push_back({{5.f, 150.f}, {5.f, 70.f}});
-	rects.push_back({{210.f, 150.f}, {5.f, 70.f}});
+	rects.push_back({{25.f * 3, 150.f * 3}, {5.f * 3, 70.f * 3}});
+	rects.push_back({{210.f * 3, 150.f * 3}, {5.f * 3, 70.f * 3}});
 	
-	rects.push_back({{100.f, 20.f}, {30.f, 100.f}});
-	rects.push_back({{50.f, 60.f}, {100.f, 30.f}});
+	rects.push_back({{100.f * 3, 20.f * 3}, {30.f * 3, 100.f * 3}});
+	rects.push_back({{50.f * 3, 60.f * 3}, {100.f * 3, 30.f * 3}});
 	
-	rects.push_back({{150.f, 30.f}, {5.f, 5.f}});
+	rects.push_back({{150.f * 3, 30.f * 3}, {5.f * 3, 5.f * 3}});
 	
 	Vec2f vel = {0,0};
 	bool left_clicked = false;
+	
 #endif
-	
-	
 	
 	while (is_game_running())
 	{
@@ -107,10 +99,9 @@ void Game::game_loop()
 				left_clicked = true;
 			if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT)
 				left_clicked = false;
-			
-			
 #endif
 		}
+		
 		handle_input(input);
 		accumulator += delta_time;
 		while (accumulator >= fixed_delta_time)
@@ -150,7 +141,6 @@ void Game::game_loop()
 				z.push_back({i, t});
 			//vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
 		}
-		
 		
 		std::sort(z.begin(), z.end(), [](const std::pair<int, float>& a, const std::pair<int, float>& b) { return a.second < b.second;});
 		
@@ -225,7 +215,6 @@ void Game::handle_input(Input &input)
 {
 	if (input.key_held(SDL_SCANCODE_ESCAPE))
 		set_game_running(false);
-	
 	
 	if(input.key_held(SDL_SCANCODE_E))
 		player->attack();

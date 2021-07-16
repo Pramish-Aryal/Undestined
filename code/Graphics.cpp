@@ -3,23 +3,54 @@
 
 #include <SDL2/SDL.h>
 
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+#include <stb_image.h>
+
 Graphics::Graphics()
 {
-	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_RESIZABLE);
+	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
 	if (!m_window)
 		Fatal::fatal_error("Couldn't create Window");
-
+	
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 	if (!m_renderer)
 		Fatal::fatal_error("Couldn't create the renderer");
+	SDL_RenderSetLogicalSize(m_renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 Graphics::~Graphics()
 {
+	for(SpriteSheet::iterator sprite_sheet = m_sprite_sheets.begin(); sprite_sheet != m_sprite_sheets.end(); sprite_sheet++)
+	{
+		SDL_DestroyTexture(sprite_sheet->second);
+	}
+	
 	if (m_window)
 		SDL_DestroyWindow(m_window);
 	if (m_renderer)
 		SDL_DestroyRenderer(m_renderer);
+}
+
+SDL_Texture* Graphics::load_image(std::string path, i32& width, i32& height)
+{
+	if(m_sprite_sheets.count(path) == 0)
+	{
+		int n;
+		u8* pixels = NULL;
+		pixels = stbi_load(path.c_str(), &width, &height, &n, 4);
+		if (!pixels)
+			Fatal::fatal_error("Can't load image");
+		SDL_Texture* texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
+		SDL_UpdateTexture(texture, 0, pixels, width * 4);
+		stbi_image_free(pixels);
+		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+		m_sprite_sheets[path] = texture;
+	}
+	return m_sprite_sheets[path];
 }
 
 void Graphics::clear_screen(u8 r, u8 g, u8 b)

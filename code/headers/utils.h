@@ -38,8 +38,6 @@ class Math
 	static types::r32 fast_sqrt(types::r32 number);
 };
 
-#include <cmath>
-
 template <typename T>
 struct Vec2Generic
 {

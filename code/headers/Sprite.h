@@ -25,5 +25,4 @@ class Sprite
 	bool flip = false;
 	SDL_Texture *m_texture;
 	types::i32 m_width, m_height;
-	types::u8 *m_pixels;
 };

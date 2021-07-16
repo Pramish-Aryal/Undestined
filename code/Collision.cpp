@@ -1,7 +1,7 @@
 #include "Collision.h"
 #include <algorithm>
 #include <functional>
-
+#include <cmath>
 using namespace types;
 
 bool Collider::point_vs_rect(const Vec2f& p, const Rect& r)
