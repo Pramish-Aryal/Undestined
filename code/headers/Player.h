@@ -40,6 +40,10 @@ class Player
 	// TODO(Pramish): Implement basic jumping and movement physics using them i.e. eqns of motion
 	Vec2f vel;
 	Vec2f accn;
+	Vec2f vMax;
+  float gravity;
+  float friction;
+  bool is_jumping = false;
 	AnimatedSprite *sprite;
 	types::r32 scale = 3;
 };
