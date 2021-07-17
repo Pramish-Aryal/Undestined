@@ -46,8 +46,7 @@ void Player::simulate(types::r32 dt, Map &map)
 {
   float dirX;
 
-  vel.x += accn.x * dt;
-  vel.y += accn.y * dt;
+  vel += accn * dt;
 
   //fraction
   if (vel.x != 0)
@@ -95,8 +94,7 @@ void Player::simulate(types::r32 dt, Map &map)
   }
 
   //pos update
-  pos.x += vel.x * dt;
-  pos.y += vel.y * dt;
+  pos += vel * dt;
 
   //pos.y = (pos.y > 500) ? 500 : pos.y;
 

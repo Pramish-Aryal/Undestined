@@ -13,13 +13,15 @@
 #include "Player.h"
 #include "utils.h"
 
-namespace {
-const r32 FPS = 60.0f;
-const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
-const r32 FRAME_TIME = 1000.0f / FPS;
-}  // namespace
+namespace
+{
+  const r32 FPS = 60.0f;
+  const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
+  const r32 FRAME_TIME = 1000.0f / FPS;
+} // namespace
 
-Game::Game() {
+Game::Game()
+{
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     Fatal::fatal_error("Couldn't init SDL");
 
@@ -27,7 +29,8 @@ Game::Game() {
   game_loop();
 }
 
-Game::~Game() {
+Game::~Game()
+{
   SDL_Quit();
 }
 
@@ -38,7 +41,8 @@ Game::~Game() {
 
 #include "Collision.h"
 
-void Game::game_loop() {
+void Game::game_loop()
+{
   Input input;
   Graphics graphics;
   player = new Player(graphics);
@@ -52,6 +56,7 @@ void Game::game_loop() {
   r32 current_time_ms = SDL_GetTicks();
   r32 last_time_ms = current_time_ms;
 
+#pragma region testing1
 #define TESTIN
 #ifdef TESTING
   std::vector<Rect> rects;
@@ -81,12 +86,14 @@ void Game::game_loop() {
   bool left_clicked = false;
 
 #endif
+#pragma endregion
 
-
-  while (is_game_running()) {
+  while (is_game_running())
+  {
     input.begin_new_frame();
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event))
+    {
       if (event.type == SDL_QUIT)
         m_game_is_running = false;
 
@@ -95,23 +102,25 @@ void Game::game_loop() {
 
       if (event.type == SDL_KEYUP)
         input.key_up_event(event);
+#pragma region testing2
 #ifdef TESTING
       if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
         left_clicked = true;
       if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT)
         left_clicked = false;
 #endif
+#pragma endregion
     }
 
     handle_input(input);
     accumulator += delta_time;
-    while (accumulator >= fixed_delta_time) {
+    while (accumulator >= fixed_delta_time)
+    {
       simulate(fixed_delta_time);
       accumulator -= fixed_delta_time;
     }
 
     update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
-
 #ifdef TESTING
     //testing
     SDL_Renderer *renderer = graphics.get_renderer();
@@ -131,15 +140,18 @@ void Game::game_loop() {
 
     std::vector<std::pair<int, float>> z;
 
-    for (int i = 1; i < rects.size(); i++) {
+    for (int i = 1; i < rects.size(); i++)
+    {
       if (Collider::dynamic_rect_vs_rect(&rects[0], vel, &rects[i], cp, cn, t, delta_time))
         z.push_back({i, t});
       //vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
     }
 
-    std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b) { return a.second < b.second; });
+    std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b)
+              { return a.second < b.second; });
 
-    for (auto j : z) {
+    for (auto j : z)
+    {
       if (Collider::dynamic_rect_vs_rect(&rects[0], vel, &rects[j.first], cp, cn, t, delta_time))
         vel += cn * Vec2f(ABS(vel.x), ABS(vel.y)) * (1 - t);
     }
@@ -147,7 +159,8 @@ void Game::game_loop() {
     rects[0].pos += vel * delta_time;
 
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    for (const auto &r : rects) {
+    for (const auto &r : rects)
+    {
       SDL_Rect rect = {(i32)r.pos.x, (i32)r.pos.y, (i32)r.size.w, (i32)r.size.h};
       SDL_RenderDrawRect(renderer, &rect);
     }
@@ -188,22 +201,26 @@ void Game::game_loop() {
 #pragma endregion
 }
 
-void Game::simulate(r32 dt) {
+void Game::simulate(r32 dt)
+{
   player->simulate(dt, *map);
 }
 
-void Game::update(r32 dt) {
+void Game::update(r32 dt)
+{
   player->update(dt);
 }
 
-void Game::draw(Graphics &graphics) {
+void Game::draw(Graphics &graphics)
+{
   graphics.clear_screen(50, 100, 120);
   map->draw(graphics);
   player->draw(graphics);
   graphics.display();
 }
 
-void Game::handle_input(Input &input) {
+void Game::handle_input(Input &input)
+{
   if (input.key_held(SDL_SCANCODE_ESCAPE))
     set_game_running(false);
 
@@ -227,10 +244,12 @@ void Game::handle_input(Input &input) {
   //   player->fall();
 }
 
-bool Game::is_game_running() {
+bool Game::is_game_running()
+{
   return m_game_is_running;
 }
 
-void Game::set_game_running(bool value) {
+void Game::set_game_running(bool value)
+{
   m_game_is_running = value;
 }
