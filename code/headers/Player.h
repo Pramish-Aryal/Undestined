@@ -46,5 +46,5 @@ class Player
 	float friction;
 	bool is_jumping = false;
 	AnimatedSprite *sprite;
-	types::r32 scale = 1.f;
+	types::r32 scale = 3.f;
 };

@@ -15,7 +15,7 @@ Player::Player(Graphics &graphics)
 {
 	sprite = new AnimatedSprite(graphics, "data\\HeroKnight.png");
 	setup_animations();
-	pos = {500, 400};
+	pos = {500, 200};
 	sprite->play_animation("idle");
 	vel = {0, 0};
 	accn = {0, 0};
@@ -23,8 +23,8 @@ Player::Player(Graphics &graphics)
 	gravity = 0.09f;
 	//player size = 28 x 42, 36 x 13
 	offsets = {36.f, 13.f};
-	collider.pos = {pos.x + offsets.x, pos.y + offsets.y};
-	collider.size = {28.f, 42.f};
+	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
+	collider.size = {28.f * scale, 41.f * scale};
 }
 
 void Player::draw(Graphics &graphics)
@@ -64,8 +64,7 @@ void Player::simulate(types::r32 dt, Map& map)
 	vel.y = (vel.y < vMax.y) ? vel.y : vMax.y;
 	vel.y = (-vel.y < vMax.y) ? vel.y : -vMax.y;
 	
-	//collider = {{pos.x /*+ offsets.x*/, pos.y /*+ offsets.y*/}, {28.f, 48.f}};
-	collider.pos = {pos.x + offsets.x, pos.y + offsets.y};
+	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	
 	Vec2f cp, cn;
 	r32 t;
@@ -93,7 +92,7 @@ void Player::simulate(types::r32 dt, Map& map)
 	pos.x += vel.x * dt;
 	pos.y += vel.y * dt;
 	
-	pos.y = (pos.y > 500) ? 500 : pos.y;
+	//pos.y = (pos.y > 500) ? 500 : pos.y;
 	
 	//final setup and anims
 	accn.x = 0;
