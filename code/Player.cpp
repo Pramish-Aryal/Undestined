@@ -20,7 +20,8 @@ Player::Player(Graphics &graphics)
   vel = {0, 0};
   accn = {0, 0};
   vMax = {.3, 9.0f};
-  gravity = 0.09f;
+
+  gravity = 0.0045f;
   //player size = 28 x 42, 36 x 13
   offsets = {36.f, 13.f};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
@@ -37,6 +38,7 @@ void Player::draw(Graphics &graphics)
 
 void Player::update(r32 dt)
 {
+  handle_animation_state();
   sprite->update(dt);
 }
 
@@ -74,7 +76,10 @@ void Player::simulate(types::r32 dt, Map &map)
   for (int i = 0; i < map.bounding_boxes.size(); i++)
   {
     if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[i], cp, cn, t, dt))
+    {
       z.push_back({i, t});
+      is_jumping = false;
+    }
     //vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
   }
 
@@ -84,7 +89,9 @@ void Player::simulate(types::r32 dt, Map &map)
   for (auto j : z)
   {
     if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[j.first], cp, cn, t, dt))
+    {
       vel += cn * Vec2f(ABS(vel.x), ABS(vel.y)) * (1 - t);
+    }
   }
 
   //pos update
@@ -97,9 +104,11 @@ void Player::simulate(types::r32 dt, Map &map)
   accn.x = 0;
   accn.y = 0;
 
-  if (vel.y < 0)
+  if (is_jumping && vel.y > 0)
     fall();
-  if (vel.x == 0)
+  if (falling && vel.y == 0)
+    stop_falling();
+  if (vel.x == 0 && vel.y == 0)
     stop_moving();
 }
 
@@ -130,19 +139,25 @@ void Player::move_left()
 {
   accn.x -= 0.003f;
   sprite->set_flip(true);
-  sprite->play_animation("Run");
+  running = true;
+  idle = false;
 }
 
 void Player::move_right()
 {
   accn.x += 0.003f;
   sprite->set_flip(false);
-  sprite->play_animation("Run");
+  running = true;
+  idle = false;
 }
 
 void Player::stop_moving()
 {
-  sprite->play_animation("Idle");
+  idle = true;
+}
+void Player::stop_falling()
+{
+  falling = false;
 }
 
 void Player::attack()
@@ -156,14 +171,13 @@ void Player::jump()
   {
     vel.y = -1.25f;
     is_jumping = true;
+    falling = false;
   }
-
-  sprite->play_animation("Jump");
 }
 
 void Player::fall()
 {
-  sprite->play_animation("Fall");
+  falling = true;
 }
 
 void Player::roll()
@@ -189,6 +203,19 @@ void Player::block()
 void Player::block_idle()
 {
   sprite->play_animation("Block Idle");
+}
+
+void Player::handle_animation_state()
+{
+  if (idle)
+    sprite->play_animation("Idle");
+  else if (running)
+    sprite->play_animation("Run");
+
+  if (falling)
+    sprite->play_animation("Fall");
+  else if (is_jumping)
+    sprite->play_animation("Jump");
 }
 
 Player::~Player()
