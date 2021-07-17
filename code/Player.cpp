@@ -11,8 +11,7 @@
 
 using namespace types;
 
-Player::Player(Graphics &graphics)
-{
+Player::Player(Graphics &graphics) {
   sprite = new AnimatedSprite(graphics, "data\\HeroKnight.png");
   setup_animations();
   pos = {500, 200};
@@ -26,31 +25,27 @@ Player::Player(Graphics &graphics)
   offsets = {36.f, 13.f};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {28.f * scale, 41.f * scale};
+  handle_animation_state();
 }
 
-void Player::draw(Graphics &graphics)
-{
+void Player::draw(Graphics &graphics) {
   SDL_Rect rect = {(i32)collider.pos.x, (i32)collider.pos.y, (i32)collider.size.w, (i32)collider.size.h};
 
   sprite->draw(graphics, (i32)pos.x, (i32)pos.y, scale);
   SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 }
 
-void Player::update(r32 dt)
-{
-  handle_animation_state();
+void Player::update(r32 dt) {
   sprite->update(dt);
 }
 
-void Player::simulate(types::r32 dt, Map &map)
-{
+void Player::simulate(types::r32 dt, Map &map) {
   float dirX;
 
   vel += accn * dt;
 
   //fraction
-  if (vel.x != 0)
-  {
+  if (vel.x != 0) {
     dirX = (vel.x / abs(vel.x));
     float friction = (abs(.0012f * dt) <= abs(vel.x)) ? abs(.0012f * dt) : abs(vel.x);
     vel.x -= dirX * friction;
@@ -72,23 +67,18 @@ void Player::simulate(types::r32 dt, Map &map)
 
   std::vector<std::pair<int, float>> z;
 
-  for (int i = 0; i < map.bounding_boxes.size(); i++)
-  {
-    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[i], cp, cn, t, dt))
-    {
+  for (int i = 0; i < map.bounding_boxes.size(); i++) {
+    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[i], cp, cn, t, dt)) {
       z.push_back({i, t});
       is_jumping = false;
     }
     //vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
   }
 
-  std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b)
-            { return a.second < b.second; });
+  std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b) { return a.second < b.second; });
 
-  for (auto j : z)
-  {
-    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[j.first], cp, cn, t, dt))
-    {
+  for (auto j : z) {
+    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[j.first], cp, cn, t, dt)) {
       vel += cn * Vec2f(ABS(vel.x), ABS(vel.y)) * (1 - t);
     }
   }
@@ -102,16 +92,17 @@ void Player::simulate(types::r32 dt, Map &map)
   accn.x = 0;
   accn.y = 0;
 
-  if (is_jumping && vel.y > 0)
+  if (is_jumping && !falling && vel.y >= 0.0f)
     fall();
   if (falling && vel.y == 0)
     stop_falling();
-  if (vel.x == 0 && vel.y == 0)
+  if (vel.x == 0 && vel.y == 0 && !is_jumping && !falling)
     stop_moving();
+
+    
 }
 
-void Player::setup_animations()
-{
+void Player::setup_animations() {
   sprite->add_animation("Idle", 0, 0, 100, 55, 8, 7);
 
   sprite->add_animation("Run", 8, 0, 100, 55, 10, 7);
@@ -120,7 +111,7 @@ void Player::setup_animations()
   sprite->add_animation("Attack 2", 4, 2, 100, 55, 6, 10);
   sprite->add_animation("Attack 3", 0, 3, 100, 55, 8, 10);
 
-  sprite->add_animation("Jump", 7, 3, 100, 55, 4, 10);
+  sprite->add_animation("Jump", 8, 3, 100, 55, 4, 10);
   sprite->add_animation("Fall", 1, 4, 100, 55, 4, 10);
 
   sprite->add_animation("Hurt", 5, 4, 100, 55, 3, 10);
@@ -133,82 +124,83 @@ void Player::setup_animations()
 }
 
 // TODO(Pramish): Incorporate these with the acceleration
-void Player::move_left()
-{
+void Player::move_left() {
   accn.x -= 0.003f;
   sprite->set_flip(true);
   running = true;
   idle = false;
+  if(!is_jumping)
+    handle_animation_state();
 }
 
-void Player::move_right()
-{
+void Player::move_right() {
   accn.x += 0.003f;
   sprite->set_flip(false);
   running = true;
   idle = false;
+  if(!is_jumping)
+    handle_animation_state();
 }
 
-void Player::stop_moving()
-{
+void Player::stop_moving() {
   idle = true;
+  running = false;
+  handle_animation_state();
 }
-void Player::stop_falling()
-{
+void Player::stop_falling() {
   falling = false;
+  handle_animation_state();
 }
 
-void Player::attack()
-{
+void Player::attack() {
   sprite->play_animation("Attack 1");
+  handle_animation_state();
 }
 
-void Player::jump()
-{
-  if (!is_jumping)
-  {
+void Player::jump() {
+  if (!is_jumping ) {
     vel.y = -1.25f;
     is_jumping = true;
     falling = false;
   }
+  handle_animation_state();
 }
 
-void Player::fall()
-{
+void Player::fall() {
   falling = true;
+  handle_animation_state();
 }
 
-void Player::roll()
-{
+void Player::roll() {
   sprite->play_animation("Roll");
+  handle_animation_state();
 }
 
-void Player::get_hurt()
-{
+void Player::get_hurt() {
   sprite->play_animation("Hurt");
+  handle_animation_state();
 }
 
-void Player::die()
-{
+void Player::die() {
   sprite->play_animation("Death");
+  handle_animation_state();
 }
 
-void Player::block()
-{
+void Player::block() {
   sprite->play_animation("Block");
+  handle_animation_state();
 }
 
-void Player::block_idle()
-{
+void Player::block_idle() {
   sprite->play_animation("Block Idle");
+  handle_animation_state();
 }
 
-void Player::handle_animation_state()
-{
-  if (idle)
-    sprite->play_animation("Idle");
-  else if (running)
+void Player::handle_animation_state() {
+  if (running && !is_jumping && !falling)
     sprite->play_animation("Run");
+  else if (idle && !is_jumping && !falling)
+    sprite->play_animation("Idle");
 
   if (falling)
     sprite->play_animation("Fall");
@@ -216,7 +208,6 @@ void Player::handle_animation_state()
     sprite->play_animation("Jump");
 }
 
-Player::~Player()
-{
+Player::~Player() {
   delete sprite;
 }

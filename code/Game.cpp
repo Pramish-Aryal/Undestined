@@ -176,6 +176,7 @@ void Game::game_loop()
     current_time_ms = SDL_GetTicks();
     delta_time = current_time_ms - last_time_ms;
     last_time_ms = current_time_ms;
+    // delta_time /= 10.0f;
   }
 
 #pragma region previous_game_loop

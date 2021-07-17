@@ -40,13 +40,13 @@ private:
 	Rect collider;
 	// TODO(Pramish): Implement basic jumping and movement physics using them i.e. eqns of motion
 	// eqns of motion? why?
+	AnimatedSprite *sprite;
 	Vec2f vel;
 	Vec2f accn;
 	Vec2f vMax;
 	Vec2f offsets;
 	float gravity;
 	float friction;
-	AnimatedSprite *sprite;
 	types::r32 scale = 3.f;
 
 	//Nisans anim/player state identifiers
