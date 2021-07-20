@@ -9,14 +9,14 @@ class Map;
 
 class Player
 {
-public:
+	public:
 	Player(Graphics &graphics);
 	~Player();
-
+	
 	void draw(Graphics &graphics);
 	void simulate(types::r32 dt, Map &map);
 	void update(types::r32 dt);
-
+	
 	//player movement
 	void move_left();
 	void move_right();
@@ -30,12 +30,12 @@ public:
 	void die();
 	void block();
 	void block_idle();
-
-private:
+	
+	private:
 	void setup_animations();
 	void handle_animation_state();
-
-private:
+	
+	private:
 	Vec2f pos;
 	Rect collider;
 	// TODO(Pramish): Implement basic jumping and movement physics using them i.e. eqns of motion
@@ -48,9 +48,9 @@ private:
 	float gravity;
 	float friction;
 	types::r32 scale = 3.f;
-
+	
 	//Nisans anim/player state identifiers
-
+	
 	bool idle = true;
 	bool running = false;
 	bool falling = false;

@@ -12,14 +12,16 @@
 
 Graphics::Graphics()
 {
-	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+	m_screen_width = 1280;
+	m_screen_height = 720;
+	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height, SDL_WINDOW_RESIZABLE);
 	if (!m_window)
 		Fatal::fatal_error("Couldn't create Window");
 	
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 	if (!m_renderer)
 		Fatal::fatal_error("Couldn't create the renderer");
-	SDL_RenderSetLogicalSize(m_renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+	SDL_RenderSetLogicalSize(m_renderer, m_screen_width, m_screen_height);
 }
 
 Graphics::~Graphics()
@@ -72,4 +74,10 @@ SDL_Renderer *Graphics::get_renderer()
 void Graphics::blit_surface(SDL_Texture *texture, SDL_Rect src_rect, SDL_Rect dest_rect, SDL_Point center, bool flip)
 {
 	SDL_RenderCopyEx(m_renderer, texture, &src_rect, &dest_rect, 0, &center, flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+}
+
+Vec2f Graphics::get_display_resolution()
+{
+	SDL_GetWindowSize(m_window, &m_screen_width, &m_screen_height);
+	return Vec2f(m_screen_width, m_screen_height);
 }

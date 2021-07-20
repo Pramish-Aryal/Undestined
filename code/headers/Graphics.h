@@ -25,8 +25,9 @@ class Graphics
 	SDL_Renderer *get_renderer();
 	SDL_Texture* load_image(std::string path, types::i32& width, types::i32& height);
 	void display();
-	
+	Vec2f get_display_resolution();
 	private:
+	int m_screen_width, m_screen_height;
 	SDL_Window *m_window;
 	SDL_Renderer *m_renderer;
 	typedef std::map<std::string, SDL_Texture*> SpriteSheet;

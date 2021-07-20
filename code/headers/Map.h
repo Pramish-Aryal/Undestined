@@ -6,6 +6,8 @@
 #include <SDL2/SDL.h>
 #include "Collision.h"
 
+class Camera;
+
 class Map {
 	Sprite tile_set;
 	std::vector<SDL_Rect> tiles;
