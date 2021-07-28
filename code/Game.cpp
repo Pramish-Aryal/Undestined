@@ -1,7 +1,6 @@
 #include "Game.h"
 
 #include <SDL2/SDL.h>
-
 #include <cstdlib>
 #include <iostream>
 
@@ -14,19 +13,21 @@
 #include "Camera.h"
 #include "utils.h"
 
+using namespace types;
+
+u8 scale = 10;
 
 namespace
 {
 	const r32 FPS = 60.0f;
 	const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
 	const r32 FRAME_TIME = 1000.0f / FPS;
-} // namespace
+} // anonymous namespace
 
 Game::Game()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		Fatal::fatal_error("Couldn't init SDL");
-	
 	set_game_running(true);
 	game_loop();
 }
@@ -54,7 +55,7 @@ void Game::game_loop()
 	map = new Map(graphics);
 	map->load_map("");
 	
-	Camera::get_instance().get_pos() = graphics.get_display_resolution();
+	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2;
 	
 	r32 fixed_delta_time = FRAME_TIME;
 	r32 accumulator = 0;
@@ -217,11 +218,17 @@ void Game::update(r32 dt)
 	player->update(dt);
 }
 
+bool DEBUG = false;
+
 void Game::draw(Graphics &graphics)
 {
 	graphics.clear_screen(50, 100, 120);
 	map->draw(graphics);
+	if(DEBUG)
+		map->debug_draw(graphics, scale);
 	player->draw(graphics);
+	if(DEBUG)
+		player->debug_draw(graphics, scale);
 	graphics.display();
 }
 
@@ -248,6 +255,24 @@ void Game::handle_input(Input &input)
 	//   player->roll();
 	// if (input.key_held(SDL_SCANCODE_F))
 	//   player->fall();
+	
+	if(input.key_pressed(SDL_SCANCODE_O))
+		if(scale < 255) scale++;
+	if(input.key_pressed(SDL_SCANCODE_P))
+		if(scale > 0)scale--;
+	
+	if (input.key_held(SDL_SCANCODE_UP))
+		Camera::get_instance().get_pos().y += 5.f;
+	if (input.key_held(SDL_SCANCODE_DOWN))
+		Camera::get_instance().get_pos().y -= 5.f;
+	if (input.key_held(SDL_SCANCODE_LEFT))
+		Camera::get_instance().get_pos().x += 5.f;
+	if (input.key_held(SDL_SCANCODE_RIGHT))
+		Camera::get_instance().get_pos().x -= 5.f;
+	if(input.key_pressed(SDL_SCANCODE_C))
+		Camera::get_instance().follow = !(Camera::get_instance().follow);
+	if(input.key_pressed(SDL_SCANCODE_X))
+		DEBUG = !DEBUG;
 }
 
 bool Game::is_game_running()

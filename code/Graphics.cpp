@@ -17,7 +17,7 @@ Graphics::Graphics()
 	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height, SDL_WINDOW_RESIZABLE);
 	if (!m_window)
 		Fatal::fatal_error("Couldn't create Window");
-	
+	//SDL_SetWindowBordered(m_window, SDL_FALSE);
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 	if (!m_renderer)
 		Fatal::fatal_error("Couldn't create the renderer");

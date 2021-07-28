@@ -5,6 +5,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include "Collision.h"
+#include "utils.h"
 
 class Camera;
 
@@ -17,5 +18,5 @@ class Map {
 	Map(Graphics& graphics);
 	void load_map(std::string path);
 	void draw(Graphics& graphics);
-	
+	void debug_draw(Graphics& graphics, types::u8 scale = 10);
 };

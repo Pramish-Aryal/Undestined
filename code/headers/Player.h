@@ -14,6 +14,7 @@ class Player
 	~Player();
 	
 	void draw(Graphics &graphics);
+	void debug_draw(Graphics& graphics, types::u8 scale = 10);
 	void simulate(types::r32 dt, Map &map);
 	void update(types::r32 dt);
 	
@@ -30,6 +31,7 @@ class Player
 	void die();
 	void block();
 	void block_idle();
+	void wall_slide();
 	
 	private:
 	void setup_animations();
@@ -48,6 +50,7 @@ class Player
 	float gravity;
 	float friction;
 	types::r32 scale = 3.f;
+	types::r32 jump_timer;
 	
 	//Nisans anim/player state identifiers
 	

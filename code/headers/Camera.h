@@ -7,6 +7,7 @@ class Camera
 	Vec2f pos;
 	Camera();
 	public:
+	bool follow = true;
 	
 	Camera(const Camera&) = delete;
 	

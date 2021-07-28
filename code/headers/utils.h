@@ -21,6 +21,8 @@ namespace types
 #define MAX(a, b) (a > b ? a : b)
 #define MIN(a, b) (a < b ? a : b)
 #define ABS(a) ((a) > 0 ? (a) : (-a))
+#define SIGNOF(a) ((a) > 0 ? 1 : -1)
+
 
 template<typename T>
 void swap(T& a, T& b)
@@ -71,7 +73,6 @@ struct Vec2Generic
 
 template<typename T>
 inline Vec2Generic<T> operator/(const types::r32& fl, const Vec2Generic<T>& vec){ return Vec2Generic<T> ((T)(fl / (types::r64)vec.x),(T)(fl / (types::r64)vec.y)); }
-
 
 template<typename T>
 inline Vec2Generic<T> operator*(const types::r32& fl, const Vec2Generic<T>& vec){ return Vec2Generic<T> ((T)(fl * (types::r32)vec.x),(T)(fl * (types::r32)vec.y)); }

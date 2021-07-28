@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="1" nextlayerid="2" nextobjectid="1">
  <editorsettings>
-  <export target="C:/Users/Acer/Desktop/map.csv" format="csv"/>
+  <export target="../data/map.csv" format="csv"/>
  </editorsettings>
  <tileset firstgid="1" source="base.tsx"/>
  <layer id="1" name="Tile Layer 1" width="100" height="100">
@@ -110,7 +110,7 @@
 0,0,0,0,43,45,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,43,45,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-67,67,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26
 </chunk>

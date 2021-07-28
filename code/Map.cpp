@@ -40,14 +40,17 @@ void Map::draw(Graphics &graphics)
 	for (i32 i = 0; i < draw_tiles.size(); i++)
 	{
 		Rect *box = &bounding_boxes[i];
-		//if(box->pos.x < Camera::get_instance().get_pos().x || box->pos.x > Camera::get_instance().get_pos().x + graphics.get_display_resolution().w ||
-		//box->pos.y < Camera::get_instance().get_pos().y || box->pos.y > Camera::get_instance().get_pos().y + graphics.get_display_resolution().h )
-		//continue;
-		//SDL_Rect rect = {(i32)(box->pos.x - camera.pos.x), (i32)(box->pos.y - camera.pos.y), (i32)box->size.w, (i32)box->size.h};
 		SDL_Rect rect = {(i32)(box->pos.x), (i32)(box->pos.y), (i32)box->size.w, (i32)box->size.h};
-		SDL_Rect rect2 = {(i32)(box->pos.x / 3), (i32)(box->pos.y / 3), (i32)(box->size.w / 3), (i32)(box->size.h / 3)};
-		SDL_SetRenderDrawColor(graphics.get_renderer(), 255, 0, 0, 255);
 		tile_set.draw(graphics, draw_tiles[i], rect, 1.f);
-		SDL_RenderDrawRect(graphics.get_renderer(), &rect2);
+	}
+}
+void Map::debug_draw(Graphics& graphics, u8 scale)
+{
+	for (i32 i = 0; i < draw_tiles.size(); i++)
+	{
+		Rect *box = &bounding_boxes[i];
+		SDL_Rect rect = {(i32)(box->pos.x / scale), (i32)(box->pos.y / scale), (i32)(box->size.w / scale), (i32)(box->size.h / scale)};
+		SDL_SetRenderDrawColor(graphics.get_renderer(), 255, 0, 0, 255);
+		SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 	}
 }
