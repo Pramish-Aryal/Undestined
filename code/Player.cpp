@@ -127,9 +127,7 @@ void Player::simulate(types::r32 dt, Map &map)
 	
 	//pos update
 	pos += vel * dt;
-	
-	//pos.y = (pos.y > 500) ? 500 : pos.y;
-	
+  
 	//final setup and anims
 	accn.x = 0;
 	accn.y = 0;
