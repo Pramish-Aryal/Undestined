@@ -159,7 +159,7 @@ void Player::setup_animations()
 {
 	sprite->add_animation("Idle", 0, 0, 100, 55, 8, 7);
 	
-	sprite->add_animation("Run", 8, 0, 100, 55, 10, 7);
+	sprite->add_animation("Run", 8, 0, 100, 55, 10, 15);
 	
 	sprite->add_animation("Attack 1", 8, 1, 100, 55, 6, 10);
 	sprite->add_animation("Attack 2", 4, 2, 100, 55, 6, 10);
