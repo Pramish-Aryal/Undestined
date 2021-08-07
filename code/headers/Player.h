@@ -39,6 +39,7 @@ class Player
 	
 	private:
 	Vec2f pos;
+	Vec2f cameraBuffer;
 	Rect collider;
 	// TODO(Pramish): Implement basic jumping and movement physics using them i.e. eqns of motion
 	// eqns of motion? why?
@@ -52,6 +53,7 @@ class Player
 	types::r32 scale = 3.f;
 	types::r32 jump_timer;
 	
+  bool cameraMoving = false;
 	//Nisans anim/player state identifiers
 	
 	bool idle = true;
