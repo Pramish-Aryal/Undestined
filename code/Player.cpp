@@ -33,6 +33,10 @@ Player::Player(Graphics &graphics)
 	collider.size = {28.f * scale, 41.f * scale};
 	jump_timer = JUMP_TIMER_MAX;
 	handle_animation_state();
+  Vec2f screen_size = {1280.f, 720.f};
+  Camera::get_instance().get_pos().x = screen_size.x / 3.0f - pos.x;
+  Camera::get_instance().get_pos().y = screen_size.y * 5.7f / 10.0f - pos.y ;
+  cameraBuffer = Camera::get_instance().get_pos();
 }
 
 void Player::draw(Graphics &graphics, r32 scale) 
@@ -144,15 +148,19 @@ void Player::simulate(types::r32 dt, Map &map)
 	Vec2f img_rect_size = {100.f, 100.f};
 	static Vec2f img_rect_pos = pos - img_rect_size / 2;;
 	//if(Camera::get_instance().follow && img_rect_pos.x > pos.x || img_rect_pos.x + img_rect_size.w <  pos.x + collider.size.x)
-	if(Camera::get_instance().follow)
-	{
-		//Camera::get_instance().get_pos() = screen_size / 2 - pos + (100.f * (sprite->get_flip() ? 0.75 : -1.75f));;//graphics.get_display_resolution();
-		//img_rect_pos = pos - img_rect_size / 2;;
-		//Camera::get_instance().get_pos() = screen_size / 2 - img_rect_pos;;
-		Camera::get_instance().get_pos() = screen_size / 2.5f - pos;
-		Camera::get_instance().get_pos().y += 100.f;
-		
+		cameraBuffer.x = screen_size.x / 3.0f - pos.x;
+    cameraBuffer.y = screen_size.y * 0.57f - pos.y;
+	if(Camera::get_instance().follow && (abs(cameraBuffer.x- Camera::get_instance().get_pos().x)>500 || abs(cameraBuffer.y- Camera::get_instance().get_pos().y)>50)){
+    cameraMoving = true;
+  }
+  if(cameraMoving)
+  {
+		Camera::get_instance().get_pos().x += SIGNOF(cameraBuffer.x- Camera::get_instance().get_pos().x) * abs(cameraBuffer.x- Camera::get_instance().get_pos().x)/20 ;
+    Camera::get_instance().get_pos().y += SIGNOF(cameraBuffer.y- Camera::get_instance().get_pos().y) * abs(cameraBuffer.y- Camera::get_instance().get_pos().y)/7;
 	}
+
+  if(abs(Camera::get_instance().get_pos().x - cameraBuffer.x)<10 && abs(Camera::get_instance().get_pos().y - cameraBuffer.y)<5)
+    cameraMoving = false;
 }
 
 void Player::setup_animations() 
