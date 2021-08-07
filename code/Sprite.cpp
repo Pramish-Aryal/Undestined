@@ -24,7 +24,7 @@ void Sprite::draw(Graphics &graphics, SDL_Rect src, SDL_Rect dest, r32 scale)
 {
 	//graphics.blit_surface(m_texture, src, {dest.x - (i32)camera.pos.x, dest.y - (i32)camera.pos.y, dest.w * (int)scale, dest.h * (int)scale}, {0, 0});
 	Vec2f offset = Camera::get_instance().get_pos();
-	graphics.blit_surface(m_texture, src, {dest.x + (i32)offset.x, dest.y + (i32)offset.y, (int)(dest.w * scale), (int)(dest.h * scale)}, {0, 0});
+	graphics.blit_surface(m_texture, src, {dest.x - (i32)offset.x, dest.y - (i32)offset.y, (int)(dest.w * scale), (int)(dest.h * scale)}, {0, 0});
 }
 
 void Sprite::static_draw(Graphics &graphics, SDL_Rect src, SDL_Rect dest, r32 scale)
