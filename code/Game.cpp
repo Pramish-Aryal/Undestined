@@ -42,7 +42,7 @@ void Game::game_loop()
 	player = new Player(graphics);
 	
 	map = new Map(graphics);
-	map->load_map("");
+	map->load_map("", 2 ); 
 	
 	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2;
 	
@@ -101,7 +101,7 @@ void Game::update(r32 dt)
 
 bool DEBUG = false;
 u8 scale = 10;
-u8 player_scale = 3;
+r32 player_scale = 1.5f;
 
 void Game::draw(Graphics &graphics)
 {
@@ -145,9 +145,9 @@ void Game::handle_input(Input &input)
 	if(input.key_pressed(SDL_SCANCODE_P))
 		if(scale > 0)scale--;
 	if(input.key_pressed(SDL_SCANCODE_M))
-		if(player_scale < 255) player_scale++;
+		if(player_scale < 255) player_scale += 0.1f;
 	if(input.key_pressed(SDL_SCANCODE_N))
-		if(player_scale > 0) player_scale--;
+		if(player_scale > 0)  player_scale -= 0.1f;
 	
 	if (input.key_held(SDL_SCANCODE_UP))
 		Camera::get_instance().get_pos().y += 5.f;

@@ -9,7 +9,7 @@ using namespace types;
 
 Map::Map(Graphics &graphics) : tile_set(Sprite(graphics, "data\\tileset.png")) {}
 
-void Map::load_map(std::string path)
+void Map::load_map(std::string path, r32 scale)
 {
 	i8 map_data[] = {
 #include "..\\data\\map.data"
@@ -25,7 +25,7 @@ void Map::load_map(std::string path)
 			i32 row = i / MAP_WIDTH;
 			i32 draw_col = map_data[i] % 12;
 			i32 draw_row = map_data[i] / 12;
-			Rect rect = {{col * TILE_SIZE * 3.f, row * TILE_SIZE * 3.f}, {TILE_SIZE * 3.f, TILE_SIZE * 3.f}};
+			Rect rect = {{col * TILE_SIZE * scale, row * TILE_SIZE * scale}, {TILE_SIZE * scale, TILE_SIZE * scale}};
 			//Rect rect = {{(r32)col * TILE_SIZE, (r32)row * TILE_SIZE }, {(r32)TILE_SIZE , TILE_SIZE}};
 			SDL_Rect src_rect = {draw_col * TILE_SIZE, draw_row * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 			bounding_boxes.push_back(rect);
@@ -40,7 +40,7 @@ void Map::draw(Graphics &graphics, r32 scale)
 	for (i32 i = 0; i < draw_tiles.size(); i++)
 	{
 		Rect *box = &bounding_boxes[i];
-		SDL_Rect rect = {(i32)(box->pos.x), (i32)(box->pos.y), (i32)box->size.w, (i32)box->size.h};
+		SDL_Rect rect = {(i32)(box->pos.x), (i32)(box->pos.y), (i32)(box->size.w), (i32)(box->size.h)};
 		tile_set.draw(graphics, draw_tiles[i], rect, scale);
 	}
 }
