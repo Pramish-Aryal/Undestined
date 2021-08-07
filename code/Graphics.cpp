@@ -14,7 +14,7 @@ Graphics::Graphics()
 {
 	m_screen_width = 1280;
 	m_screen_height = 720;
-	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height, SDL_WINDOW_RESIZABLE);
+	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height, SDL_WINDOW_RESIZABLE /*| SDL_WINDOW_FULLSCREEN*/);
 	if (!m_window)
 		Fatal::fatal_error("Couldn't create Window");
 	//SDL_SetWindowBordered(m_window, SDL_FALSE);
