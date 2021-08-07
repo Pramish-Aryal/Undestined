@@ -149,8 +149,10 @@ void Player::simulate(types::r32 dt, Map &map)
 	static Vec2f img_rect_pos = pos - img_rect_size / 2;;
 	//if(Camera::get_instance().follow && img_rect_pos.x > pos.x || img_rect_pos.x + img_rect_size.w <  pos.x + collider.size.x)
 		cameraBuffer.x = screen_size.x / 3.0f - pos.x;
+    if (sprite->get_flip())
+      cameraBuffer.x = screen_size.x * 2 / 3.0f - pos.x;
     cameraBuffer.y = screen_size.y * 0.57f - pos.y;
-	if(Camera::get_instance().follow && (abs(cameraBuffer.x- Camera::get_instance().get_pos().x)>500 || abs(cameraBuffer.y- Camera::get_instance().get_pos().y)>50)){
+	if(Camera::get_instance().follow && (abs(cameraBuffer.x- Camera::get_instance().get_pos().x)>720 || abs(cameraBuffer.y- Camera::get_instance().get_pos().y)>50)){
     cameraMoving = true;
   }
   if(cameraMoving)
@@ -159,7 +161,7 @@ void Player::simulate(types::r32 dt, Map &map)
     Camera::get_instance().get_pos().y += SIGNOF(cameraBuffer.y- Camera::get_instance().get_pos().y) * abs(cameraBuffer.y- Camera::get_instance().get_pos().y)/7;
 	}
 
-  if(abs(Camera::get_instance().get_pos().x - cameraBuffer.x)<10 && abs(Camera::get_instance().get_pos().y - cameraBuffer.y)<5)
+  if(abs(Camera::get_instance().get_pos().x - cameraBuffer.x)<25 && abs(Camera::get_instance().get_pos().y - cameraBuffer.y)<5)
     cameraMoving = false;
 }
 
