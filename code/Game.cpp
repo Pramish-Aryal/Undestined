@@ -10,6 +10,8 @@
 #include "Input.h"
 #include "Map.h"
 #include "Player.h"
+#include "Backdrop.h"
+#include "Background.h"
 #include "Camera.h"
 #include "utils.h"
 
@@ -43,6 +45,11 @@ void Game::game_loop()
 	
 	map = new Map(graphics);
 	map->load_map("", 2 ); 
+	
+	backdrop = new Backdrop(graphics);
+	backdrop->load_backdrop("", 2);
+	
+	background = new Background(graphics);
 	
 	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2;
 	
@@ -106,6 +113,8 @@ r32 player_scale = 1.5f;
 void Game::draw(Graphics &graphics)
 {
 	graphics.clear_screen(50, 100, 120);
+	background->draw(graphics);
+	backdrop->draw(graphics);
 	map->draw(graphics);
 	if(DEBUG)
 		map->debug_draw(graphics, scale);

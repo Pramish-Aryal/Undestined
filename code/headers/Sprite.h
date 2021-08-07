@@ -17,6 +17,7 @@ class Sprite
 	
 	virtual void draw(Graphics &graphics, types::i32 dest_x, types::i32 dest_y, types::r32 scale);
 	void draw(Graphics &graphics, SDL_Rect src, SDL_Rect dest, types::r32 scale);
+	void static_draw(Graphics &graphics, SDL_Rect src, SDL_Rect dest, types::r32 scale);
 	virtual void update(types::r32 dt) {}
 	
 	void set_flip(bool flip);

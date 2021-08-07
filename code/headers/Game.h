@@ -7,6 +7,8 @@ class Graphics;
 class Input;
 class Player;
 class Map;
+class Backdrop;
+class Background;
 
 #include "utils.h"
 
@@ -31,5 +33,7 @@ class Game
 	SDL_Renderer *_renderer;
 	Player *player;
 	Map* map;
+	Backdrop* backdrop;
+	Background* background;
 	bool m_game_is_running;
 };

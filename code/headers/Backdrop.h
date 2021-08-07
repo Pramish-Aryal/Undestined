@@ -9,13 +9,12 @@
 
 class Camera;
 
-class Map {
+class Backdrop {
 	Sprite tile_set;
 	std::vector<SDL_Rect> draw_tiles;
+	std::vector<Rect> positions;
 	public:
-	std::vector<Rect> bounding_boxes;
-	Map(Graphics& graphics);
-	void load_map(std::string path, types::r32 scale = 1.f);
+	Backdrop(Graphics& graphics);
+	void load_backdrop(std::string path, types::r32 scale = 1.f);
 	void draw(Graphics& graphics, types::r32 scale = 1.f);
-	void debug_draw(Graphics& graphics, types::u8 scale = 10);
 };
