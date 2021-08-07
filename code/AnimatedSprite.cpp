@@ -28,7 +28,7 @@ void AnimatedSprite::draw(Graphics &graphics, i32 dest_x, i32 dest_y, r32 scale)
 	//SDL_Rect srcRect = {50 * current_frame, 37, 50, 37};
 	SDL_Rect srcRect = animations[current_animation][current_frame];
 	Vec2f offset = Camera::get_instance().get_pos();
-	SDL_Rect destRect = {dest_x + (i32)offset.x, dest_y  + (i32)offset.y, (i32)(srcRect.w * scale), (int)(srcRect.h * scale)};
+	SDL_Rect destRect = {dest_x - (i32)offset.x, dest_y  - (i32)offset.y, (i32)(srcRect.w * scale), (int)(srcRect.h * scale)};
 	graphics.blit_surface(m_texture, srcRect, destRect, {srcRect.w / 2, destRect.h / 2}, flip);
 }
 
