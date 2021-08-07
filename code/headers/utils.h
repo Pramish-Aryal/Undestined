@@ -23,7 +23,6 @@ namespace types
 #define ABS(a) ((a) > 0 ? (a) : (-a))
 #define SIGNOF(a) ((a) > 0 ? 1 : -1)
 
-
 template<typename T>
 void swap(T& a, T& b)
 {

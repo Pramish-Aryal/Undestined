@@ -35,8 +35,9 @@ Player::Player(Graphics &graphics)
 	handle_animation_state();
 }
 
-void Player::draw(Graphics &graphics) 
+void Player::draw(Graphics &graphics, r32 scale) 
 {
+	this->scale = scale;
 	sprite->draw(graphics, (i32)pos.x, (i32)pos.y, scale);
 }
 
@@ -53,10 +54,18 @@ void Player::update(r32 dt)
 
 #include <iostream>
 
+bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, float> &b) 
+{ 
+	return a.second < b.second; 
+}
+
 void Player::simulate(types::r32 dt, Map &map) 
 {
 	float dirX;
 	
+	//just for fun, might need to comment them out
+	collider.size = {28.f * scale, 41.f * scale};
+	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	vel += accn * dt;
 	
 	//fraction
@@ -101,7 +110,8 @@ void Player::simulate(types::r32 dt, Map &map)
 	
 	jump_timer += dt;
 	
-	std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b) { return a.second < b.second; });
+	//std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b) { return a.second < b.second; });
+	std::sort(z.begin(), z.end(), sort_func_ptr);
 	
 	for(i32 i = 0; i < z.size(); i++)
 	{
@@ -130,8 +140,19 @@ void Player::simulate(types::r32 dt, Map &map)
 		stop_moving();
 	
 	Vec2f screen_size = {1280.f, 720.f};
+	// TODO(Pramish): Animate the camera to change smoothely
+	Vec2f img_rect_size = {100.f, 100.f};
+	static Vec2f img_rect_pos = pos - img_rect_size / 2;;
+	//if(Camera::get_instance().follow && img_rect_pos.x > pos.x || img_rect_pos.x + img_rect_size.w <  pos.x + collider.size.x)
 	if(Camera::get_instance().follow)
-		Camera::get_instance().get_pos() = screen_size / 2 - pos;//graphics.get_display_resolution();
+	{
+		//Camera::get_instance().get_pos() = screen_size / 2 - pos + (100.f * (sprite->get_flip() ? 0.75 : -1.75f));;//graphics.get_display_resolution();
+		//img_rect_pos = pos - img_rect_size / 2;;
+		//Camera::get_instance().get_pos() = screen_size / 2 - img_rect_pos;;
+		Camera::get_instance().get_pos() = screen_size / 2.5f - pos;
+		Camera::get_instance().get_pos().y += 100.f;
+		
+	}
 }
 
 void Player::setup_animations() 

@@ -35,13 +35,13 @@ void Map::load_map(std::string path)
 	}
 }
 
-void Map::draw(Graphics &graphics)
+void Map::draw(Graphics &graphics, r32 scale)
 {
 	for (i32 i = 0; i < draw_tiles.size(); i++)
 	{
 		Rect *box = &bounding_boxes[i];
 		SDL_Rect rect = {(i32)(box->pos.x), (i32)(box->pos.y), (i32)box->size.w, (i32)box->size.h};
-		tile_set.draw(graphics, draw_tiles[i], rect, 1.f);
+		tile_set.draw(graphics, draw_tiles[i], rect, scale);
 	}
 }
 void Map::debug_draw(Graphics& graphics, u8 scale)

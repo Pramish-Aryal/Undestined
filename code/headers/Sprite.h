@@ -20,6 +20,7 @@ class Sprite
 	virtual void update(types::r32 dt) {}
 	
 	void set_flip(bool flip);
+	bool get_flip();
 	//static void load_sprite(char* path); //should I??
 	
 	protected:

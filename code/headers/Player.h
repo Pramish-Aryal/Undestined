@@ -13,7 +13,7 @@ class Player
 	Player(Graphics &graphics);
 	~Player();
 	
-	void draw(Graphics &graphics);
+	void draw(Graphics &graphics, types::r32 scale = 3.f);
 	void debug_draw(Graphics& graphics, types::u8 scale = 10);
 	void simulate(types::r32 dt, Map &map);
 	void update(types::r32 dt);

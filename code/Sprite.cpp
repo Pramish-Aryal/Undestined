@@ -32,4 +32,9 @@ void Sprite::set_flip(bool flip)
 	this->flip = flip;
 }
 
+bool Sprite::get_flip()
+{
+	return this->flip;
+}
+
 Sprite::~Sprite() {}

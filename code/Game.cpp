@@ -15,8 +15,6 @@
 
 using namespace types;
 
-u8 scale = 10;
-
 namespace
 {
 	const r32 FPS = 60.0f;
@@ -37,15 +35,6 @@ Game::~Game()
 	SDL_Quit();
 }
 
-//testing
-#define TESTIN
-#ifdef TESTING
-#include <algorithm>
-#include <utility>
-#include <vector>
-#include "Collision.h"
-#endif
-
 void Game::game_loop()
 {
 	Input input;
@@ -63,37 +52,6 @@ void Game::game_loop()
 	r32 current_time_ms = SDL_GetTicks();
 	r32 last_time_ms = current_time_ms;
 	
-#pragma region testing1
-#ifdef TESTING
-	std::vector<Rect> rects;
-	
-	rects.push_back({{10.f * 3, 10.f * 3}, {10.f * 3, 30.f * 3}});
-	
-	//rects.push_back({{10.f,200.f}, {20.f, 20.f}});
-	rects.push_back({{30.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{50.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{70.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{90.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{110.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{130.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{150.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{170.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	rects.push_back({{190.f * 3, 200.f * 3}, {20.f * 3, 20.f * 3}});
-	
-	rects.push_back({{25.f * 3, 150.f * 3}, {5.f * 3, 70.f * 3}});
-	rects.push_back({{210.f * 3, 150.f * 3}, {5.f * 3, 70.f * 3}});
-	
-	rects.push_back({{100.f * 3, 20.f * 3}, {30.f * 3, 100.f * 3}});
-	rects.push_back({{50.f * 3, 60.f * 3}, {100.f * 3, 30.f * 3}});
-	
-	rects.push_back({{150.f * 3, 30.f * 3}, {5.f * 3, 5.f * 3}});
-	
-	Vec2f vel = {0, 0};
-	bool left_clicked = false;
-	
-#endif
-#pragma endregion
-	
 	while (is_game_running())
 	{
 		input.begin_new_frame();
@@ -108,14 +66,6 @@ void Game::game_loop()
 			
 			if (event.type == SDL_KEYUP)
 				input.key_up_event(event);
-#pragma region testing2
-#ifdef TESTING
-			if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
-				left_clicked = true;
-			if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT)
-				left_clicked = false;
-#endif
-#pragma endregion
 		}
 		
 		handle_input(input);
@@ -127,54 +77,7 @@ void Game::game_loop()
 		}
 		
 		update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
-#ifdef TESTING
-		//testing
-		SDL_Renderer *renderer = graphics.get_renderer();
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		
-		SDL_RenderClear(renderer);
-		
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		Vec2f mouse = {(r32)x, (r32)y};
-		
-		if (left_clicked)
-			vel += (mouse - rects[0].pos).normal() * 0.001f * delta_time;
-		
-		Vec2f cp, cn;
-		r32 t;
-		
-		std::vector<std::pair<int, float>> z;
-		
-		for (int i = 1; i < rects.size(); i++)
-		{
-			if (Collider::dynamic_rect_vs_rect(&rects[0], vel, &rects[i], cp, cn, t, delta_time))
-				z.push_back({i, t});
-			//vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
-		}
-		
-		std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b)
-				  { return a.second < b.second; });
-		
-		for (auto j : z)
-		{
-			if (Collider::dynamic_rect_vs_rect(&rects[0], vel, &rects[j.first], cp, cn, t, delta_time))
-				vel += cn * Vec2f(ABS(vel.x), ABS(vel.y)) * (1 - t);
-		}
-		
-		rects[0].pos += vel * delta_time;
-		
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-		for (const auto &r : rects)
-		{
-			SDL_Rect rect = {(i32)r.pos.x, (i32)r.pos.y, (i32)r.size.w, (i32)r.size.h};
-			SDL_RenderDrawRect(renderer, &rect);
-		}
-		
-		SDL_RenderPresent(renderer);
-#else
 		draw(graphics);
-#endif
 		
 		if ((SDL_GetTicks() - current_time_ms) < FRAME_TIME)
 			SDL_Delay(FRAME_TIME - (SDL_GetTicks() - current_time_ms));
@@ -184,28 +87,6 @@ void Game::game_loop()
 		last_time_ms = current_time_ms;
 		// delta_time /= 10.0f;
 	}
-	
-#pragma region previous_game_loop
-	/* 
-			  while (m_game_is_running)
-			  {
-				  types::u32 start_time_ms = SDL_GetTicks();
-		  
-				  input();
-		  
-				  types::u32 current_time_ms = SDL_GetTicks();
-				  types::i32 elapsed_time = current_time_ms - last_time_ms;
-				  update(elapsed_time < MAX_FRAME_TIME ? elapsed_time : MAX_FRAME_TIME);
-				  last_time_ms = current_time_ms;
-		  
-				  draw(graphics);
-		  
-				  elapsed_time = SDL_GetTicks() - start_time_ms;
-				  if(elapsed_time < FRAME_TIME)
-					  SDL_Delay(FRAME_TIME - elapsed_time);
-			  }
-		   */
-#pragma endregion
 }
 
 void Game::simulate(r32 dt)
@@ -219,6 +100,8 @@ void Game::update(r32 dt)
 }
 
 bool DEBUG = false;
+u8 scale = 10;
+u8 player_scale = 3;
 
 void Game::draw(Graphics &graphics)
 {
@@ -226,11 +109,12 @@ void Game::draw(Graphics &graphics)
 	map->draw(graphics);
 	if(DEBUG)
 		map->debug_draw(graphics, scale);
-	player->draw(graphics);
+	player->draw(graphics, player_scale);
 	if(DEBUG)
 		player->debug_draw(graphics, scale);
 	graphics.display();
 }
+
 
 void Game::handle_input(Input &input)
 {
@@ -260,6 +144,10 @@ void Game::handle_input(Input &input)
 		if(scale < 255) scale++;
 	if(input.key_pressed(SDL_SCANCODE_P))
 		if(scale > 0)scale--;
+	if(input.key_pressed(SDL_SCANCODE_M))
+		if(player_scale < 255) player_scale++;
+	if(input.key_pressed(SDL_SCANCODE_N))
+		if(player_scale > 0) player_scale--;
 	
 	if (input.key_held(SDL_SCANCODE_UP))
 		Camera::get_instance().get_pos().y += 5.f;
