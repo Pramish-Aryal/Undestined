@@ -17,7 +17,7 @@ void AnimatedSprite::update(r32 dt)
 	if (elapsed_time > frame_times[current_animation])
 	{
 		current_frame++;
-		elapsed_time = 0; //-= frame_times[current_animation];
+		elapsed_time = 0; // -= frame_times[current_animation];
 		if (!(current_frame < animations[current_animation].size() - 1))
 			current_frame = 0;
 	}
