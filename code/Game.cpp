@@ -10,6 +10,7 @@
 #include "Input.h"
 #include "Map.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "Backdrop.h"
 #include "Background.h"
 #include "Camera.h"
@@ -42,6 +43,7 @@ void Game::game_loop()
 	Input input;
 	Graphics graphics;
 	player = new Player(graphics);
+	enemy = new Enemy(graphics);
 	
 	map = new Map(graphics);
 	map->load_map("", 2 ); 
@@ -98,11 +100,13 @@ void Game::game_loop()
 
 void Game::simulate(r32 dt)
 {
+	enemy->simulate(dt, *map);
 	player->simulate(dt, *map);
 }
 
 void Game::update(r32 dt)
 {
+	enemy->update(dt);
 	player->update(dt);
 }
 
@@ -118,6 +122,9 @@ void Game::draw(Graphics &graphics)
 	map->draw(graphics);
 	if(DEBUG)
 		map->debug_draw(graphics, scale);
+	enemy->draw(graphics, player_scale);
+	if(DEBUG)
+		enemy->debug_draw(graphics, 3.f);
 	player->draw(graphics, player_scale);
 	if(DEBUG)
 		player->debug_draw(graphics, scale);

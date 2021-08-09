@@ -18,20 +18,16 @@ class Enemy
 	void simulate(types::r32 dt, Map &map);
 	void update(types::r32 dt);
 	
+	//collision
+	Rect get_collider();
+	
 	//player movement
 	void move_left();
 	void move_right();
 	void stop_moving();
-	void stop_falling();
 	void attack();
-	void jump();
-	void fall();
-	void roll();
 	void get_hurt();
 	void die();
-	void block();
-	void block_idle();
-	void wall_slide();
 	
 	private:
 	void setup_animations();
@@ -54,7 +50,6 @@ class Enemy
 	//Nisans anim/player state identifiers
 	bool idle = true;
 	bool running = false;
-	bool falling = false;
 	bool attacking = false;
 	bool other = false;
 };

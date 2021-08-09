@@ -9,6 +9,7 @@ class Player;
 class Map;
 class Backdrop;
 class Background;
+class Enemy;
 
 #include "utils.h"
 
@@ -32,6 +33,7 @@ class Game
 	SDL_Window *_window;
 	SDL_Renderer *_renderer;
 	Player *player;
+	Enemy* enemy;
 	Map* map;
 	Backdrop* backdrop;
 	Background* background;

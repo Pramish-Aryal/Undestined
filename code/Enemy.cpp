@@ -18,7 +18,7 @@ namespace
 
 Enemy::Enemy(Graphics &graphics) 
 {
-	sprite = new AnimatedSprite(graphics, "data\\HeroKnight.png");
+	sprite = new AnimatedSprite(graphics, "data\\Enemy.png");
 	setup_animations();
 	pos = {500, 200};
 	sprite->play_animation("idle");
@@ -26,11 +26,12 @@ Enemy::Enemy(Graphics &graphics)
 	accn = {0, 0};
 	vMax = {.3, 9.0f};
 	
+	
 	gravity = 0.0045f;
 	//player size = 28 x 42, 36 x 13
-	offsets = {36.f, 13.f};
+	offsets = {60.f, 50.f};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-	collider.size = {28.f * scale, 41.f * scale};
+	collider.size = {150.f * scale, 150.f * scale};
 	handle_animation_state();
 	Vec2f screen_size = {1280.f, 720.f};
 	Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
@@ -46,7 +47,8 @@ void Enemy::draw(Graphics &graphics, r32 scale)
 
 void Enemy::debug_draw(Graphics& graphics, u8 scale)
 {
-	SDL_Rect rect = {(i32)(collider.pos.x / scale), (i32)(collider.pos.y / scale), (i32)(collider.size.w / scale), (i32)(collider.size.h / scale)};
+	SDL_SetRenderDrawColor(graphics.get_renderer(), 255, 0, 0, 255);
+	SDL_Rect rect = {(i32)(collider.pos.x * this->scale ), (i32)(collider.pos.y * this->scale), (i32)(collider.size.w * this->scale), (i32)(collider.size.h * this->scale)};
 	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 }
 
@@ -131,26 +133,8 @@ void Enemy::simulate(types::r32 dt, Map &map)
 
 void Enemy::setup_animations() 
 {
-	sprite->add_animation("Idle", 0, 0, 100, 55, 8, 7);
-	
-	sprite->add_animation("Run", 8, 0, 100, 55, 10, 15);
-	
-	sprite->add_animation("Attack 1", 8, 1, 100, 55, 6, 10);
-	sprite->add_animation("Attack 2", 4, 2, 100, 55, 6, 10);
-	sprite->add_animation("Attack 3", 0, 3, 100, 55, 8, 10);
-	
-	sprite->add_animation("Jump", 8, 3, 100, 55, 4, 10);
-	sprite->add_animation("Fall", 1, 4, 100, 55, 4, 10);
-	
-	sprite->add_animation("Hurt", 5, 4, 100, 55, 3, 10);
-	sprite->add_animation("Death", 8, 4, 100, 55, 10, 10);
-	
-	sprite->add_animation("Block Idle", 8, 5, 100, 55, 8, 10);
-	sprite->add_animation("Block", 6, 6, 100, 55, 5, 10);
-	
-	sprite->add_animation("Roll", 2, 7, 100, 55, 9, 10);
-	
-	//sprite->add_animation("Wall Slide", 5, 8, 100, 55, 5, 10);
+	sprite->add_animation("Idle", 0, 0, 150, 150, 4, 7);
+	sprite->add_animation("Hurt", 0, 150, 150, 150, 4, 7);
 }
 
 // TODO(Pramish): Incorporate these with the acceleration
@@ -178,11 +162,6 @@ void Enemy::stop_moving()
 	running = false;
 	handle_animation_state();
 }
-void Enemy::stop_falling() 
-{
-	falling = false;
-	handle_animation_state();
-}
 
 void Enemy::attack() 
 {
@@ -208,6 +187,11 @@ void Enemy::handle_animation_state()
 		sprite->play_animation("Idle");
 	else if (running)
 		sprite->play_animation("Run");
+}
+
+Rect Enemy::get_collider()
+{
+	return collider;
 }
 
 Enemy::~Enemy() 
