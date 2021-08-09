@@ -20,18 +20,17 @@ Enemy::Enemy(Graphics &graphics)
 {
 	sprite = new AnimatedSprite(graphics, "data\\Enemy.png");
 	setup_animations();
-	pos = {500, 200};
+	pos = {700, 200};
 	sprite->play_animation("idle");
 	vel = {0, 0};
 	accn = {0, 0};
 	vMax = {.3, 9.0f};
 	
-	
 	gravity = 0.0045f;
-	//player size = 28 x 42, 36 x 13
+	//enemy size = 45 x 51, 60 x 50
 	offsets = {60.f, 50.f};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-	collider.size = {150.f * scale, 150.f * scale};
+	collider.size = {45.f * scale, 51.f * scale};
 	handle_animation_state();
 	Vec2f screen_size = {1280.f, 720.f};
 	Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
@@ -47,8 +46,9 @@ void Enemy::draw(Graphics &graphics, r32 scale)
 
 void Enemy::debug_draw(Graphics& graphics, u8 scale)
 {
-	SDL_SetRenderDrawColor(graphics.get_renderer(), 255, 0, 0, 255);
-	SDL_Rect rect = {(i32)(collider.pos.x), (i32)(collider.pos.y), (i32)(collider.size.w), (i32)(collider.size.h)};
+	r32 o_x = Camera::get_instance().get_pos().x;
+	r32 o_y = Camera::get_instance().get_pos().y;
+	SDL_Rect rect = {(i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y), (i32)(collider.size.w), (i32)(collider.size.h)};
 	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 }
 
@@ -69,7 +69,7 @@ void Enemy::simulate(types::r32 dt, Map &map)
 	float dirX;
 	
 	//just for fun, might need to comment them out
-	collider.size = {28.f * scale, 41.f * scale};
+	collider.size = {45.f * scale, 51.f * scale};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	vel += accn * dt;
 	
