@@ -18,7 +18,7 @@ const r32 JUMP_TIMER_MAX = 575.f;
 Player::Player(Graphics &graphics) {
   sprite = new AnimatedSprite(graphics, "data\\HeroKnight.png");
   setup_animations();
-  pos = {500, 200};
+  pos = {36*16*2, 10*16*2};
   sprite->play_animation("idle");
   vel = {0, 0};
   accn = {0, 0};
