@@ -48,7 +48,7 @@ void Enemy::draw(Graphics &graphics, r32 scale)
 void Enemy::debug_draw(Graphics& graphics, u8 scale)
 {
 	SDL_SetRenderDrawColor(graphics.get_renderer(), 255, 0, 0, 255);
-	SDL_Rect rect = {(i32)(collider.pos.x * this->scale ), (i32)(collider.pos.y * this->scale), (i32)(collider.size.w * this->scale), (i32)(collider.size.h * this->scale)};
+	SDL_Rect rect = {(i32)(collider.pos.x), (i32)(collider.pos.y), (i32)(collider.size.w), (i32)(collider.size.h)};
 	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 }
 
