@@ -15,7 +15,7 @@ void Map::load_map(std::string path, r32 scale)
 #include "..\\data\\map.data"
 	};
 	
-#define MAP_WIDTH 96
+#define MAP_WIDTH 64
 #define TILE_SIZE 16
 	for (i32 i = 0; i < COUNT(map_data); i++)
 	{

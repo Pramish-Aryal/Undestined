@@ -53,7 +53,8 @@ class Player
 	types::r32 scale = 3.f;
 	types::r32 jump_timer;
 	
-  bool cameraMoving = false;
+  bool cameraMovingx = false;
+  bool cameraMovingy = false;
 	//Nisans anim/player state identifiers
 	
 	bool idle = true;
