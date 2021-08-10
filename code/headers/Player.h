@@ -24,6 +24,7 @@ class Player
 	void stop_moving();
 	void stop_falling();
 	void attack();
+	void endAttack();
 	void jump();
 	void fall();
 	void roll();
@@ -61,7 +62,13 @@ class Player
 	bool running = false;
 	bool falling = false;
 	bool is_jumping = false;
-	bool attacking = false;
 	bool blocking = false;
 	bool other = false;
+
+	bool attackBusy = false;
+  bool comboReady = false;
+  bool countTime = false;
+	int attackState = 0;
+  int attackActiveTime = 0;
+
 };

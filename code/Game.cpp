@@ -137,8 +137,12 @@ void Game::handle_input(Input &input)
 	if (input.key_held(SDL_SCANCODE_ESCAPE))
 		set_game_running(false);
 	
+
 	if (input.key_held(SDL_SCANCODE_E))
 		player->attack();
+
+
+
 	if (input.key_held(SDL_SCANCODE_D))
 		player->move_right();
 	if (input.key_held(SDL_SCANCODE_A))
