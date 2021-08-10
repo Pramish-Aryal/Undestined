@@ -78,7 +78,7 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
     endAttack();
   }
 
-  if (attackActiveTime > 450) {
+  if (attackActiveTime > 400) {
     comboReady = true;
     attackBusy = false;
   }
@@ -159,9 +159,13 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
     attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
   }
 
-  //--------TODO: Attack handling----------
+  //--------TODO: Attack  ----------
 
   if (attackBusy) {
+    for (i32 i = 0; i < enemylist.size(); i++) {
+      if(Collider::rect_vs_rect( this->attackCollider, enemylist[i]->get_collider()))
+        enemylist[i]->get_hurt();
+    }
   }
 
   // -----------Camera Settings--------------
@@ -215,7 +219,7 @@ void Player::setup_animations() {
 
   sprite->add_animation("Attack 1", 8, 1, 100, 55, 6, 12);
   sprite->add_animation("Attack 2", 4, 2, 100, 55, 6, 12);
-  sprite->add_animation("Attack 3", 0, 3, 100, 55, 8, 12);
+  sprite->add_animation("Attack 3", 0, 3, 100, 55, 8, 16);
 
   sprite->add_animation("Jump", 8, 3, 100, 55, 4, 10);
   sprite->add_animation("Fall", 1, 4, 100, 55, 4, 10);

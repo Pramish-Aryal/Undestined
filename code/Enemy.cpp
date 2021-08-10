@@ -134,7 +134,7 @@ void Enemy::simulate(types::r32 dt, Map &map)
 void Enemy::setup_animations() 
 {
 	sprite->add_animation("Idle", 0, 0, 150, 150, 4, 7);
-	sprite->add_animation("Hurt", 0, 150, 150, 150, 4, 7);
+	sprite->add_animation("Hurt", 0, 1, 150, 150, 4, 7);
 }
 
 // TODO(Pramish): Incorporate these with the acceleration
@@ -172,6 +172,7 @@ void Enemy::attack()
 void Enemy::get_hurt() 
 {
 	sprite->play_animation("Hurt");
+  hurting = true;
 	handle_animation_state();
 }
 
@@ -183,7 +184,9 @@ void Enemy::die()
 
 void Enemy::handle_animation_state() 
 {
-	if (idle)
+	if (hurting)
+		sprite->play_animation("Hurt");
+	else if (idle)
 		sprite->play_animation("Idle");
 	else if (running)
 		sprite->play_animation("Run");

@@ -52,5 +52,6 @@ class Enemy
 	bool idle = true;
 	bool running = false;
 	bool attacking = false;
+	bool hurting = false;
 	bool other = false;
 };
