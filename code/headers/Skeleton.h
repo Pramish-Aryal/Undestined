@@ -10,7 +10,7 @@ public:
 
 	void draw(Graphics &graphics, types::r32 scale = 3.f) override;
 	void debug_draw(Graphics &graphics, types::u8 scale = 10) override;
-	void simulate(types::r32 dt, Map &map) override;
+	void simulate(types::r32 dt, Map &map, Player& player) override;
 	void update(types::r32 dt) override;
 
 	//collision

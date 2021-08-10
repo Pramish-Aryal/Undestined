@@ -7,6 +7,7 @@
 #include "Graphics.h"
 #include "Map.h"
 #include "Camera.h"
+#include "Player.h"
 
 using namespace types;
 
@@ -63,7 +64,7 @@ static bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, f
 	return a.second < b.second;
 }
 
-void Skeleton::simulate(types::r32 dt, Map &map)
+void Skeleton::simulate(types::r32 dt, Map &map, Player &player)
 {
 	float dirX;
 
@@ -139,7 +140,6 @@ void Skeleton::setup_animations()
 	sprite->add_animation("Attack", 0, 4, 150, 150, 6, 7);
 }
 
-// TODO(Pramish): Incorporate these with the acceleration
 void Skeleton::move_left()
 {
 	accn.x -= 0.003f;

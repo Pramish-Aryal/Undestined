@@ -7,13 +7,14 @@
 class AnimatedSprite;
 class Graphics;
 class Map;
+class Player;
 
 class Enemy
 {
 public:
 	virtual void draw(Graphics &, types::r32) = 0;
 	virtual void debug_draw(Graphics &graphics, types::u8 scale = 10) = 0;
-	virtual void simulate(types::r32 dt, Map &map) = 0;
+	virtual void simulate(types::r32 dt, Map &map, Player& player) = 0;
 	virtual void update(types::r32 dt) = 0;
 
 	//collision
