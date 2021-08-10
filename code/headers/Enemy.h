@@ -2,6 +2,7 @@
 
 #include "utils.h"
 #include "Collision.h"
+#include <vector>
 
 class AnimatedSprite;
 class Graphics;
@@ -10,7 +11,7 @@ class Map;
 class Enemy
 {
 	public:
-	Enemy(Graphics &graphics);
+	Enemy(Graphics &graphics, Vec2f pos = {700, 200} );
 	~Enemy();
 	
 	void draw(Graphics &graphics, types::r32 scale = 3.f);

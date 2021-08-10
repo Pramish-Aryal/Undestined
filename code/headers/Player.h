@@ -2,10 +2,12 @@
 
 #include "utils.h"
 #include "Collision.h"
+#include <vector>
 
 class AnimatedSprite;
 class Graphics;
 class Map;
+class Enemy;
 
 class Player
 {
@@ -15,7 +17,7 @@ class Player
 	
 	void draw(Graphics &graphics, types::r32 scale = 3.f);
 	void debug_draw(Graphics& graphics, types::u8 scale = 10);
-	void simulate(types::r32 dt, Map &map);
+	void simulate(types::r32 dt, Map &map,   std::vector<Enemy*> &enemylist);
 	void update(types::r32 dt);
 	
 	//player movement
@@ -42,6 +44,7 @@ class Player
 	Vec2f pos;
 	Vec2f cameraBuffer;
 	Rect collider;
+	Rect attackCollider;
 	// TODO(Pramish): Implement basic jumping and movement physics using them i.e. eqns of motion
 	// eqns of motion? why?
 	AnimatedSprite *sprite;

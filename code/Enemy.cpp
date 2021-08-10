@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <utility>
-#include <vector>
+
 
 #include "AnimatedSprite.h"
 #include "Graphics.h"
@@ -16,11 +16,11 @@ namespace
 	
 }
 
-Enemy::Enemy(Graphics &graphics) 
+Enemy::Enemy(Graphics &graphics, Vec2f posi ) 
 {
 	sprite = new AnimatedSprite(graphics, "data\\Enemy.png");
 	setup_animations();
-	pos = {700, 200};
+	pos = posi;
 	sprite->play_animation("idle");
 	vel = {0, 0};
 	accn = {0, 0};

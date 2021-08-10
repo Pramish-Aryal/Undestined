@@ -2,10 +2,10 @@
 
 #include <algorithm>
 #include <utility>
-#include <vector>
 
 #include "AnimatedSprite.h"
 #include "Camera.h"
+#include "Enemy.h"
 #include "Graphics.h"
 #include "Map.h"
 
@@ -27,10 +27,17 @@ Player::Player(Graphics &graphics) {
   gravity = 0.0045f;
   //player size = 28 x 42, 36 x 13
   offsets = {36.f, 13.f};
+
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {28.f * scale, 41.f * scale};
+
+  attackCollider.pos = {pos.x + offsets.x * scale + 28 * 1.5f, pos.y + offsets.y * scale + 3};
+  attackCollider.size = {30.f * scale, 35.f * scale};
+
   jump_timer = JUMP_TIMER_MAX;
+
   handle_animation_state();
+
   Vec2f screen_size = {1280.f, 720.f};
   Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
   Camera::get_instance().get_pos().y = -1 * (screen_size.y * 5.7f / 10.0f - pos.y);
@@ -43,7 +50,12 @@ void Player::draw(Graphics &graphics, r32 scale) {
 }
 
 void Player::debug_draw(Graphics &graphics, u8 scale) {
-  SDL_Rect rect = {(i32)(collider.pos.x / scale), (i32)(collider.pos.y / scale), (i32)(collider.size.w / scale), (i32)(collider.size.h / scale)};
+  r32 o_x = Camera::get_instance().get_pos().x;
+  r32 o_y = Camera::get_instance().get_pos().y;
+  SDL_Rect rect = {(i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y), (i32)(collider.size.w), (i32)(collider.size.h)};
+  SDL_RenderDrawRect(graphics.get_renderer(), &rect);
+  if (attackBusy)
+    rect = {(i32)(attackCollider.pos.x - o_x), (i32)(attackCollider.pos.y - o_y), (i32)(attackCollider.size.w), (i32)(attackCollider.size.h)};
   SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 }
 
@@ -55,8 +67,10 @@ bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, float> &
   return a.second < b.second;
 }
 
-void Player::simulate(types::r32 dt, Map &map) {
-  //attack handling
+void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) {
+  float dirX;
+
+  //---------- Attack Handling ---------
   if (countTime)
     attackActiveTime += dt;
 
@@ -69,30 +83,25 @@ void Player::simulate(types::r32 dt, Map &map) {
     attackBusy = false;
   }
 
-  float dirX;
-  //just for fun, might need to comment them out
-  collider.size = {28.f * scale, 41.f * scale};
-  collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
+  //------------ Actual Physics ------------
   vel += accn * dt;
 
-  //fraction
+  //-------------friction------------
   if (vel.x != 0) {
-    dirX = (vel.x / abs(vel.x));
+    dirX = SIGNOF(vel.x);
     float friction = (abs(.0012f * dt) <= abs(vel.x)) ? abs(.0012f * dt) : abs(vel.x);
     vel.x -= dirX * friction;
   }
 
-  vel.y += gravity * dt;
+  vel.y += gravity * dt;  // gravity ofc
 
-  //clampers
+  //--------velocity clampers-------------
   vel.x = (vel.x < vMax.x) ? vel.x : vMax.x;
   vel.x = (-vel.x < vMax.x) ? vel.x : -vMax.x;
-
   vel.y = (vel.y < vMax.y) ? vel.y : vMax.y;
   vel.y = (-vel.y < vMax.y) ? vel.y : -vMax.y;
 
-  collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-
+  //----------- Ground check for jumps? (@pramish tell me what the following code does )---------------
   Vec2f cp, cn;
   r32 t;
 
@@ -123,10 +132,10 @@ void Player::simulate(types::r32 dt, Map &map) {
     }
   }
 
-  //pos update
+  //-----------Positon Update (overloading hehe)---------
   pos += vel * dt;
 
-  //final setup and anims
+  //---- final resets and anim state handling -----
   accn.x = 0;
   accn.y = 0;
 
@@ -139,8 +148,26 @@ void Player::simulate(types::r32 dt, Map &map) {
   if (vel.x == 0 && vel.y == 0 && !is_jumping && !falling)
     stop_moving();
 
+  //---------Collider updates-------------
+  collider.size = {28.f * scale, 41.f * scale};
+  collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
+  if (!sprite->get_flip()) {
+    attackCollider.size = {30.f * scale, 35.f * scale};
+    attackCollider.pos = {pos.x + offsets.x * scale + 28 * 1.5f, pos.y + offsets.y * scale + 3};
+  } else {
+    attackCollider.size = {30.f * scale, 35.f * scale};
+    attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
+  }
+
+  //--------TODO: Attack handling----------
+
+  if (attackBusy) {
+  }
+
+  // -----------Camera Settings--------------
+
   Vec2f screen_size = {1280.f, 720.f};
-  // TODO(Pramish): Animate the camera to change smoothely
+
   Vec2f img_rect_size = {100.f, 100.f};
   static Vec2f img_rect_pos = pos - img_rect_size / 2;
   ;
@@ -206,20 +233,24 @@ void Player::setup_animations() {
 
 // TODO(Pramish): Incorporate these with the acceleration
 void Player::move_left() {
-  accn.x -= 0.003f;
-  sprite->set_flip(true);
-  if (!is_jumping)
-    handle_animation_state();
-  running = true;
-  idle = false;
+  if (!attackBusy) {
+    accn.x -= 0.003f;
+    sprite->set_flip(true);
+    if (!is_jumping)
+      handle_animation_state();
+    running = true;
+    idle = false;
+  }
 }
 void Player::move_right() {
-  accn.x += 0.003f;
-  sprite->set_flip(false);
-  if (!is_jumping)
-    handle_animation_state();
-  running = true;
-  idle = false;
+  if (!attackBusy) {
+    accn.x += 0.003f;
+    sprite->set_flip(false);
+    if (!is_jumping)
+      handle_animation_state();
+    running = true;
+    idle = false;
+  }
 }
 
 void Player::stop_moving() {
@@ -264,7 +295,7 @@ void Player::endAttack() {
 }
 
 void Player::jump() {
-  if (!is_jumping && jump_timer >= JUMP_TIMER_MAX) {
+  if (!is_jumping && jump_timer >= JUMP_TIMER_MAX && !attackBusy) {
     vel.y = -1.25f;
     is_jumping = true;
     falling = false;

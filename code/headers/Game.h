@@ -12,6 +12,7 @@ class Background;
 class Enemy;
 
 #include "utils.h"
+#include <vector>
 
 class Game
 {
@@ -33,9 +34,9 @@ class Game
 	SDL_Window *_window;
 	SDL_Renderer *_renderer;
 	Player *player;
-	Enemy* enemy;
 	Map* map;
 	Backdrop* backdrop;
 	Background* background;
 	bool m_game_is_running;
+  std::vector<Enemy*> enemylist;
 };
