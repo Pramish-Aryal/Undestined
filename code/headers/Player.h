@@ -11,15 +11,17 @@ class Enemy;
 
 class Player
 {
-	public:
+public:
 	Player(Graphics &graphics);
 	~Player();
-	
+
 	void draw(Graphics &graphics, types::r32 scale = 3.f);
-	void debug_draw(Graphics& graphics, types::u8 scale = 10);
-	void simulate(types::r32 dt, Map &map,   std::vector<Enemy*> &enemylist);
+	void debug_draw(Graphics &graphics, types::u8 scale = 10);
+	void simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist);
 	void update(types::r32 dt);
-	
+
+	Vec2f get_pos();
+
 	//player movement
 	void move_left();
 	void move_right();
@@ -35,12 +37,12 @@ class Player
 	void block();
 	void block_idle();
 	void wall_slide();
-	
-	private:
+
+private:
 	void setup_animations();
 	void handle_animation_state();
-	
-	private:
+
+private:
 	Vec2f pos;
 	Vec2f cameraBuffer;
 	Rect collider;
@@ -56,11 +58,11 @@ class Player
 	float friction;
 	types::r32 scale = 3.f;
 	types::r32 jump_timer;
-	
+
 	bool cameraMovingx = false;
 	bool cameraMovingy = false;
 	//Nisans anim/player state identifiers
-	
+
 	bool idle = true;
 	bool running = false;
 	bool falling = false;
@@ -69,9 +71,8 @@ class Player
 	bool other = false;
 
 	bool attackBusy = false;
-  bool comboReady = false;
-  bool countTime = false;
+	bool comboReady = false;
+	bool countTime = false;
 	int attackState = 0;
-  int attackActiveTime = 0;
-
+	int attackActiveTime = 0;
 };

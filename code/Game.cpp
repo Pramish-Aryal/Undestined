@@ -102,17 +102,16 @@ void Game::game_loop()
 
 void Game::simulate(r32 dt)
 {
+  player->simulate(dt, *map, enemylist);
   for (size_t i = 0; i < enemylist.size(); i++)
     enemylist[i]->simulate(dt, *map, *player);
-
-  player->simulate(dt, *map, enemylist);
 }
 
 void Game::update(r32 dt)
 {
+  player->update(dt);
   for (size_t i = 0; i < enemylist.size(); i++)
     enemylist[i]->update(dt);
-  player->update(dt);
 }
 
 bool DEBUG = false;

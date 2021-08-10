@@ -11,11 +11,13 @@
 
 using namespace types;
 
-namespace {
-const r32 JUMP_TIMER_MAX = 575.f;
+namespace
+{
+  const r32 JUMP_TIMER_MAX = 575.f;
 }
 
-Player::Player(Graphics &graphics) {
+Player::Player(Graphics &graphics)
+{
   sprite = new AnimatedSprite(graphics, "data\\HeroKnight.png");
   setup_animations();
   pos = {36 * 16 * 2, 10 * 16 * 2};
@@ -44,12 +46,14 @@ Player::Player(Graphics &graphics) {
   cameraBuffer = Camera::get_instance().get_pos();
 }
 
-void Player::draw(Graphics &graphics, r32 scale) {
+void Player::draw(Graphics &graphics, r32 scale)
+{
   this->scale = scale;
   sprite->draw(graphics, (i32)pos.x, (i32)pos.y, scale);
 }
 
-void Player::debug_draw(Graphics &graphics, u8 scale) {
+void Player::debug_draw(Graphics &graphics, u8 scale)
+{
   r32 o_x = Camera::get_instance().get_pos().x;
   r32 o_y = Camera::get_instance().get_pos().y;
   SDL_Rect rect = {(i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y), (i32)(collider.size.w), (i32)(collider.size.h)};
@@ -59,26 +63,31 @@ void Player::debug_draw(Graphics &graphics, u8 scale) {
   SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 }
 
-void Player::update(r32 dt) {
+void Player::update(r32 dt)
+{
   sprite->update(dt);
 }
 
-bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, float> &b) {
+bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, float> &b)
+{
   return a.second < b.second;
 }
 
-void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) {
+void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist)
+{
   float dirX;
 
   //---------- Attack Handling ---------
   if (countTime)
     attackActiveTime += dt;
 
-  if (attackActiveTime > 700) {
+  if (attackActiveTime > 700)
+  {
     endAttack();
   }
 
-  if (attackActiveTime > 400) {
+  if (attackActiveTime > 400)
+  {
     comboReady = true;
     attackBusy = false;
   }
@@ -87,13 +96,14 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   vel += accn * dt;
 
   //-------------friction------------
-  if (vel.x != 0) {
+  if (vel.x != 0)
+  {
     dirX = SIGNOF(vel.x);
     float friction = (abs(.0012f * dt) <= abs(vel.x)) ? abs(.0012f * dt) : abs(vel.x);
     vel.x -= dirX * friction;
   }
 
-  vel.y += gravity * dt;  // gravity ofc
+  vel.y += gravity * dt; // gravity ofc
 
   //--------velocity clampers-------------
   vel.x = (vel.x < vMax.x) ? vel.x : vMax.x;
@@ -108,8 +118,10 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   std::vector<std::pair<int, float>> z;
   bool is_on_ground = false;
 
-  for (int i = 0; i < map.bounding_boxes.size(); i++) {
-    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[i], cp, cn, t, dt)) {
+  for (int i = 0; i < map.bounding_boxes.size(); i++)
+  {
+    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[i], cp, cn, t, dt))
+    {
       z.push_back({i, t});
 
       if (cn.y <= 0)
@@ -126,8 +138,10 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   //std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b) { return a.second < b.second; });
   std::sort(z.begin(), z.end(), sort_func_ptr);
 
-  for (i32 i = 0; i < z.size(); i++) {
-    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[z[i].first], cp, cn, t, dt)) {
+  for (i32 i = 0; i < z.size(); i++)
+  {
+    if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[z[i].first], cp, cn, t, dt))
+    {
       vel += cn * Vec2f(ABS(vel.x), ABS(vel.y)) * (1 - t);
     }
   }
@@ -151,19 +165,24 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   //---------Collider updates-------------
   collider.size = {28.f * scale, 41.f * scale};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-  if (!sprite->get_flip()) {
+  if (!sprite->get_flip())
+  {
     attackCollider.size = {30.f * scale, 35.f * scale};
     attackCollider.pos = {pos.x + offsets.x * scale + 28 * 1.5f, pos.y + offsets.y * scale + 3};
-  } else {
+  }
+  else
+  {
     attackCollider.size = {30.f * scale, 35.f * scale};
     attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
   }
 
   //--------TODO: Attack  ----------
 
-  if (attackBusy) {
-    for (i32 i = 0; i < enemylist.size(); i++) {
-      if(Collider::rect_vs_rect( this->attackCollider, enemylist[i]->get_collider()))
+  if (attackBusy)
+  {
+    for (i32 i = 0; i < enemylist.size(); i++)
+    {
+      if (Collider::rect_vs_rect(this->attackCollider, enemylist[i]->get_collider()))
         enemylist[i]->get_hurt();
     }
   }
@@ -203,16 +222,17 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   //Bound Camera
   if (Camera::get_instance().get_pos().x < 0)
     Camera::get_instance().get_pos().x = 0;
-  if (Camera::get_instance().get_pos().x > 64 * 16 * 2 - screen_size.x)  //2 is map scale?
+  if (Camera::get_instance().get_pos().x > 64 * 16 * 2 - screen_size.x) //2 is map scale?
     Camera::get_instance().get_pos().x = 64 * 16 * 2 - screen_size.x;
 
   if (Camera::get_instance().get_pos().y < 0)
     Camera::get_instance().get_pos().y = 0;
-  if (Camera::get_instance().get_pos().y > 32 * 16 * 2 - screen_size.y)  //2 is map scale?
+  if (Camera::get_instance().get_pos().y > 32 * 16 * 2 - screen_size.y) //2 is map scale?
     Camera::get_instance().get_pos().y = 32 * 16 * 2 - screen_size.y;
 }
 
-void Player::setup_animations() {
+void Player::setup_animations()
+{
   sprite->add_animation("Idle", 0, 0, 100, 55, 8, 7);
 
   sprite->add_animation("Run", 8, 0, 100, 55, 10, 15);
@@ -236,8 +256,10 @@ void Player::setup_animations() {
 }
 
 // TODO(Pramish): Incorporate these with the acceleration
-void Player::move_left() {
-  if (!attackBusy) {
+void Player::move_left()
+{
+  if (!attackBusy)
+  {
     accn.x -= 0.003f;
     sprite->set_flip(true);
     if (!is_jumping)
@@ -246,8 +268,10 @@ void Player::move_left() {
     idle = false;
   }
 }
-void Player::move_right() {
-  if (!attackBusy) {
+void Player::move_right()
+{
+  if (!attackBusy)
+  {
     accn.x += 0.003f;
     sprite->set_flip(false);
     if (!is_jumping)
@@ -257,29 +281,35 @@ void Player::move_right() {
   }
 }
 
-void Player::stop_moving() {
+void Player::stop_moving()
+{
   idle = true;
   running = false;
   handle_animation_state();
 }
-void Player::stop_falling() {
+void Player::stop_falling()
+{
   falling = false;
   handle_animation_state();
 }
 
-void Player::attack() {
-  if (!attackBusy && attackState == 0) {
+void Player::attack()
+{
+  if (!attackBusy && attackState == 0)
+  {
     attackState++;
     countTime = true;
     attackBusy = true;
   }
-  if (!attackBusy && comboReady && attackState != 0) {
+  if (!attackBusy && comboReady && attackState != 0)
+  {
     attackState++;
     countTime = true;
     attackBusy = true;
     attackActiveTime = 0;
   }
-  if (attackState > 3) {
+  if (attackState > 3)
+  {
     attackState = 0;
     countTime = false;
     attackBusy = false;
@@ -289,7 +319,8 @@ void Player::attack() {
   handle_animation_state();
 }
 
-void Player::endAttack() {
+void Player::endAttack()
+{
   attackBusy = false;
   comboReady = false;
   countTime = false;
@@ -298,8 +329,10 @@ void Player::endAttack() {
   handle_animation_state();
 }
 
-void Player::jump() {
-  if (!is_jumping && jump_timer >= JUMP_TIMER_MAX && !attackBusy) {
+void Player::jump()
+{
+  if (!is_jumping && jump_timer >= JUMP_TIMER_MAX && !attackBusy)
+  {
     vel.y = -1.25f;
     is_jumping = true;
     falling = false;
@@ -308,37 +341,44 @@ void Player::jump() {
   handle_animation_state();
 }
 
-void Player::fall() {
+void Player::fall()
+{
   falling = true;
   handle_animation_state();
 }
 
-void Player::roll() {
+void Player::roll()
+{
   sprite->play_animation("Roll");
   handle_animation_state();
 }
 
-void Player::get_hurt() {
+void Player::get_hurt()
+{
   sprite->play_animation("Hurt");
   handle_animation_state();
 }
 
-void Player::die() {
+void Player::die()
+{
   sprite->play_animation("Death");
   handle_animation_state();
 }
 
-void Player::block() {
+void Player::block()
+{
   sprite->play_animation("Block");
   handle_animation_state();
 }
 
-void Player::block_idle() {
+void Player::block_idle()
+{
   sprite->play_animation("Block Idle");
   handle_animation_state();
 }
 
-void Player::handle_animation_state() {
+void Player::handle_animation_state()
+{
   if (attackBusy && attackState == 1)
     sprite->play_animation("Attack 1");
   else if (attackBusy && attackState == 2)
@@ -355,6 +395,12 @@ void Player::handle_animation_state() {
     sprite->play_animation("Run");
 }
 
-Player::~Player() {
+Vec2f Player::get_pos()
+{
+  return pos;
+}
+
+Player::~Player()
+{
   delete sprite;
 }

@@ -68,6 +68,11 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player)
 {
 	float dirX;
 
+	if ((player.get_pos() - pos).normal().x > 0)
+		move_right();
+	else if ((player.get_pos() - pos).normal().x < 0)
+		move_left();
+
 	//just for fun, might need to comment them out
 	collider.size = {45.f * scale, 51.f * scale};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
@@ -191,7 +196,7 @@ void Skeleton::handle_animation_state()
 	else if (idle)
 		sprite->play_animation("Idle");
 	else if (running)
-		sprite->play_animation("Run");
+		sprite->play_animation("Move");
 }
 
 Rect Skeleton::get_collider()
