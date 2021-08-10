@@ -48,8 +48,6 @@ void Player::debug_draw(Graphics &graphics, u8 scale) {
 }
 
 void Player::update(r32 dt) {
-  
-
   sprite->update(dt);
 }
 
@@ -62,18 +60,14 @@ void Player::simulate(types::r32 dt, Map &map) {
   if (countTime)
     attackActiveTime += dt;
 
-  if (attackActiveTime > 700){
-    countTime = false;
-    comboReady = false;
-    attackState = 0;
-    attackActiveTime = 0;
+  if (attackActiveTime > 700) {
+    endAttack();
   }
+
   if (attackActiveTime > 450) {
     comboReady = true;
     attackBusy = false;
-    endAttack();
   }
-  
 
   float dirX;
   //just for fun, might need to comment them out
@@ -250,12 +244,22 @@ void Player::attack() {
     attackBusy = true;
     attackActiveTime = 0;
   }
+  if (attackState > 3) {
+    attackState = 0;
+    countTime = false;
+    attackBusy = false;
+    attackActiveTime = 0;
+  }
 
   handle_animation_state();
 }
 
 void Player::endAttack() {
-  
+  attackBusy = false;
+  comboReady = false;
+  countTime = false;
+  attackState = 0;
+  attackActiveTime = 0;
   handle_animation_state();
 }
 
