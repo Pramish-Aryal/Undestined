@@ -103,7 +103,7 @@ void Game::game_loop()
 void Game::simulate(r32 dt)
 {
   for (size_t i = 0; i < enemylist.size(); i++)
-    enemylist[i]->simulate(dt, *map);
+    enemylist[i]->simulate(dt, *map, *player);
 
   player->simulate(dt, *map, enemylist);
 }
