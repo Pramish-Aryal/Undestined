@@ -9,7 +9,7 @@
 #include "Backdrop.h"
 #include "Background.h"
 #include "Camera.h"
-#include "Enemy.h"
+#include "Skeleton.h"
 #include "Fatal.h"
 #include "Graphics.h"
 #include "Input.h"
@@ -19,28 +19,32 @@
 
 using namespace types;
 
-namespace {
-const r32 FPS = 60.0f;
-const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
-const r32 FRAME_TIME = 1000.0f / FPS;
-}  // anonymous namespace
+namespace
+{
+  const r32 FPS = 60.0f;
+  const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
+  const r32 FRAME_TIME = 1000.0f / FPS;
+} // anonymous namespace
 
-Game::Game() {
+Game::Game()
+{
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     Fatal::fatal_error("Couldn't init SDL");
   set_game_running(true);
   game_loop();
 }
 
-Game::~Game() {
+Game::~Game()
+{
   SDL_Quit();
 }
 
-void Game::game_loop() {
+void Game::game_loop()
+{
   Input input;
   Graphics graphics;
 
-  enemylist.push_back(new Enemy(graphics));
+  enemylist.push_back(new Skeleton(graphics));
 
   player = new Player(graphics);
   map = new Map(graphics);
@@ -59,10 +63,12 @@ void Game::game_loop() {
   r32 current_time_ms = SDL_GetTicks();
   r32 last_time_ms = current_time_ms;
 
-  while (is_game_running()) {
+  while (is_game_running())
+  {
     input.begin_new_frame();
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event))
+    {
       if (event.type == SDL_QUIT)
         m_game_is_running = false;
 
@@ -75,7 +81,8 @@ void Game::game_loop() {
 
     handle_input(input);
     accumulator += delta_time;
-    while (accumulator >= fixed_delta_time) {
+    while (accumulator >= fixed_delta_time)
+    {
       simulate(fixed_delta_time);
       accumulator -= fixed_delta_time;
     }
@@ -93,14 +100,16 @@ void Game::game_loop() {
   }
 }
 
-void Game::simulate(r32 dt) {
+void Game::simulate(r32 dt)
+{
   for (size_t i = 0; i < enemylist.size(); i++)
     enemylist[i]->simulate(dt, *map);
 
   player->simulate(dt, *map, enemylist);
 }
 
-void Game::update(r32 dt) {
+void Game::update(r32 dt)
+{
   for (size_t i = 0; i < enemylist.size(); i++)
     enemylist[i]->update(dt);
   player->update(dt);
@@ -110,26 +119,28 @@ bool DEBUG = false;
 u8 scale = 10;
 r32 player_scale = 1.5f;
 
-void Game::draw(Graphics& graphics) {
+void Game::draw(Graphics &graphics)
+{
   graphics.clear_screen(50, 100, 120);
   background->draw(graphics);
   backdrop->draw(graphics);
   map->draw(graphics);
   if (DEBUG)
     map->debug_draw(graphics, scale);
-  
+
   for (size_t i = 0; i < enemylist.size(); i++)
     enemylist[i]->draw(graphics, player_scale);
   if (DEBUG)
-  for (size_t i = 0; i < enemylist.size(); i++)
-    enemylist[i]->debug_draw(graphics, 3.f);
+    for (size_t i = 0; i < enemylist.size(); i++)
+      enemylist[i]->debug_draw(graphics, 3.f);
   player->draw(graphics, player_scale);
   if (DEBUG)
     player->debug_draw(graphics, scale);
   graphics.display();
 }
 
-void Game::handle_input(Input& input) {
+void Game::handle_input(Input &input)
+{
   if (input.key_held(SDL_SCANCODE_ESCAPE))
     set_game_running(false);
 
@@ -154,13 +165,17 @@ void Game::handle_input(Input& input) {
   //   player->fall();
 
   if (input.key_pressed(SDL_SCANCODE_O))
-    if (scale < 255) scale++;
+    if (scale < 255)
+      scale++;
   if (input.key_pressed(SDL_SCANCODE_P))
-    if (scale > 0) scale--;
+    if (scale > 0)
+      scale--;
   if (input.key_pressed(SDL_SCANCODE_M))
-    if (player_scale < 255) player_scale += 0.1f;
+    if (player_scale < 255)
+      player_scale += 0.1f;
   if (input.key_pressed(SDL_SCANCODE_N))
-    if (player_scale > 0) player_scale -= 0.1f;
+    if (player_scale > 0)
+      player_scale -= 0.1f;
 
   if (input.key_held(SDL_SCANCODE_UP))
     Camera::get_instance().get_pos().y += 5.f;
@@ -176,10 +191,12 @@ void Game::handle_input(Input& input) {
     DEBUG = !DEBUG;
 }
 
-bool Game::is_game_running() {
+bool Game::is_game_running()
+{
   return m_game_is_running;
 }
 
-void Game::set_game_running(bool value) {
+void Game::set_game_running(bool value)
+{
   m_game_is_running = value;
 }

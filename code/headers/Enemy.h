@@ -10,48 +10,24 @@ class Map;
 
 class Enemy
 {
-	public:
-	Enemy(Graphics &graphics, Vec2f pos = {700, 200} );
-	~Enemy();
-	
-	void draw(Graphics &graphics, types::r32 scale = 3.f);
-	void debug_draw(Graphics& graphics, types::u8 scale = 10);
-	void simulate(types::r32 dt, Map &map);
-	void update(types::r32 dt);
-	
+public:
+	virtual void draw(Graphics &, types::r32) = 0;
+	virtual void debug_draw(Graphics &graphics, types::u8 scale = 10) = 0;
+	virtual void simulate(types::r32 dt, Map &map) = 0;
+	virtual void update(types::r32 dt) = 0;
+
 	//collision
-	Rect get_collider();
-	
+	virtual Rect get_collider() = 0;
+
 	//player movement
-	void move_left();
-	void move_right();
-	void stop_moving();
-	void attack();
-	void get_hurt();
-	void die();
-	
-	private:
-	void setup_animations();
-	void handle_animation_state();
-	
-	private:
-	Vec2f pos;
-	Vec2f cameraBuffer;
-	Rect collider;
-	
-	AnimatedSprite *sprite;
-	Vec2f vel;
-	Vec2f accn;
-	Vec2f vMax;
-	Vec2f offsets;
-	float gravity;
-	float friction;
-	types::r32 scale = 3.f;
-	
-	//Nisans anim/player state identifiers
-	bool idle = true;
-	bool running = false;
-	bool attacking = false;
-	bool hurting = false;
-	bool other = false;
+	virtual void move_left() = 0;
+	virtual void move_right() = 0;
+	virtual void stop_moving() = 0;
+	virtual void attack() = 0;
+	virtual void get_hurt() = 0;
+	virtual void die() = 0;
+
+private:
+	virtual void setup_animations() = 0;
+	virtual void handle_animation_state() = 0;
 };
