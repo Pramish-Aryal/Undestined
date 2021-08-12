@@ -14,7 +14,7 @@ using namespace types;
 namespace
 {
 	const r32 RESPAWN_TIME = 5 * 1000.f; // 5 seconds
-	const r32 INVINCIBLE_TIME = 3 * 16.f; // 3 frames
+	const r32 INVINCIBLE_TIME = 25 * 16.f; // 3 frames
 }
 
 
@@ -198,8 +198,8 @@ void Skeleton::get_hurt()
 		std::cout << "ded\n";
 		die();
 	} else{
-		std::cout << "hurt\n";
 		if(invincible_timer >= INVINCIBLE_TIME) {
+			std::cout << "hurt\n";
 			invincible_timer = 0.0f;
 			health -= 25.f;
 		} else {
@@ -242,6 +242,8 @@ void Skeleton::respawn()
 	pos = { 700, 200};
 	sprite->play_animation("Idle");
 	health = 100.0f;
+	time_to_respawn = 0.f;
+	invincible_timer = 0;
 	dead = false;
 	hurting = false;
 	running = false;
