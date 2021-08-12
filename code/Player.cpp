@@ -210,9 +210,9 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist)
     cameraMovingy = true;
 
   if (cameraMovingx)
-    Camera::get_instance().get_pos().x += (abs(delx / 20) > 3) ? (delx / 20) : 3 * SIGNOF(delx);
+    Camera::get_instance().get_pos().x += (abs(delx / 20) > 2) ? (delx / 20) : 2 * SIGNOF(delx);
   if (cameraMovingy)
-    Camera::get_instance().get_pos().y += (abs(dely / 8) > 3) ? (dely / 8) : 3 * SIGNOF(dely);
+    Camera::get_instance().get_pos().y += (abs(dely / 8) > 2) ? (dely / 8) : 2 * SIGNOF(dely);
 
   if (abs(delx) < 40)
     cameraMovingx = false;
