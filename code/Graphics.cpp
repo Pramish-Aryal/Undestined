@@ -51,7 +51,10 @@ SDL_Texture* Graphics::load_image(std::string path, i32& width, i32& height)
 		stbi_image_free(pixels);
 		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 		m_sprite_sheets[path] = texture;
+		m_sprite_sheet_sizes[path] = {width, height};
 	}
+	width = m_sprite_sheet_sizes[path].width;
+	height = m_sprite_sheet_sizes[path].height;
 	return m_sprite_sheets[path];
 }
 

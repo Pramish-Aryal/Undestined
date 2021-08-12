@@ -13,6 +13,11 @@ using namespace types;
 #include <string>
 #include <map>
 
+struct TextureSize
+{
+	i32 width, height;
+};
+
 class Graphics
 {
 	public:
@@ -31,5 +36,7 @@ class Graphics
 	SDL_Window *m_window;
 	SDL_Renderer *m_renderer;
 	typedef std::map<std::string, SDL_Texture*> SpriteSheet;
+	typedef std::map<std::string, TextureSize> SpriteSheetSize;
+	SpriteSheetSize m_sprite_sheet_sizes;
 	SpriteSheet m_sprite_sheets;
 };

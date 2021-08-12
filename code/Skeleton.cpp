@@ -195,11 +195,9 @@ void Skeleton::get_hurt()
 	sprite->play_animation("Hurt");
 	hurting = true;
 	if(health <= 0){
-		std::cout << "ded\n";
 		die();
 	} else{
 		if(invincible_timer >= INVINCIBLE_TIME) {
-			std::cout << "hurt\n";
 			invincible_timer = 0.0f;
 			health -= 25.f;
 		} else {
