@@ -13,8 +13,11 @@ using namespace types;
 
 namespace
 {
-	
+	const r32 RESPAWN_TIME = 5 * 1000.f; // 5 seconds
+	const r32 INVINCIBLE_TIME = 3 * 16.f; // 3 frames
 }
+
+
 
 Skeleton::Skeleton(Graphics &graphics, Vec2f posi)
 {
@@ -33,9 +36,6 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi)
 	collider.size = {45.f * scale, 51.f * scale};
 	handle_animation_state();
 	Vec2f screen_size = {1280.f, 720.f};
-	Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
-	Camera::get_instance().get_pos().y = -1 * (screen_size.y * 5.7f / 10.0f - pos.y);
-	cameraBuffer = Camera::get_instance().get_pos();
 }
 
 void Skeleton::draw(Graphics &graphics, r32 scale)
@@ -66,6 +66,14 @@ static bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, f
 
 void Skeleton::simulate(types::r32 dt, Map &map, Player &player)
 {
+	if(dead) {
+		if(time_to_respawn >= RESPAWN_TIME)
+			respawn();
+		time_to_respawn += dt;
+		return;
+	}
+	
+	
 	float dirX;
 	
 	
@@ -178,7 +186,7 @@ void Skeleton::stop_moving()
 
 void Skeleton::attack()
 {
-	sprite->play_animation("Attack 1");
+	sprite->play_animation("Attack");
 	handle_animation_state();
 }
 
@@ -186,12 +194,28 @@ void Skeleton::get_hurt()
 {
 	sprite->play_animation("Hurt");
 	hurting = true;
+	if(health <= 0){
+		std::cout << "ded\n";
+		die();
+	} else{
+		std::cout << "hurt\n";
+		if(invincible_timer >= INVINCIBLE_TIME) {
+			invincible_timer = 0.0f;
+			health -= 25.f;
+		} else {
+			invincible_timer += 16.f;
+		}
+	}
 	handle_animation_state();
 }
 
 void Skeleton::die()
 {
-	sprite->play_animation("Death");
+	dead = true;
+	idle = false;
+	hurting = false;
+	running = false;
+	sprite->play_animation("Die");
 	handle_animation_state();
 }
 
@@ -199,15 +223,40 @@ void Skeleton::handle_animation_state()
 {
 	if (hurting)
 		sprite->play_animation("Hurt");
+	else if(dead)
+		sprite->play_animation("Die");
 	else if (idle)
 		sprite->play_animation("Idle");
 	else if (running)
 		sprite->play_animation("Move");
+	
 }
 
 Rect Skeleton::get_collider()
 {
 	return collider;
+}
+
+void Skeleton::respawn()
+{
+	pos = { 700, 200};
+	sprite->play_animation("Idle");
+	health = 100.0f;
+	dead = false;
+	hurting = false;
+	running = false;
+	idle = true;
+	vel = {0, 0};
+	accn = {0, 0};
+	vMax = {.3, 9.0f};
+	dead = false;
+	gravity = 0.0045f;
+	//enemy size = 45 x 51, 60 x 50
+	offsets = {60.f, 50.f};
+	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
+	collider.size = {45.f * scale, 51.f * scale};
+	handle_animation_state();
+	Vec2f screen_size = {1280.f, 720.f};
 }
 
 Skeleton::~Skeleton()

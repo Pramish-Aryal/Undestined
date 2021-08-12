@@ -14,7 +14,7 @@ using namespace types;
 
 namespace
 {
-	const float ANGULAR_VELOCITY = 120.0f / 1000.0f;
+	const r32 ANGULAR_VELOCITY = 120.0f / 1000.0f;
 }
 
 FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi)
@@ -100,7 +100,7 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player)
 	//pos update
 	pos.x += vel.x * dt;
 	
-	flight_angle+= ANGULAR_VELOCITY * dt;
+	flight_angle += ANGULAR_VELOCITY * dt;
 	pos.y += (2.5f * sinf(flight_angle * 3.141592f / 180.0f));
 	
 	
