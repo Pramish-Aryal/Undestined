@@ -111,7 +111,7 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player)
 
 void FlyingEye::setup_animations()
 {
-	sprite->add_animation("Fly", 0, 0, 150, 150, 8, 7);
+	sprite->add_animation("Idle", 0, 0, 150, 150, 8, 7);
 	sprite->add_animation("Hurt", 0, 1, 150, 150, 4, 7);
 	sprite->add_animation("Die", 0, 2, 150, 150, 4, 7);
 	sprite->add_animation("Attack", 0, 3, 150, 150, 8, 7);
@@ -145,7 +145,8 @@ void FlyingEye::attack()
 
 void FlyingEye::get_hurt()
 {
-	sprite->play_animation("Hurt");
+	sprite->play_animation("Hurt",1);
+  sprite->Tempflag = &hurting;
 	hurting = true;
 	handle_animation_state();
 }
@@ -159,9 +160,9 @@ void FlyingEye::die()
 void FlyingEye::handle_animation_state()
 {
 	if (hurting)
-		sprite->play_animation("Hurt");
+		sprite->play_animation("Hurt",1);
 	else if (idle)
-		sprite->play_animation("Fly");
+		sprite->play_animation("Idle");
 }
 
 Rect FlyingEye::get_collider()
