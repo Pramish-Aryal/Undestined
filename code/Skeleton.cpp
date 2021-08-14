@@ -149,8 +149,10 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
   //--------TODO: Attack  ----------
 
   if (attackBusy) {
-    if (Collider::rect_vs_rect(this->attackCollider, player.get_collider()))
-      player.get_hurt(dt);
+    if (Collider::rect_vs_rect(this->attackCollider, player.get_collider())) {
+      if (attackActiveTime > 555)
+        player.get_hurt(dt);
+    }
   }
 
   //----------Invincible And Respawn Count-----------
@@ -208,7 +210,7 @@ void Skeleton::attack() {
     if (!attackBusy) {
       attackBusy = true;
       countTime = true;
-      sprite->play_animation("Attack",1);
+      sprite->play_animation("Attack", 1);
     }
   }
 }
