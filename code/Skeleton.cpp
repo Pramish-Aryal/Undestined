@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <utility>
 
+// #include <iostream>
 #include "AnimatedSprite.h"
 #include "Camera.h"
 #include "Graphics.h"
@@ -50,7 +51,6 @@ void Skeleton::update(r32 dt) {
   sprite->update(dt);
 }
 
-#include <iostream>
 
 static bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, float> &b) {
   return a.second < b.second;
