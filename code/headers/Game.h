@@ -43,5 +43,5 @@ class Game
 	bool m_game_is_running;
 	std::vector<Enemy*> enemylist;
 	
-	enum { MENU, PLAY} game_state = MENU;
+	enum { MENU, PLAY, PAUSE} game_state = MENU;
 };

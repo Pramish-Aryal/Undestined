@@ -34,7 +34,7 @@ class Menu
 	void draw_menu(Graphics& graphics, Font& font)
 	{
 		font.render_text(graphics, "Undestined", graphics.get_display_resolution() / 2 - Vec2f(200, 0), 5);
-		font.render_text(graphics, "Press Space to begin", graphics.get_display_resolution() / 2 + Vec2f(- 200, 150), 3);
+		font.render_text(graphics, "Press Enter to begin", graphics.get_display_resolution() / 2 + Vec2f(- 200, 150), 3);
 	}
 	
 	void draw_score(Graphics& graphics, Font& font, i32 score)
@@ -43,4 +43,12 @@ class Menu
 		ss << "Kill Count: " << score;
 		font.render_text(graphics, ss.str().c_str(), Vec2f(0, 0), 5);
 	}
+	
+	void draw_pause(Graphics& graphics, Font& font)
+	{
+		font.render_text(graphics, "Paused", graphics.get_display_resolution() / 2 - Vec2f(200, 0), 5);
+		font.render_text(graphics, "Press Enter to resume", graphics.get_display_resolution() / 2 + Vec2f( -250, 150), 3);
+		font.render_text(graphics, "Press Escape to Quit", graphics.get_display_resolution() / 2 + Vec2f( -250, 200), 3);
+	}
+	
 };
