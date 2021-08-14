@@ -41,7 +41,6 @@ public:
 
 private:
 	void setup_animations();
-	void handle_animation_state();
 
 private:
 	Vec2f pos;

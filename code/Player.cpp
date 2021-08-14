@@ -36,8 +36,6 @@ Player::Player(Graphics &graphics) {
 
   jump_timer = JUMP_TIMER_MAX;
 
-  // handle_animation_state();
-
   Vec2f screen_size = {1280.f, 720.f};
   Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
   Camera::get_instance().get_pos().y = -1 * (screen_size.y * 5.7f / 10.0f - pos.y);
@@ -264,14 +262,12 @@ void Player::stop_moving() {
   if (contain(PossibleStates, sprite->current_animation)) {
     sprite->play_animation("Idle");
   }
-  // handle_animation_state();
 }
 void Player::stop_falling() {
   std::vector<std::string> PossibleStates = {"Run", "Jump", "Fall"};
   if (contain(PossibleStates, sprite->current_animation)) {
     falling = false;
     sprite->play_animation("Idle");
-    // handle_animation_state();
   }
 }
 
@@ -299,16 +295,6 @@ void Player::attack() {
       }
     }
   }
-  // PossibleStates = {"Attack 1", "Attack 2", "Attack 3"};
-  // if (contain(PossibleStates, sprite->current_animation)) {
-  //   if (attackState > 3) {
-  //     countTime = false;
-  //     attackBusy = false;
-  //     attackActiveTime = 0;
-  //     sprite->play_animation("Idle");
-  //   }
-  // }
-  // handle_animation_state();
 }
 
 void Player::setupCombo() {
@@ -317,7 +303,6 @@ void Player::setupCombo() {
     comboReady = true;
     attackBusy = false;
     sprite->play_animation("Idle");
-    // handle_animation_state();
   }
 }
 
@@ -327,7 +312,6 @@ void Player::endAttack() {
   countTime = false;
   attackState = 0;
   attackActiveTime = 0;
-  // handle_animation_state();
 }
 
 void Player::jump() {
@@ -341,7 +325,6 @@ void Player::jump() {
       sprite->play_animation("Jump");
     }
   }
-  // handle_animation_state();
 }
 
 void Player::fall() {
@@ -350,49 +333,26 @@ void Player::fall() {
     falling = true;
     sprite->play_animation("Fall");
   }
-  // handle_animation_state();
 }
 
 void Player::roll() {
   sprite->play_animation("Roll");
-  // handle_animation_state();
 }
 
 void Player::get_hurt() {
   sprite->play_animation("Hurt");
-  // handle_animation_state();
 }
 
 void Player::die() {
   sprite->play_animation("Death");
-  // handle_animation_state();
 }
 
 void Player::block() {
   sprite->play_animation("Block");
-  // handle_animation_state();
 }
 
 void Player::block_idle() {
   sprite->play_animation("Block Idle");
-  // handle_animation_state();
-}
-
-void Player::handle_animation_state() {
-  // if (attackBusy && attackState == 1)
-  //   sprite->play_animation("Attack 1");
-  // else if (attackBusy && attackState == 2)
-  //   sprite->play_animation("Attack 2");
-  // else if (attackBusy && attackState == 3)
-  //   sprite->play_animation("Attack 3");
-  // else if (falling)
-  //   sprite->play_animation("Fall");
-  // else if (is_jumping)
-  //   sprite->play_animation("Jump");
-  // else if (idle)
-  //   sprite->play_animation("Idle");
-  // else if (running)
-  //   sprite->play_animation("Run");
 }
 
 Vec2f Player::get_pos() {
