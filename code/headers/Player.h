@@ -29,6 +29,7 @@ public:
 	void stop_falling();
 	void attack();
 	void endAttack();
+	void setupCombo();
 	void jump();
 	void fall();
 	void roll();

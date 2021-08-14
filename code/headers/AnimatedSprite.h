@@ -13,12 +13,12 @@ class AnimatedSprite : public Sprite
 {
 	float elapsed_time;
 	int current_frame;
-	std::string current_animation;
 	
 	std::map<std::string, std::vector<SDL_Rect>> animations;
 	std::map<std::string, types::r32> frame_times;
   int oneShot = 0;
 	public:
+	std::string current_animation;
 	bool* Tempflag;
 	AnimatedSprite();
 	AnimatedSprite(Graphics &graphics, std::string path);

@@ -20,3 +20,8 @@ r32 Math::fast_sqrt(r32 number)
 {
 	return Q_rsqrt(number) * number;
 }
+bool contain(std::vector<std::string> holder, std::string checker){
+	for(int i = 0; i < holder.size();i++)
+		if(holder[i] == checker) return true;
+	return false;
+}

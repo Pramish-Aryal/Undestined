@@ -1,7 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-
+#include<vector>
+#include<string>
 namespace types
 {
 	typedef int8_t i8;
@@ -89,3 +90,4 @@ inline Vec2Generic<T> operator*(const types::r32 &fl, const Vec2Generic<T> &vec)
 
 typedef Vec2Generic<types::r32> Vec2f;
 typedef Vec2Generic<types::i32> Vec2i;
+bool contain(std::vector<std::string> holder, std::string checker);

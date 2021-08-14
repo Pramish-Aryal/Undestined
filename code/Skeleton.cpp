@@ -165,23 +165,22 @@ void Skeleton::attack() {
 }
 
 void Skeleton::get_hurt() {
-  if(!dead){
+  if (!dead) {
+    sprite->play_animation("Hurt", 1);
+    sprite->Tempflag = &hurting;
+    hurting = true;
+    if (invincible_timer >= INVINCIBLE_TIME) {
+      // std::cout << "hurt\n";
+      invincible_timer = 0.0f;
+      health -= 101.f;
+    } else {
+      invincible_timer += 16.f;
+    }
 
-  sprite->play_animation("Hurt", 1);
-  sprite->Tempflag = &hurting;
-  hurting = true;
-  if (invincible_timer >= INVINCIBLE_TIME  ) {
-    // std::cout << "hurt\n";
-    invincible_timer = 0.0f;
-    health -= 101.f;
-  } else {
-    invincible_timer += 16.f;
+    if (health <= 0 && !dead)
+      die();
   }
-
-  if (health <= 0 && !dead)
-    die();
-  }
-    // std::cout << "ded\n";
+  // std::cout << "ded\n";
   handle_animation_state();
 }
 
