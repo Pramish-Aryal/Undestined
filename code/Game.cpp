@@ -45,7 +45,6 @@ Game::~Game()
 	delete backdrop;
 	delete background;
 	delete menu;
-	
 	SDL_Quit();
 }
 
@@ -53,7 +52,7 @@ void Game::game_loop()
 {
 	Input input;
 	Graphics graphics;
-	Font* font = new Font(graphics);
+	Font font(graphics);
 	
 	enemylist.push_back(new Skeleton(graphics));
 	enemylist.push_back(new Skeleton(graphics, {100,200}));
@@ -76,7 +75,7 @@ void Game::game_loop()
 	
 	menu = new Menu;
 	
-	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2;
+	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2 - Vec2f(0, 200);;
 	
 	r32 fixed_delta_time = FRAME_TIME;
 	r32 accumulator = 0;
@@ -112,7 +111,7 @@ void Game::game_loop()
 			update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
 		}
 		
-		draw(graphics, *font);
+		draw(graphics, font);
 		
 		if ((SDL_GetTicks() - current_time_ms) < FRAME_TIME)
 			SDL_Delay(FRAME_TIME - (SDL_GetTicks() - current_time_ms));
@@ -142,18 +141,15 @@ bool DEBUG = false;
 u8 scale = 10;
 r32 player_scale = 1.5f;
 
-
-u64 sc;
 void Game::draw(Graphics &graphics, Font& font)
 {
 	graphics.clear_screen(50, 100, 120);
-	
 	background->draw(graphics);
 	backdrop->draw(graphics);
 	map->draw(graphics);
-	if(game_state == MENU)
+	if(game_state == MENU){
 		menu->draw_menu(graphics, font);
-	else if (game_state == PAUSE) {
+	} else if (game_state == PAUSE) {
 		menu->draw_pause(graphics, font);
 	} else {
 		if (DEBUG)
@@ -167,7 +163,7 @@ void Game::draw(Graphics &graphics, Font& font)
 		player->draw(graphics, player_scale);
 		if (DEBUG)
 			player->debug_draw(graphics, scale);
-		menu->draw_score(graphics, font, sc++);
+		menu->draw_score(graphics, font, 5);
 	}
 	graphics.display();
 }

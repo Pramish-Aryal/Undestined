@@ -28,13 +28,11 @@ Graphics::~Graphics()
 {
 	for(SpriteSheet::iterator sprite_sheet = m_sprite_sheets.begin(); sprite_sheet != m_sprite_sheets.end(); sprite_sheet++)
 	{
-		SDL_DestroyTexture(sprite_sheet->second);
+		if(sprite_sheet->second) SDL_DestroyTexture(sprite_sheet->second);
 	}
 	
-	if (m_window)
-		SDL_DestroyWindow(m_window);
-	if (m_renderer)
-		SDL_DestroyRenderer(m_renderer);
+	if (m_renderer) SDL_DestroyRenderer(m_renderer);
+	if (m_window) SDL_DestroyWindow(m_window);
 }
 
 SDL_Texture* Graphics::load_image(std::string path, i32& width, i32& height)
@@ -60,32 +58,15 @@ SDL_Texture* Graphics::load_image(std::string path, i32& width, i32& height)
 
 SDL_Texture* Graphics::load_image_surface(std::string path, i32& width, i32& height, bool key)
 {
-	SDL_Texture* texture = NULL;
 	if(m_sprite_sheets.count(path) == 0)
 	{
-		
-		int n;
-		u8* pixels = stbi_load(path.c_str(), &width, &height, &n, STBI_rgb_alpha);
-		if (!pixels)
-			Fatal::fatal_error("Can't load image");
-		Uint32 rmask, gmask, bmask, amask;
-		rmask = 0x000000ff;
-		gmask = 0x0000ff00;
-		bmask = 0x00ff0000;
-		amask = 0xff000000;
-		
-		i32 depth = 32;
-		i32 pitch = 4 * width;
-		
-		SDL_Surface* surface =  SDL_CreateRGBSurfaceFrom(pixels, width, height, depth, pitch, rmask, gmask, bmask, amask);
-		
-		if(key)
-			SDL_SetColorKey(surface, SDL_TRUE, 0xff000000);
-		texture = SDL_CreateTextureFromSurface(m_renderer, surface);
-		stbi_image_free(pixels);
-		SDL_FreeSurface(surface);
+		u8* pixels = stbi_load(path.c_str(), &width, &height, 0, 4);
+		if (!pixels) Fatal::fatal_error("Can't load image");
+		SDL_Surface* surface =  SDL_CreateRGBSurfaceFrom(pixels, width, height, 32, 4 * width, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		if(key) SDL_SetColorKey(surface, SDL_TRUE, 0xff000000);
+		m_sprite_sheets[path] = SDL_CreateTextureFromSurface(m_renderer, surface);
 	}
-	return texture;
+	return m_sprite_sheets[path];
 }
 
 void Graphics::clear_screen(u8 r, u8 g, u8 b)

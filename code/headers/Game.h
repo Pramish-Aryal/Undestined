@@ -18,7 +18,6 @@ class Menu;
 
 class Game
 {
-	
 	public:
 	Game();
 	~Game();
