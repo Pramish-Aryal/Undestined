@@ -37,6 +37,7 @@ class Player
 	void die();
 	void block();
 	void block_idle();
+  void respawn();
 	
 	private:
 	void setup_animations();
