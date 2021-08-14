@@ -13,7 +13,7 @@ using namespace types;
 
 namespace {
 const r32 JUMP_TIMER_MAX = 575.f;
-const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
+const r32 INVINCIBLE_TIME = 725.0f;  // 3 frames
 }  // namespace
 
 Player::Player(Graphics &graphics) {
@@ -231,7 +231,7 @@ void Player::setup_animations() {
   sprite->add_animation("Fall", 1, 4, 100, 55, 4, 10);
 
   sprite->add_animation("Hurt", 5, 4, 100, 55, 3, 10);
-  sprite->add_animation("Death", 8, 4, 100, 55, 10, 10);
+  sprite->add_animation("Die", 8, 4, 100, 55, 10, 10);
 
   sprite->add_animation("Block Idle", 8, 5, 100, 55, 8, 10);
   sprite->add_animation("Block", 6, 6, 100, 55, 5, 10);
@@ -352,12 +352,12 @@ void Player::get_hurt(r32 dt) {
   if (!dead) {
     if ((invincible_timer <= 0)) {
       sprite->play_animation("Hurt", 1);
-      // std::cout << "hurt\n";
       invincible_timer = INVINCIBLE_TIME;
-      health -= 45.f;
+      health -= 10.f;
     }
     if (health <= 0 && !dead) {
       die();
+      invincible_timer = 1000.0f;
     }
   }
 }
