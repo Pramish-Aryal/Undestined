@@ -384,9 +384,9 @@ Rect Player::get_collider() {
 }
 
 void Player::respawn() {  
-  // pos = {36 * 16 * 2, 10 * 16 * 2};
-  // vel = {0, 0};
-  // accn = {0, 0};
+  pos = {36 * 16 * 2, 10 * 16 * 2};
+  vel = {0, 0};
+  accn = {0, 0};
   // vMax = {.3, 9.0f};
   // gravity = 0.0045f;
   
