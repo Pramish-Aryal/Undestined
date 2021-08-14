@@ -61,7 +61,8 @@ SDL_Texture* Graphics::load_image_surface(std::string path, i32& width, i32& hei
 	if(m_sprite_sheets.count(path) == 0)
 	{
 		u8* pixels = stbi_load(path.c_str(), &width, &height, 0, 4);
-		if (!pixels) Fatal::fatal_error("Can't load image");
+		std::string error = std::string("Can't load image: ") + path;
+		if (!pixels) Fatal::fatal_error(error.c_str());
 		SDL_Surface* surface =  SDL_CreateRGBSurfaceFrom(pixels, width, height, 32, 4 * width, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 		if(key) SDL_SetColorKey(surface, SDL_TRUE, 0xff000000);
 		m_sprite_sheets[path] = SDL_CreateTextureFromSurface(m_renderer, surface);

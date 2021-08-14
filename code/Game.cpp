@@ -181,24 +181,13 @@ void Game::handle_input(Input &input)
 		if (input.key_held(SDL_SCANCODE_E))
 			player->attack();
 		
-		if (input.key_held(SDL_SCANCODE_D))
+		if (input.key_held(SDL_SCANCODE_D) && !input.key_held(SDL_SCANCODE_A))
 			player->move_right();
-		if (input.key_held(SDL_SCANCODE_A))
+		if (input.key_held(SDL_SCANCODE_A) && !input.key_held(SDL_SCANCODE_D))
 			player->move_left();
 		
 		if (input.key_held(SDL_SCANCODE_SPACE))
 			player->jump();
-		
-		// if (input.key_held(SDL_SCANCODE_X))
-		//   player->die();
-		// if (input.key_held(SDL_SCANCODE_Z))
-		//   player->get_hurt();
-		// if (input.key_held(SDL_SCANCODE_Q))
-		//   player->block_idle();
-		// if (input.key_held(SDL_SCANCODE_S))
-		//   player->roll();
-		// if (input.key_held(SDL_SCANCODE_F))
-		//   player->fall();
 		
 		if (input.key_pressed(SDL_SCANCODE_O))
 			if (scale < 255)
@@ -206,25 +195,7 @@ void Game::handle_input(Input &input)
 		if (input.key_pressed(SDL_SCANCODE_P))
 			if (scale > 0)
 			scale--;
-		/* 
-				if (input.key_pressed(SDL_SCANCODE_M))
-					if (player_scale < 255)
-					player_scale += 0.1f;
-				if (input.key_pressed(SDL_SCANCODE_N))
-					if (player_scale > 0)
-					player_scale -= 0.1f;
 		
-				if (input.key_held(SDL_SCANCODE_UP))
-					Camera::get_instance().get_pos().y += 5.f;
-				if (input.key_held(SDL_SCANCODE_DOWN))
-					Camera::get_instance().get_pos().y -= 5.f;
-				if (input.key_held(SDL_SCANCODE_LEFT))
-					Camera::get_instance().get_pos().x += 5.f;
-				if (input.key_held(SDL_SCANCODE_RIGHT))
-					Camera::get_instance().get_pos().x -= 5.f;
-				if (input.key_pressed(SDL_SCANCODE_C))
-					Camera::get_instance().follow = !(Camera::get_instance().follow);
-				 */
 		if (input.key_pressed(SDL_SCANCODE_X))
 			DEBUG = !DEBUG;
 		

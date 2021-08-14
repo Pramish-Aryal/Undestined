@@ -2,7 +2,10 @@
 
 int main(int argc, char **argv)
 {
-	Game game;
-
+	try {
+		Game game;
+	} catch(...) {
+		
+	}
 	return 0;
 }
