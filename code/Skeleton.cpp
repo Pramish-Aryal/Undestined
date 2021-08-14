@@ -205,7 +205,7 @@ void Skeleton::move_right() {
 }
 
 void Skeleton::stop_moving() {
-	std::vector<std::string> PossibleStates = {"Run", "Fall", "Attack", "Hurt"};
+	std::vector<std::string> PossibleStates = {"Run", "Fall", "Attack"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		sprite->play_animation("Idle");
 	}
@@ -232,7 +232,6 @@ void Skeleton::get_hurt(r32 dt) {
 	if (!dead) {
 		if ((invincible_timer <= 0)) {
 			sprite->play_animation("Hurt", 1);
-			// std::cout << "hurt\n";
 			invincible_timer = INVINCIBLE_TIME;
 			health -= 45.f;
 		}
@@ -241,7 +240,6 @@ void Skeleton::get_hurt(r32 dt) {
 			invincible_timer = RESPAWN_TIME;
 		}
 	}
-	// std::cout << "ded\n";
 }
 
 void Skeleton::die() {
