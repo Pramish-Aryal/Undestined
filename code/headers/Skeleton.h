@@ -26,7 +26,6 @@ class Skeleton : public Enemy
 	
 	private:
 	void setup_animations() override;
-	void handle_animation_state() override;
 	void respawn();
 	
 	private:

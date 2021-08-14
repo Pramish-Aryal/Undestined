@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <utility>
 
-// #include <iostream>
 #include "AnimatedSprite.h"
 #include "Camera.h"
 #include "Graphics.h"
@@ -13,7 +12,7 @@
 using namespace types;
 
 namespace {
-const r32 RESPAWN_TIME = 560;         // 5 seconds
+const r32 RESPAWN_TIME = 560;        // 5 seconds
 const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
 }  // namespace
 
@@ -21,7 +20,7 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
   sprite = new AnimatedSprite(graphics, "data\\Skeleton.png");
   setup_animations();
   pos = posi;
-  sprite->play_animation("Idle");
+ 
   vel = {0, 0};
   accn = {0, 0};
   vMax = {.3, 9.0f};
@@ -31,7 +30,6 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
   offsets = {60.f, 50.f};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {45.f * scale, 51.f * scale};
-  // handle_animation_state();
   Vec2f screen_size = {1280.f, 720.f};
   sprite->play_animation("Idle");
 }
@@ -122,9 +120,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
   //pos update
   pos += vel * dt;
 
-  //pos.y = (pos.y > 500) ? 500 : pos.y;
-
-  //final setup and anims
+  //final Resets
   accn.x = 0;
   accn.y = 0;
 
@@ -147,7 +143,6 @@ void Skeleton::setup_animations() {
 }
 
 void Skeleton::move_left() {
-  // handle_animation_state();
   std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
   if (contain(PossibleStates, sprite->current_animation)) {
     accn.x -= 0.003f;
@@ -169,7 +164,6 @@ void Skeleton::move_right() {
   if (contain(PossibleStates, sprite->current_animation)) {
     sprite->play_animation("Run");
   }
-  // handle_animation_state();
 }
 
 void Skeleton::stop_moving() {
@@ -177,12 +171,10 @@ void Skeleton::stop_moving() {
   if (contain(PossibleStates, sprite->current_animation)) {
     sprite->play_animation("Idle");
   }
-  // handle_animation_state();
 }
 
 void Skeleton::attack() {
   sprite->play_animation("Attack");
-  // handle_animation_state();
 }
 
 void Skeleton::get_hurt(r32 dt) {
@@ -199,7 +191,6 @@ void Skeleton::get_hurt(r32 dt) {
     }
   }
   // std::cout << "ded\n";
-  // handle_animation_state();
 }
 
 void Skeleton::die() {
@@ -208,19 +199,6 @@ void Skeleton::die() {
   hurting = false;
   running = false;
   sprite->play_animation("Die", 1);
-
-  // handle_animation_state();
-}
-
-void Skeleton::handle_animation_state() {
-  // if (hurting) {
-  //   sprite->play_animation("Hurt", 1);
-  // } else if (dead)
-  //   sprite->play_animation("Die", 1);
-  // else if (idle)
-  //   sprite->play_animation("Idle");
-  // else if (running)
-  //   sprite->play_animation("Move");
 }
 
 Rect Skeleton::get_collider() {
@@ -245,7 +223,6 @@ void Skeleton::respawn() {
   offsets = {60.f, 50.f};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {45.f * scale, 51.f * scale};
-  // handle_animation_state();
   Vec2f screen_size = {1280.f, 720.f};
   sprite->play_animation("Idle");
 }

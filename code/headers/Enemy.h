@@ -30,5 +30,4 @@ public:
 
 private:
 	virtual void setup_animations() = 0;
-	virtual void handle_animation_state() = 0;
 };
