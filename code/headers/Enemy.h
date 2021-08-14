@@ -25,7 +25,7 @@ public:
 	virtual void move_right() = 0;
 	virtual void stop_moving() = 0;
 	virtual void attack() = 0;
-	virtual void get_hurt() = 0;
+	virtual void get_hurt(types::r32 dt) = 0;
 	virtual void die() = 0;
 
 private:

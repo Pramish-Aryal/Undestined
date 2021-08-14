@@ -13,8 +13,8 @@
 using namespace types;
 
 namespace {
-const r32 RESPAWN_TIME = 0;             // 5 seconds
-const r32 INVINCIBLE_TIME = 25 * 16.f;  // 3 frames
+const r32 RESPAWN_TIME = 560;         // 5 seconds
+const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
 }  // namespace
 
 Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
@@ -127,13 +127,22 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
   //final setup and anims
   accn.x = 0;
   accn.y = 0;
+
+  //----------Invincible And Respawn Count-----------
+  if (invincible_timer > 0)
+    invincible_timer -= dt;
+  if (dead) {
+    if (invincible_timer <= 0) {
+      respawn();
+    }
+  }
 }
 
 void Skeleton::setup_animations() {
   sprite->add_animation("Idle", 0, 0, 150, 150, 4, 7);
   sprite->add_animation("Run", 0, 1, 150, 150, 4, 7);
   sprite->add_animation("Die", 0, 2, 150, 150, 4, 7);
-  sprite->add_animation("Hurt", 0, 3, 150, 150, 4, 7);
+  sprite->add_animation("Hurt", 0, 3, 150, 150, 4, 11);
   sprite->add_animation("Attack", 0, 4, 150, 150, 6, 7);
 }
 
@@ -176,20 +185,18 @@ void Skeleton::attack() {
   // handle_animation_state();
 }
 
-void Skeleton::get_hurt() {
+void Skeleton::get_hurt(r32 dt) {
   if (!dead) {
-    sprite->play_animation("Hurt", 1);
-    sprite->Tempflag = &hurting;
-    hurting = true;
-    if (invincible_timer >= INVINCIBLE_TIME) {
+    if ((invincible_timer <= 0)) {
+      sprite->play_animation("Hurt", 1);
       // std::cout << "hurt\n";
-      invincible_timer = 0.0f;
-      health -= 101.f;
-    } else {
-      invincible_timer += 16.f;
+      invincible_timer = INVINCIBLE_TIME;
+      health -= 45.f;
     }
-    if (health <= 0 && !dead)
+    if (health <= 0 && !dead) {
       die();
+      invincible_timer = RESPAWN_TIME;
+    }
   }
   // std::cout << "ded\n";
   // handle_animation_state();
@@ -200,9 +207,8 @@ void Skeleton::die() {
   idle = false;
   hurting = false;
   running = false;
-
   sprite->play_animation("Die", 1);
-  sprite->Tempflag = &dead;
+
   // handle_animation_state();
 }
 
@@ -223,7 +229,6 @@ Rect Skeleton::get_collider() {
 
 void Skeleton::respawn() {
   pos = {700, 200};
-  sprite->play_animation("Idle");
   health = 100.0f;
   time_to_respawn = 0.f;
   invincible_timer = 0;

@@ -21,7 +21,7 @@ class Skeleton : public Enemy
 	void move_right() override;
 	void stop_moving() override;
 	void attack() override;
-	void get_hurt() override;
+	void get_hurt(types::r32 dt) override;
 	void die() override;
 	
 	private:

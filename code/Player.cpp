@@ -163,7 +163,7 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   if (attackBusy) {
     for (i32 i = 0; i < enemylist.size(); i++) {
       if (Collider::rect_vs_rect(this->attackCollider, enemylist[i]->get_collider()))
-        enemylist[i]->get_hurt();
+        enemylist[i]->get_hurt(dt);
     }
   }
 

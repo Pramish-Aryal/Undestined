@@ -22,7 +22,7 @@ FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi)
 	sprite = new AnimatedSprite(graphics, "data\\FlyingEye.png");
 	setup_animations();
 	pos = posi;
-	sprite->play_animation("idle");
+	sprite->play_animation("Idle");
 	vel = {0, 0};
 	accn = {0, 0};
 	vMax = {.3, 9.0f};
@@ -32,7 +32,7 @@ FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi)
 	offsets = {60.f, 50.f};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	collider.size = {45.f * scale, 51.f * scale};
-	handle_animation_state();
+	// handle_animation_state();
 	Vec2f screen_size = {1280.f, 720.f};
 	Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
 	Camera::get_instance().get_pos().y = -1 * (screen_size.y * 5.7f / 10.0f - pos.y);
@@ -121,40 +121,40 @@ void FlyingEye::move_left()
 {
 	accn.x -= 0.003f;
 	sprite->set_flip(true);
-	handle_animation_state();
+	// handle_animation_state();
 }
 
 void FlyingEye::move_right()
 {
 	accn.x += 0.003f;
 	sprite->set_flip(false);
-	handle_animation_state();
+	// handle_animation_state();
 }
 
 void FlyingEye::stop_moving()
 {
 	idle = true;
-	handle_animation_state();
+	// handle_animation_state();
 }
 
 void FlyingEye::attack()
 {
 	sprite->play_animation("Attack");
-	handle_animation_state();
+	// handle_animation_state();
 }
 
-void FlyingEye::get_hurt()
+void FlyingEye::get_hurt(types::r32 dt)
 {
 	sprite->play_animation("Hurt",1);
   sprite->Tempflag = &hurting;
 	hurting = true;
-	handle_animation_state();
+	// handle_animation_state();
 }
 
 void FlyingEye::die()
 {
 	sprite->play_animation("Die");
-	handle_animation_state();
+	// handle_animation_state();
 }
 
 void FlyingEye::handle_animation_state()
