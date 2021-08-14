@@ -181,6 +181,9 @@ void Game::handle_input(Input &input)
 		if (input.key_held(SDL_SCANCODE_E))
 			player->attack();
 		
+		if(input.key_held(SDL_SCANCODE_Q))
+			enemylist[0]->attack();
+		
 		if (input.key_held(SDL_SCANCODE_D) && !input.key_held(SDL_SCANCODE_A))
 			player->move_right();
 		if (input.key_held(SDL_SCANCODE_A) && !input.key_held(SDL_SCANCODE_D))
@@ -189,10 +192,10 @@ void Game::handle_input(Input &input)
 		if (input.key_held(SDL_SCANCODE_SPACE))
 			player->jump();
 		
-		if (input.key_pressed(SDL_SCANCODE_O))
+		if (input.key_pressed(SDL_SCANCODE_I))
 			if (scale < 255)
 			scale++;
-		if (input.key_pressed(SDL_SCANCODE_P))
+		if (input.key_pressed(SDL_SCANCODE_O))
 			if (scale > 0)
 			scale--;
 		

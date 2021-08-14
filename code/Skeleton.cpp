@@ -30,6 +30,11 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
 	offsets = {60.f, 50.f};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	collider.size = {45.f * scale, 51.f * scale};
+	
+	attackCollider.pos = {pos.x + offsets.x * scale + 45 * 1.5f, pos.y + offsets.y * scale + 3};
+	attackCollider.size = {30.f * scale, 35.f * scale};
+	
+	
 	Vec2f screen_size = {1280.f, 720.f};
 	sprite->play_animation("Idle");
 }
@@ -43,6 +48,9 @@ void Skeleton::debug_draw(Graphics &graphics, u8 scale) {
 	r32 o_x = Camera::get_instance().get_pos().x;
 	r32 o_y = Camera::get_instance().get_pos().y;
 	SDL_Rect rect = {(i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y), (i32)(collider.size.w), (i32)(collider.size.h)};
+	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
+	if (attackBusy)
+		rect = {(i32)(attackCollider.pos.x - o_x), (i32)(attackCollider.pos.y - o_y), (i32)(attackCollider.size.w), (i32)(attackCollider.size.h)};
 	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 }
 
@@ -63,7 +71,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	
 	Vec2f distance = player.get_collider().pos + player.get_collider().size / 2 - collider.pos - collider.size / 2;
 	
-	if (ABS(distance.x) <= 250 && ABS(distance.x) >= 100) {
+	if (ABS(distance.x) <= 250 && ABS(distance.x) >= 100 && ABS(distance.y) <= 250) {
 		if (distance.normal().x > .3f)
 			move_right();
 		else if (distance.normal().x < -.3f)
@@ -71,9 +79,6 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	} else
 		stop_moving();
 	
-	//just for fun, might need to comment them out
-	collider.size = {45.f * scale, 51.f * scale};
-	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	vel += accn * dt;
 	
 	//fraction
@@ -92,7 +97,6 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	vel.y = (vel.y < vMax.y) ? vel.y : vMax.y;
 	vel.y = (-vel.y < vMax.y) ? vel.y : -vMax.y;
 	
-	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	
 	Vec2f cp, cn;
 	r32 t;
@@ -126,6 +130,38 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	accn.x = 0;
 	accn.y = 0;
 	
+	
+	
+	collider.size = {45.f * scale, 51.f * scale};
+	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
+	if (!sprite->get_flip()) {
+		attackCollider.size = {30.f * scale, 35.f * scale};
+		attackCollider.pos = {pos.x + offsets.x * scale + 45 * 1.5f, pos.y + offsets.y * scale + 3};
+	} else {
+		attackCollider.size = {30.f * scale, 35.f * scale};
+		attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
+	}
+	
+	/* 
+		if(distance.x < 60 && distance.y == 0)
+			attack();
+		 */
+	
+	if (countTime)
+		attackActiveTime += dt;
+	
+	if (attackActiveTime > 700) {
+		endAttack();
+	}
+	
+	//--------TODO: Attack  ----------
+	
+	if (attackBusy) {
+		if (Collider::rect_vs_rect(this->attackCollider, player.get_collider()))
+			player.get_hurt(dt);
+	}
+	
+	
 	//----------Invincible And Respawn Count-----------
 	if (invincible_timer > 0)
 		invincible_timer -= dt;
@@ -141,11 +177,11 @@ void Skeleton::setup_animations() {
 	sprite->add_animation("Run", 0, 1, 150, 150, 4, 7);
 	sprite->add_animation("Die", 0, 2, 150, 150, 4, 7);
 	sprite->add_animation("Hurt", 0, 3, 150, 150, 4, 11);
-	sprite->add_animation("Attack", 0, 4, 150, 150, 6, 7);
+	sprite->add_animation("Attack", 0, 4, 150, 150, 8, 7);
 }
 
 void Skeleton::move_left() {
-	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
+	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall", "Attack", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		accn.x -= 0.003f;
 		sprite->set_flip(true);
@@ -157,7 +193,7 @@ void Skeleton::move_left() {
 }
 
 void Skeleton::move_right() {
-	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
+	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Attack", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		accn.x += 0.003f;
 		sprite->set_flip(false);
@@ -169,14 +205,27 @@ void Skeleton::move_right() {
 }
 
 void Skeleton::stop_moving() {
-	std::vector<std::string> PossibleStates = {"Run", "Fall"};
+	std::vector<std::string> PossibleStates = {"Run", "Fall", "Attack", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		sprite->play_animation("Idle");
 	}
 }
 
 void Skeleton::attack() {
-	sprite->play_animation("Attack");
+	std::vector<std::string> PossibleStates = {"Idle", "Run", "Attack", "Hurt"};
+	if (contain(PossibleStates, sprite->current_animation)) {
+		if (!attackBusy) {
+			attackBusy = true;
+			countTime = true;
+			sprite->play_animation("Attack");
+		}
+	}
+}
+
+void Skeleton::endAttack() {
+	attackBusy = false;
+	countTime = false;
+	attackActiveTime = 0;
 }
 
 void Skeleton::get_hurt(r32 dt) {

@@ -33,11 +33,10 @@ class Player
 	void jump();
 	void fall();
 	void roll();
-	void get_hurt();
+	void get_hurt(types::r32 dt);
 	void die();
 	void block();
 	void block_idle();
-	void wall_slide();
 	
 	private:
 	void setup_animations();
@@ -47,8 +46,7 @@ class Player
 	Vec2f cameraBuffer;
 	Rect collider;
 	Rect attackCollider;
-	// TODO(Pramish): Implement basic jumping and movement physics using them i.e. eqns of motion
-	// eqns of motion? why?
+	
 	AnimatedSprite *sprite;
 	Vec2f vel;
 	Vec2f accn;
@@ -58,6 +56,8 @@ class Player
 	float friction;
 	types::r32 scale = 3.f;
 	types::r32 jump_timer;
+	types::r32 health = 100.f;
+	types::r32 invincible_timer = 0.0f;
 	
 	bool cameraMovingx = false;
 	bool cameraMovingy = false;
@@ -66,11 +66,13 @@ class Player
 	bool falling = false;
 	bool is_jumping = false;
 	bool blocking = false;
+	bool dead = false;
+	bool hurting = false;
 	bool other = false;
 	
 	bool attackBusy = false;
 	bool comboReady = false;
 	bool countTime = false;
-	int attackState = 0;
-	int attackActiveTime = 0;
+	types::i32 attackState = 0;
+	types::i32 attackActiveTime = 0;
 };

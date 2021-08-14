@@ -27,10 +27,12 @@ class Skeleton : public Enemy
 	private:
 	void setup_animations() override;
 	void respawn();
+	void endAttack();
 	
 	private:
 	Vec2f pos;
 	Rect collider;
+	Rect attackCollider;
 	
 	AnimatedSprite *sprite;
 	Vec2f vel;
@@ -41,13 +43,17 @@ class Skeleton : public Enemy
 	types::r32 friction;
 	types::r32 scale = 3.f;
 	types::r32 health = 100.f;
-	types::r32 time_to_respawn = 0.0f;
 	types::r32 invincible_timer = 0.0f;
+	types::r32 time_to_respawn = 0.0f;
+	
 	//Nisans anim/player state identifiers
 	bool idle = true;
 	bool dead = false;
 	bool running = false;
-	bool attacking = false;
 	bool hurting = false;
 	bool other = false;
+	
+	bool attackBusy = false;
+	bool countTime = false;
+	types::i32 attackActiveTime = 0;
 };
