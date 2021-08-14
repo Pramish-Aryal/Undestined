@@ -1,6 +1,7 @@
 #include "UI.h"
 #include <cstring>
 
+#include <iostream>
 Font::Font(Graphics& graphics)
 {
 	atlas = graphics.load_image_surface("data\\font_atlas.png", width, height, true);
@@ -45,9 +46,4 @@ void Font::render_text_sized(Graphics& graphics, const char* text, size_t text_s
 void Font::render_text(Graphics& graphics, const char* text, Vec2f pos, float scale)
 {
 	render_text_sized(graphics, text, strlen(text), pos, scale);
-}
-
-Font::~Font()
-{
-	SDL_DestroyTexture(atlas);
 }

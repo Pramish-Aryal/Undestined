@@ -2,7 +2,6 @@
 
 #include "utils.h"
 #include "Graphics.h"
-#include "Sprite.h"
 #include <SDL2/SDL.h>
 using namespace types;
 
@@ -19,12 +18,11 @@ class Font
 {
 	SDL_Texture* atlas;
 	i32 width, height;
-	SDL_Rect glyph_table[127 - 32];
+	SDL_Rect glyph_table[128 - 32];
 	void render_char(Graphics& graphics, char c, Vec2f pos, float scale);
 	void render_text_sized(Graphics& graphics, const char* text, size_t text_size, Vec2f pos, float scale);
 	public:
 	Font(Graphics& graphics);
-	~Font();
 	void render_text(Graphics& graphics, const char* text, Vec2f pos, float scale);
 };
 
