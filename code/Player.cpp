@@ -239,8 +239,6 @@ void Player::move_left() {
   std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
   if (contain(PossibleStates, sprite->current_animation)) {
     accn.x -= 0.003f;
-    running = true;
-    idle = false;
     sprite->set_flip(true);
   }
   PossibleStates = {"Idle"};
@@ -253,8 +251,6 @@ void Player::move_right() {
   std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
   if (contain(PossibleStates, sprite->current_animation)) {
     accn.x += 0.003f;
-    running = true;
-    idle = false;
     sprite->set_flip(false);
   }
   PossibleStates = {"Idle"};
@@ -266,8 +262,6 @@ void Player::move_right() {
 void Player::stop_moving() {
   std::vector<std::string> PossibleStates = {"Run", "Fall"};
   if (contain(PossibleStates, sprite->current_animation)) {
-    idle = true;
-    running = false;
     sprite->play_animation("Idle");
   }
   // handle_animation_state();
@@ -339,7 +333,7 @@ void Player::endAttack() {
 void Player::jump() {
   std::vector<std::string> PossibleStates = {"Idle", "Run"};
   if (contain(PossibleStates, sprite->current_animation)) {
-    if (!is_jumping && jump_timer >= JUMP_TIMER_MAX && !attackBusy) {
+    if (!is_jumping && jump_timer >= JUMP_TIMER_MAX) {
       vel.y = -1.25f;
       is_jumping = true;
       falling = false;

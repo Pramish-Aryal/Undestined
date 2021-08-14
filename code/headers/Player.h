@@ -64,8 +64,6 @@ private:
 	bool cameraMovingy = false;
 	//Nisans anim/player state identifiers
 
-	bool idle = true;
-	bool running = false;
 	bool falling = false;
 	bool is_jumping = false;
 	bool blocking = false;
