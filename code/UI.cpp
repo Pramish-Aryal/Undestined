@@ -36,10 +36,9 @@ void Font::render_char(Graphics& graphics, char c, Vec2f pos, float scale)
 
 void Font::render_text_sized(Graphics& graphics, const char* text, size_t text_size, Vec2f pos, float scale)
 {
-	Vec2f pen = pos;
 	for(u32 i = 0; i < text_size; i++){
-		render_char(graphics, text[i], pen, scale);
-		pen.x += FONT_CHAR_WIDTH * scale;
+		render_char(graphics, text[i], pos, scale);
+		pos.x += FONT_CHAR_WIDTH * scale;
 	}
 }
 

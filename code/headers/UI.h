@@ -25,14 +25,14 @@ class Font
 	Font(Graphics& graphics);
 	void render_text(Graphics& graphics, const char* text, Vec2f pos, float scale);
 };
-
+#include <iostream>
 class Menu
 {
 	public:
 	void draw_menu(Graphics& graphics, Font& font)
 	{
-		font.render_text(graphics, "Undestined", graphics.get_display_resolution() / 2 - Vec2f(200, 0), 5);
-		font.render_text(graphics, "Press Enter to begin", graphics.get_display_resolution() / 2 + Vec2f(- 200, 150), 3);
+		font.render_text(graphics, "Undestined", Vec2f(1280, 720) / 2 - Vec2f(200, 0), 5);
+		font.render_text(graphics, "Press Enter to begin", Vec2f(1280, 720) / 2  + Vec2f( -225, 150), 3);
 	}
 	
 	void draw_score(Graphics& graphics, Font& font, i32 score)
@@ -44,9 +44,8 @@ class Menu
 	
 	void draw_pause(Graphics& graphics, Font& font)
 	{
-		font.render_text(graphics, "Paused", graphics.get_display_resolution() / 2 - Vec2f(200, 0), 5);
-		font.render_text(graphics, "Press Enter to resume", graphics.get_display_resolution() / 2 + Vec2f( -250, 150), 3);
-		font.render_text(graphics, "Press Escape to Quit", graphics.get_display_resolution() / 2 + Vec2f( -250, 200), 3);
+		font.render_text(graphics, "Paused", Vec2f(1280, 720) / 2 - Vec2f(125, 0), 5);
+		font.render_text(graphics, "Press Enter to resume", Vec2f(1280, 720) / 2 + Vec2f( -225, 150), 3);
+		font.render_text(graphics, "Press Escape to Quit", Vec2f(1280, 720) / 2 + Vec2f( -225, 200), 3);
 	}
-	
 };
