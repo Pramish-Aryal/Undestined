@@ -72,7 +72,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	//r32 limit = sprite->get_flip() ? 
 	
 	if (ABS(distance.x) <= 250 && ABS(distance.x) >= 100 && ABS(distance.y) <= 250) {
-		if (distance.normal().x > 0)
+		if (distance.normal() .x > 0)
 			move_right();
 		else if (distance.normal().x < 0)
 			move_left();
@@ -181,7 +181,7 @@ void Skeleton::setup_animations() {
 }
 
 void Skeleton::move_left() {
-	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall", "Attack", "Hurt"};
+	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		accn.x -= 0.003f;
 		sprite->set_flip(true);
@@ -193,7 +193,7 @@ void Skeleton::move_left() {
 }
 
 void Skeleton::move_right() {
-	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Attack", "Hurt"};
+	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		accn.x += 0.003f;
 		sprite->set_flip(false);

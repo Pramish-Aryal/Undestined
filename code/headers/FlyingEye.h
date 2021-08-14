@@ -29,6 +29,7 @@ class FlyingEye : public Enemy {
 
  private:
   Vec2f pos;
+  Vec2f hoverPos;
   Vec2f cameraBuffer;
   Rect collider;
 
@@ -46,5 +47,6 @@ class FlyingEye : public Enemy {
   bool idle = true;
   bool dead = false;
   bool hurting = false;
+  bool pursuit = false;
   bool other = false;
 };
