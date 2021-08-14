@@ -14,7 +14,7 @@ Graphics::Graphics()
 {
 	m_screen_width = 1280;
 	m_screen_height = 720;
-	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height, SDL_WINDOW_RESIZABLE /*| SDL_WINDOW_FULLSCREEN*/);
+	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height,  SDL_WINDOW_RESIZABLE /*| SDL_WINDOW_FULLSCREEN*/);
 	if (!m_window)
 		Fatal::fatal_error("Couldn't create Window");
 	//SDL_SetWindowBordered(m_window, SDL_FALSE);
@@ -56,6 +56,36 @@ SDL_Texture* Graphics::load_image(std::string path, i32& width, i32& height)
 	width = m_sprite_sheet_sizes[path].width;
 	height = m_sprite_sheet_sizes[path].height;
 	return m_sprite_sheets[path];
+}
+
+SDL_Texture* Graphics::load_image_surface(std::string path, i32& width, i32& height, bool key)
+{
+	SDL_Texture* texture = NULL;
+	if(m_sprite_sheets.count(path) == 0)
+	{
+		
+		int n;
+		u8* pixels = stbi_load(path.c_str(), &width, &height, &n, STBI_rgb_alpha);
+		if (!pixels)
+			Fatal::fatal_error("Can't load image");
+		Uint32 rmask, gmask, bmask, amask;
+		rmask = 0x000000ff;
+		gmask = 0x0000ff00;
+		bmask = 0x00ff0000;
+		amask = 0xff000000;
+		
+		i32 depth = 32;
+		i32 pitch = 4 * width;
+		
+		SDL_Surface* surface =  SDL_CreateRGBSurfaceFrom(pixels, width, height, depth, pitch, rmask, gmask, bmask, amask);
+		
+		if(key)
+			SDL_SetColorKey(surface, SDL_TRUE, 0xff000000);
+		texture = SDL_CreateTextureFromSurface(m_renderer, surface);
+		stbi_image_free(pixels);
+		SDL_FreeSurface(surface);
+	}
+	return texture;
 }
 
 void Graphics::clear_screen(u8 r, u8 g, u8 b)

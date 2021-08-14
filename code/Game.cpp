@@ -17,6 +17,7 @@
 #include "Map.h"
 #include "Player.h"
 #include "utils.h"
+#include "UI.h"
 
 using namespace types;
 
@@ -37,34 +38,45 @@ Game::Game()
 
 Game::~Game()
 {
+	delete player;
+	for (size_t i = 0; i < enemylist.size(); i++)
+		delete enemylist[i];
+	delete map;
+	delete backdrop;
+	delete background;
+	delete menu;
+	
 	SDL_Quit();
 }
 
 void Game::game_loop()
 {
 	Input input;
-	Graphics graphics;
+	Graphics* graphics = new Graphics;
+	Font* font = new Font(*graphics);
 	
-	enemylist.push_back(new Skeleton(graphics));
-	enemylist.push_back(new Skeleton(graphics, {100,200}));
-	enemylist.push_back(new Skeleton(graphics, {900,100}));
-	enemylist.push_back(new Skeleton(graphics, {400,3000}));
-	enemylist.push_back(new Skeleton(graphics, {300,200}));
-	enemylist.push_back(new FlyingEye(graphics));
-	enemylist.push_back(new FlyingEye(graphics, {150,200}));
-	enemylist.push_back(new FlyingEye(graphics, {300,250}));
-	enemylist.push_back(new FlyingEye(graphics, {500,200}));
+	enemylist.push_back(new Skeleton(*graphics));
+	enemylist.push_back(new Skeleton(*graphics, {100,200}));
+	enemylist.push_back(new Skeleton(*graphics, {900,100}));
+	enemylist.push_back(new Skeleton(*graphics, {400,3000}));
+	enemylist.push_back(new Skeleton(*graphics, {300,200}));
+	enemylist.push_back(new FlyingEye(*graphics));
+	enemylist.push_back(new FlyingEye(*graphics, {150,200}));
+	enemylist.push_back(new FlyingEye(*graphics, {300,250}));
+	enemylist.push_back(new FlyingEye(*graphics, {500,200}));
 	
-	player = new Player(graphics);
-	map = new Map(graphics);
+	player = new Player(*graphics);
+	map = new Map(*graphics);
 	map->load_map("", 2);
 	
-	backdrop = new Backdrop(graphics);
+	backdrop = new Backdrop(*graphics);
 	backdrop->load_backdrop("", 2);
 	
-	background = new Background(graphics);
+	background = new Background(*graphics);
 	
-	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2;
+	menu = new Menu;
+	
+	Camera::get_instance().get_pos() = graphics->get_display_resolution() / 2;
 	
 	r32 fixed_delta_time = FRAME_TIME;
 	r32 accumulator = 0;
@@ -89,15 +101,18 @@ void Game::game_loop()
 		}
 		
 		handle_input(input);
-		accumulator += delta_time;
-		while (accumulator >= fixed_delta_time)
-		{
-			simulate(fixed_delta_time);
-			accumulator -= fixed_delta_time;
+		if(game_state == PLAY) {
+			accumulator += delta_time;
+			while (accumulator >= fixed_delta_time)
+			{
+				simulate(fixed_delta_time);
+				accumulator -= fixed_delta_time;
+			}
+			
+			update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
 		}
 		
-		update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
-		draw(graphics);
+		draw(*graphics, *font);
 		
 		if ((SDL_GetTicks() - current_time_ms) < FRAME_TIME)
 			SDL_Delay(FRAME_TIME - (SDL_GetTicks() - current_time_ms));
@@ -127,23 +142,31 @@ bool DEBUG = false;
 u8 scale = 10;
 r32 player_scale = 1.5f;
 
-void Game::draw(Graphics &graphics)
+
+u64 sc;
+void Game::draw(Graphics &graphics, Font& font)
 {
 	graphics.clear_screen(50, 100, 120);
+	
 	background->draw(graphics);
 	backdrop->draw(graphics);
 	map->draw(graphics);
-	if (DEBUG)
-		map->debug_draw(graphics, scale);
-	
-	for (size_t i = 0; i < enemylist.size(); i++)
-		enemylist[i]->draw(graphics, player_scale);
-	if (DEBUG)
+	if(game_state == MENU)
+		menu->draw_menu(graphics, font);
+	else {
+		if (DEBUG)
+			map->debug_draw(graphics, scale);
+		
 		for (size_t i = 0; i < enemylist.size(); i++)
-		enemylist[i]->debug_draw(graphics, 3.f);
-	player->draw(graphics, player_scale);
-	if (DEBUG)
-		player->debug_draw(graphics, scale);
+			enemylist[i]->draw(graphics, player_scale);
+		if (DEBUG)
+			for (size_t i = 0; i < enemylist.size(); i++)
+			enemylist[i]->debug_draw(graphics, 3.f);
+		player->draw(graphics, player_scale);
+		if (DEBUG)
+			player->debug_draw(graphics, scale);
+		menu->draw_score(graphics, font, sc++);
+	}
 	graphics.display();
 }
 
@@ -152,51 +175,58 @@ void Game::handle_input(Input &input)
 	if (input.key_held(SDL_SCANCODE_ESCAPE))
 		set_game_running(false);
 	
-	if (input.key_held(SDL_SCANCODE_E))
-		player->attack();
-	
-	if (input.key_held(SDL_SCANCODE_D))
-		player->move_right();
-	if (input.key_held(SDL_SCANCODE_A))
-		player->move_left();
-	if (input.key_held(SDL_SCANCODE_SPACE))
-		player->jump();
-	// if (input.key_held(SDL_SCANCODE_X))
-	//   player->die();
-	// if (input.key_held(SDL_SCANCODE_Z))
-	//   player->get_hurt();
-	// if (input.key_held(SDL_SCANCODE_Q))
-	//   player->block_idle();
-	// if (input.key_held(SDL_SCANCODE_S))
-	//   player->roll();
-	// if (input.key_held(SDL_SCANCODE_F))
-	//   player->fall();
-	
-	if (input.key_pressed(SDL_SCANCODE_O))
-		if (scale < 255)
-		scale++;
-	if (input.key_pressed(SDL_SCANCODE_P))
-		if (scale > 0)
-		scale--;
-	if (input.key_pressed(SDL_SCANCODE_M))
-		if (player_scale < 255)
-		player_scale += 0.1f;
-	if (input.key_pressed(SDL_SCANCODE_N))
-		if (player_scale > 0)
-		player_scale -= 0.1f;
-	
-	if (input.key_held(SDL_SCANCODE_UP))
-		Camera::get_instance().get_pos().y += 5.f;
-	if (input.key_held(SDL_SCANCODE_DOWN))
-		Camera::get_instance().get_pos().y -= 5.f;
-	if (input.key_held(SDL_SCANCODE_LEFT))
-		Camera::get_instance().get_pos().x += 5.f;
-	if (input.key_held(SDL_SCANCODE_RIGHT))
-		Camera::get_instance().get_pos().x -= 5.f;
-	if (input.key_pressed(SDL_SCANCODE_C))
-		Camera::get_instance().follow = !(Camera::get_instance().follow);
-	if (input.key_pressed(SDL_SCANCODE_X))
-		DEBUG = !DEBUG;
+	if(game_state == PLAY) {
+		if (input.key_held(SDL_SCANCODE_E))
+			player->attack();
+		
+		if (input.key_held(SDL_SCANCODE_D))
+			player->move_right();
+		if (input.key_held(SDL_SCANCODE_A))
+			player->move_left();
+		
+		if (input.key_held(SDL_SCANCODE_SPACE))
+			player->jump();
+		
+		// if (input.key_held(SDL_SCANCODE_X))
+		//   player->die();
+		// if (input.key_held(SDL_SCANCODE_Z))
+		//   player->get_hurt();
+		// if (input.key_held(SDL_SCANCODE_Q))
+		//   player->block_idle();
+		// if (input.key_held(SDL_SCANCODE_S))
+		//   player->roll();
+		// if (input.key_held(SDL_SCANCODE_F))
+		//   player->fall();
+		
+		if (input.key_pressed(SDL_SCANCODE_O))
+			if (scale < 255)
+			scale++;
+		if (input.key_pressed(SDL_SCANCODE_P))
+			if (scale > 0)
+			scale--;
+		if (input.key_pressed(SDL_SCANCODE_M))
+			if (player_scale < 255)
+			player_scale += 0.1f;
+		if (input.key_pressed(SDL_SCANCODE_N))
+			if (player_scale > 0)
+			player_scale -= 0.1f;
+		
+		if (input.key_held(SDL_SCANCODE_UP))
+			Camera::get_instance().get_pos().y += 5.f;
+		if (input.key_held(SDL_SCANCODE_DOWN))
+			Camera::get_instance().get_pos().y -= 5.f;
+		if (input.key_held(SDL_SCANCODE_LEFT))
+			Camera::get_instance().get_pos().x += 5.f;
+		if (input.key_held(SDL_SCANCODE_RIGHT))
+			Camera::get_instance().get_pos().x -= 5.f;
+		if (input.key_pressed(SDL_SCANCODE_C))
+			Camera::get_instance().follow = !(Camera::get_instance().follow);
+		if (input.key_pressed(SDL_SCANCODE_X))
+			DEBUG = !DEBUG;
+	} else {
+		if (input.key_pressed(SDL_SCANCODE_SPACE))
+			game_state = PLAY;
+	}
 }
 
 bool Game::is_game_running()

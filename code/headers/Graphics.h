@@ -29,6 +29,7 @@ class Graphics
 	
 	SDL_Renderer *get_renderer();
 	SDL_Texture* load_image(std::string path, types::i32& width, types::i32& height);
+	SDL_Texture* load_image_surface(std::string path, i32& width, i32& height, bool key = false);
 	void display();
 	Vec2f get_display_resolution();
 	private:
