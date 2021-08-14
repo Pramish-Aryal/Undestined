@@ -235,9 +235,9 @@ void Player::setup_animations() {
 // TODO(Pramish): Incorporate these with the acceleration
 void Player::move_left() {
   std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
+  sprite->set_flip(true);
   if (contain(PossibleStates, sprite->current_animation)) {
     accn.x -= 0.003f;
-    sprite->set_flip(true);
   }
   PossibleStates = {"Idle"};
   if (contain(PossibleStates, sprite->current_animation)) {
@@ -246,10 +246,10 @@ void Player::move_left() {
 }
 
 void Player::move_right() {
+  sprite->set_flip(false);
   std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
   if (contain(PossibleStates, sprite->current_animation)) {
     accn.x += 0.003f;
-    sprite->set_flip(false);
   }
   PossibleStates = {"Idle"};
   if (contain(PossibleStates, sprite->current_animation)) {
