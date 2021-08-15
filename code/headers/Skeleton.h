@@ -53,6 +53,7 @@ class Skeleton : public Enemy
 	bool hurting = false;
 	bool other = false;
 	
+	types::r32 attack_delay;
 	bool attackBusy = false;
 	bool countTime = false;
 	types::i32 attackActiveTime = 0;

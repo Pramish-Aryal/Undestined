@@ -14,6 +14,7 @@ using namespace types;
 namespace {
 	const r32 RESPAWN_TIME = 560;        // 5 seconds
 	const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
+	const r32 ATTACK_DELAY = 3 * 1000.f; //3 seconds
 }  // namespace
 
 Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
@@ -142,7 +143,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	}
 	
 	std::cout << distance.y << std::endl;
-	if(ABS(distance.x) < 105 && distance.y <= 10) {
+	if(ABS(distance.x) < 105 && ABS(distance.y) <= 10) {
 		attack();
 	}
 	
@@ -181,7 +182,7 @@ void Skeleton::setup_animations() {
 }
 
 void Skeleton::move_left() {
-	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall", "Attack", "Hurt"};
+	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		accn.x -= 0.003f;
 		sprite->set_flip(true);
@@ -193,7 +194,7 @@ void Skeleton::move_left() {
 }
 
 void Skeleton::move_right() {
-	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Attack", "Hurt"};
+	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
 		accn.x += 0.003f;
 		sprite->set_flip(false);
