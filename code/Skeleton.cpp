@@ -80,8 +80,6 @@ static bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, f
 	return a.second < b.second;
 }
 
-#include <iostream>
-
 void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	float dirX;
 	
@@ -207,7 +205,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 
 void Skeleton::setup_animations() {
 	sprite->add_animation("Idle", 0, 0, 150, 150, 4, 7);
-	sprite->add_animation("Run", 0, 1, 150, 150, 4, 7);
+	sprite->add_animation("Run", 0, 1, 150, 150, 4, 15);
 	sprite->add_animation("Die", 0, 2, 150, 150, 4, 7);
 	sprite->add_animation("Hurt", 0, 3, 150, 150, 4, 11);
 	sprite->add_animation("Attack", 0, 4, 150, 150, 8, 11);

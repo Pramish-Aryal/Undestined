@@ -71,7 +71,7 @@ void Game::game_loop() {
 	
 	menu = new Menu;
 	
-	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2 - Vec2f(0, 200);
+	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2 - Vec2f(225, 250);
 	
 	r32 fixed_delta_time = FRAME_TIME;
 	r32 accumulator = 0;
