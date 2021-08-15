@@ -56,9 +56,9 @@ void Game::game_loop() {
 	enemylist.push_back(new Skeleton(graphics, {400, 3000}));
 	enemylist.push_back(new Skeleton(graphics, {300, 200}));
 	enemylist.push_back(new FlyingEye(graphics));
-	enemylist.push_back(new FlyingEye(graphics, {150, 200}));
-	enemylist.push_back(new FlyingEye(graphics, {300, 250}));
-	enemylist.push_back(new FlyingEye(graphics, {500, 200}));
+	// enemylist.push_back(new FlyingEye(graphics, {150, 200}));
+	// enemylist.push_back(new FlyingEye(graphics, {300, 250}));
+	// enemylist.push_back(new FlyingEye(graphics, {500, 200}));
 	
 	player = new Player(graphics);
 	map = new Map(graphics);
