@@ -30,7 +30,7 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
 	//enemy size = 45 x 51, 60 x 50
 	offsets = {60.f, 50.f};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-	collider.size = {45.f * scale, 51.f * scale};
+	collider.size = {30.f * scale, 51.f * scale};
 	
 	attackCollider.pos = {pos.x + offsets.x * scale + 45 * 1.5f, pos.y + offsets.y * scale + 3};
 	attackCollider.size = {30.f * scale, 35.f * scale};
@@ -131,11 +131,11 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	accn.x = 0;
 	accn.y = 0;
 	
-	collider.size = {45.f * scale, 51.f * scale};
+	collider.size = {30.f * scale, 51.f * scale};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	if (!sprite->get_flip()) {
 		attackCollider.size = {30.f * scale, 35.f * scale};
-		attackCollider.pos = {pos.x + offsets.x * scale + 45 * 1.5f, pos.y + offsets.y * scale + 3};
+		attackCollider.pos = {pos.x + offsets.x * scale + 30* 1.5f, pos.y + offsets.y * scale + 3};
 	} else {
 		attackCollider.size = {30.f * scale, 35.f * scale};
 		attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};

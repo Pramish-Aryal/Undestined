@@ -39,7 +39,7 @@ class Menu
 	{
 		std::stringstream ss;
 		ss << "Kill Count: " << score;
-		font.render_text(graphics, ss.str().c_str(), Vec2f(0, 0), 5);
+		font.render_text(graphics, ss.str().c_str(), Vec2f(1280 - 250, 5), 2);
 	}
 	
 	void draw_pause(Graphics& graphics, Font& font)

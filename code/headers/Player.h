@@ -37,11 +37,11 @@ class Player
 	void die();
 	void block();
 	void block_idle();
-  void respawn();
+	void respawn();
 	
 	private:
 	void setup_animations();
-	
+	void draw_health(Graphics& graphics);
 	private:
 	Vec2f pos;
 	Vec2f cameraBuffer;
