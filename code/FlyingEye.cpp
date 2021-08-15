@@ -28,7 +28,7 @@ FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi) {
   hoverPos.x += 200;
   vel = {0, 0};
   accn = {0, 0};
-  vMax = {.15, .15};
+  vMax = {.15, .25};
 
   flight_angle = 0;
   //enemy size = 45 x 51, 60 x 50
@@ -107,16 +107,21 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
     if (dirx < 0)
       move_left();
 
-    if (((playerBufferedPos - pos).y - 70) > 15) {
+    if (((playerBufferedPos - pos).y - 60) > 5) {
       move_down();
-    } else if (((playerBufferedPos - pos).y - 70) < 15) {
+    } else if (((playerBufferedPos - pos).y - 60) < -5) {
       move_up();
     }
-    if (((dirx * (playerBufferedPos.x - pos.x))+75 ) < 0 && !midway) {
+
+    if (((dirx * (playerBufferedPos.x - pos.x)) + 75) < 0 && !midway) {
       playerBufferedPos.y -= 150;
       midway = true;
     }
+
+    if (midway && (playerBufferedPos.y + 10) > pos.y)
+      stop_moving();
     hoverPos = pos;
+    hoverPos.y -= 60;
   }
 
   vel += accn * dt;
