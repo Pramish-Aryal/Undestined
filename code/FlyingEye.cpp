@@ -35,10 +35,6 @@ FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi) {
   offsets = {60.f, 50.f};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {45.f * scale, 51.f * scale};
-  Vec2f screen_size = {1280.f, 720.f};
-  Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
-  Camera::get_instance().get_pos().y = -1 * (screen_size.y * 5.7f / 10.0f - pos.y);
-  cameraBuffer = Camera::get_instance().get_pos();
   sprite->play_animation("Idle");
 }
 
@@ -259,7 +255,7 @@ void FlyingEye::stop_moving() {
 }
 
 void FlyingEye::endAttack() {
-  std::vector<std::string> PossibleStates = {"Idle", "Attack","Hurt"};
+  std::vector<std::string> PossibleStates = {"Idle", "Attack", "Hurt"};
   if (contain(PossibleStates, sprite->current_animation)) {
     hoverPos = pos;
     hoverPos.y -= 65.5f;
@@ -330,7 +326,6 @@ void FlyingEye::respawn() {
   offsets = {60.f, 50.f};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {45.f * scale, 51.f * scale};
-  Vec2f screen_size = {1280.f, 720.f};
   sprite->play_animation("Idle");
 }
 
