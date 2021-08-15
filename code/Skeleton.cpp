@@ -14,7 +14,7 @@ using namespace types;
 namespace {
 	const r32 RESPAWN_TIME = 560;        // 5 seconds
 	const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
-	const r32 ATTACK_DELAY = 1.75f * 1000.f; //1.75 seconds
+	const r32 ATTACK_DELAY = 2.f * 1000.f; //2 seconds
 }  // namespace
 
 Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
