@@ -224,7 +224,6 @@ void Skeleton::move_left() {
 		sprite->play_animation("Run");
 	}
 }
-
 void Skeleton::move_right() {
 	std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Hurt"};
 	if (contain(PossibleStates, sprite->current_animation)) {
@@ -236,7 +235,6 @@ void Skeleton::move_right() {
 		sprite->play_animation("Run");
 	}
 }
-
 void Skeleton::stop_moving() {
 	std::vector<std::string> PossibleStates = {"Run", "Fall"};
 	if (contain(PossibleStates, sprite->current_animation)) {

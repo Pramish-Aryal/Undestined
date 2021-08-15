@@ -13,7 +13,7 @@ using namespace types;
 
 namespace {
 	const r32 JUMP_TIMER_MAX = 575.f;
-	const r32 INVINCIBLE_TIME = 725.0f;  // 3 frames
+	const r32 INVINCIBLE_TIME = 745.0f;  // 3 frames
 }  // namespace
 
 Player::Player(Graphics &graphics) {

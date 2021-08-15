@@ -23,6 +23,7 @@ class FlyingEye : public Enemy {
 
   void stop_moving() override;
   void attack() override;
+  void endAttack();
   void get_hurt(types::r32 dt) override;
   void die() override;
 
@@ -56,5 +57,6 @@ class FlyingEye : public Enemy {
   bool attacking = false;
   bool buffer = false;
   bool midway = false;
+  bool hit = false;
   bool other = false;
 };

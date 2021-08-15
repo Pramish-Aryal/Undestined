@@ -119,9 +119,7 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
     }
 
     if (midway && (playerBufferedPos.y + 10) > pos.y)
-      stop_moving();
-    hoverPos = pos;
-    hoverPos.y -= 60;
+      endAttack();
   }
 
   vel += accn * dt;
@@ -165,6 +163,14 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
   accn.x = 0;
   accn.y = 0;
 
+  //-------Damage the player
+  if (!hit && attacking) {
+    if (Collider::rect_vs_rect(this->collider, player.get_collider())) {
+      player.get_hurt(dt);
+      hit = true;
+    }
+  }
+
   //----------Invincible And Respawn Count-----------
   if (invincible_timer > 0)
     invincible_timer -= dt;
@@ -191,7 +197,6 @@ void FlyingEye::move_left() {
     }
   }
 }
-
 void FlyingEye::move_right() {
   std::vector<std::string> PossibleStates = {"Idle", "Hurt", "Attack"};
   if (contain(PossibleStates, sprite->current_animation)) {
@@ -219,14 +224,25 @@ void FlyingEye::move_down() {
 }
 
 void FlyingEye::stop_moving() {
-  std::vector<std::string> PossibleStates = {"Run", "Fall", "Attack"};
-  if (contain(PossibleStates, sprite->current_animation)) {
-    attacking = false;
-    buffer = false;
+  // std::vector<std::string> PossibleStates = {};
+  // if (contain(PossibleStates, sprite->current_animation)) {
     sprite->play_animation("Idle");
-  }
+  // }
 }
 
+void FlyingEye::endAttack() {
+  std::vector<std::string> PossibleStates = {"Idle", "Attack"};
+  if (contain(PossibleStates, sprite->current_animation)) {
+    hoverPos = pos;
+    
+    attacking = false;
+    buffer = false;
+    hit = false;
+    flight_angle = 0;
+    sprite->play_animation("Idle");
+
+  }
+}
 void FlyingEye::attack() {
   std::vector<std::string> PossibleStates = {"Idle"};
   if (contain(PossibleStates, sprite->current_animation)) {
