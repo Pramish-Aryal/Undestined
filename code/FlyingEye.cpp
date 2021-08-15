@@ -16,12 +16,16 @@ namespace {
 const r32 ANGULAR_VELOCITY = 120.0f / 1000.0f;
 const r32 RESPAWN_TIME = 560;        // 5 seconds
 const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
+const r32 HOVER_DISTANCE = 250.0f;
+
 }  // namespace
 
 FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi) {
   sprite = new AnimatedSprite(graphics, "data\\FlyingEye.png");
   setup_animations();
   pos = posi;
+  hoverPos = posi;
+  hoverPos.x += 200;
   vel = {0, 0};
   accn = {0, 0};
   vMax = {.3, 9.0f};
@@ -61,20 +65,22 @@ static bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, f
 void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
   float dirX;
 
-  if (ABS((player.get_pos() - pos).x) >= 10) {
-    if ((player.get_pos() - pos).normal().x > 0)
+  if (ABS((player.get_pos() - hoverPos).x) >= 150) {
+    if ((player.get_pos() - hoverPos).normal().x > 0)
       move_right();
-    else if ((player.get_pos() - pos).normal().x < 0)
+    else if ((player.get_pos() - hoverPos).normal().x < 0)
       move_left();
   } else
     stop_moving();
 
-  //just for fun, might need to comment them out
-  collider.size = {45.f * scale, 51.f * scale};
-  collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
+  if ((player.get_pos() - pos).normal().x > 0)
+    sprite->set_flip(false);
+  else if ((player.get_pos() - pos).normal().x < 0)
+    sprite->set_flip(true);
+
   vel += accn * dt;
 
-  //fraction
+  // friction
   if (vel.x != 0) {
     dirX = (vel.x / abs(vel.x));
     float friction = (abs(.0012f * dt) <= abs(vel.x)) ? abs(.0012f * dt) : abs(vel.x);
@@ -85,15 +91,20 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
   vel.x = (vel.x < vMax.x) ? vel.x : vMax.x;
   vel.x = (-vel.x < vMax.x) ? vel.x : -vMax.x;
 
+  //pos update
+  float bias =  ( player.get_pos().y - 95 - hoverPos.y)/15.0f;
+  if (!dead) {
+    hoverPos.x += vel.x * dt;
+    hoverPos.y += bias;
+    flight_angle += ANGULAR_VELOCITY * dt;
+    pos.y =  hoverPos.y + (65.5f * sinf(flight_angle * 3.141592f / 180.0f));
+    pos.x = hoverPos.x + (15.5f * sinf((flight_angle-90) * 3.141592f / 180.0f));
+  }
+
+  //just for fun, might need to comment them out (tf is this comment bro)
+  collider.size = {45.f * scale, 51.f * scale};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 
-  //pos update
-  if (!dead) {
-    pos.x += vel.x * dt;
-
-    flight_angle += ANGULAR_VELOCITY * dt;
-    pos.y += (2.5f * sinf(flight_angle * 3.141592f / 180.0f));
-  }
   //final Resets
   accn.x = 0;
   accn.y = 0;

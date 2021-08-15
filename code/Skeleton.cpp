@@ -73,7 +73,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	//r32 limit = sprite->get_flip() ? 
 	
 	if (ABS(distance.x) <= 250 && ABS(distance.x) >= 100 && ABS(distance.y) <= 250) {
-		if (distance.normal().x > 0)
+		if (distance.normal() .x > 0)
 			move_right();
 		else if (distance.normal().x < 0)
 			move_left();
