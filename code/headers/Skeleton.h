@@ -29,7 +29,7 @@ class Skeleton : public Enemy
 	void respawn();
 	void endAttack();
 	void stop_attack();
-	
+	void draw_health(Graphics& graphics);
 	private:
 	Vec2f pos;
 	Rect collider;

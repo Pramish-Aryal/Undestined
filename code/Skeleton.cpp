@@ -33,7 +33,7 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
 	collider.size = {30.f * scale, 51.f * scale};
 	
 	attackCollider.pos = {pos.x + offsets.x * scale + 45 * 1.5f, pos.y + offsets.y * scale + 3};
-	attackCollider.size = {30.f * scale, 35.f * scale};
+	attackCollider.size = {40.f * scale, 35.f * scale};
 	
 	Vec2f screen_size = {1280.f, 720.f};
 	sprite->play_animation("Idle");
@@ -42,6 +42,23 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
 void Skeleton::draw(Graphics &graphics, r32 scale) {
 	this->scale = scale;
 	sprite->draw(graphics, (i32)pos.x, (i32)pos.y, scale);
+	draw_health(graphics);
+}
+
+void Skeleton::draw_health(Graphics& graphics)
+{
+	r32 o_x = Camera::get_instance().get_pos().x;
+	r32 o_y = Camera::get_instance().get_pos().y;
+	
+	SDL_Rect rect = { (i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y - 20), 100, 10};
+	SDL_SetRenderDrawColor(graphics.get_renderer(), 18, 18, 18, 255);
+	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
+	
+	
+	i32 health_width = 100 * (health / 100.f) > 0 ? 100 * (health / 100.f) : 0;
+	rect = { (i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y - 20), health_width, 10};
+	SDL_SetRenderDrawColor(graphics.get_renderer(), 200, 18, 18, 255);
+	SDL_RenderFillRect(graphics.get_renderer(), &rect);
 }
 
 void Skeleton::debug_draw(Graphics &graphics, u8 scale) {
@@ -134,14 +151,14 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	collider.size = {30.f * scale, 51.f * scale};
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	if (!sprite->get_flip()) {
-		attackCollider.size = {30.f * scale, 35.f * scale};
+		attackCollider.size = {40.f * scale, 35.f * scale};
 		attackCollider.pos = {pos.x + offsets.x * scale + 30* 1.5f, pos.y + offsets.y * scale + 3};
 	} else {
-		attackCollider.size = {30.f * scale, 35.f * scale};
+		attackCollider.size = {40.f * scale, 35.f * scale};
 		attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
 	}
 	
-	if(ABS(distance.x) < 105 && ABS(distance.y) <= 10) {
+	if(ABS(distance.x) <= 100 && ABS(distance.y) <= 10) {
 		if(first_attack) {
 			attack();
 			first_attack = false;
