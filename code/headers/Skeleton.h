@@ -28,6 +28,7 @@ class Skeleton : public Enemy
 	void setup_animations() override;
 	void respawn();
 	void endAttack();
+	void stop_attack();
 	
 	private:
 	Vec2f pos;
@@ -52,6 +53,8 @@ class Skeleton : public Enemy
 	bool running = false;
 	bool hurting = false;
 	bool other = false;
+	bool first_attack = false;
+	
 	
 	types::r32 attack_delay;
 	bool attackBusy = false;

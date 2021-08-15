@@ -14,7 +14,7 @@ using namespace types;
 namespace {
 	const r32 RESPAWN_TIME = 560;        // 5 seconds
 	const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
-	const r32 ATTACK_DELAY = 3 * 1000.f; //3 seconds
+	const r32 ATTACK_DELAY = 1.75f * 1000.f; //1.75 seconds
 }  // namespace
 
 Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
@@ -49,7 +49,7 @@ void Skeleton::debug_draw(Graphics &graphics, u8 scale) {
 	r32 o_y = Camera::get_instance().get_pos().y;
 	SDL_Rect rect = {(i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y), (i32)(collider.size.w), (i32)(collider.size.h)};
 	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
-	if (attackBusy && attackActiveTime > 555 ) {
+	if (attackBusy && attackActiveTime > 450 ) {
 		rect = {(i32)(attackCollider.pos.x - o_x), (i32)(attackCollider.pos.y - o_y), (i32)(attackCollider.size.w), (i32)(attackCollider.size.h)};
 		SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 	}
@@ -80,7 +80,8 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	} else
 		stop_moving();
 	
-	sprite->set_flip( distance.x < 0 ? true : false);
+	if(!attackBusy)
+		sprite->set_flip( distance.x < 0 ? true : false);
 	
 	vel += accn * dt;
 	
@@ -116,7 +117,6 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 		//vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
 	}
 	
-	//std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b) { return a.second < b.second; });
 	std::sort(z.begin(), z.end(), sort_func_ptr);
 	
 	for (i32 i = 0; i < z.size(); i++) {
@@ -124,7 +124,6 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 			vel += cn * Vec2f(ABS(vel.x), ABS(vel.y)) * (1 - t);
 		}
 	}
-	
 	//pos update
 	pos += vel * dt;
 	
@@ -142,9 +141,23 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 		attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
 	}
 	
-	std::cout << distance.y << std::endl;
 	if(ABS(distance.x) < 105 && ABS(distance.y) <= 10) {
-		attack();
+		if(first_attack) {
+			attack();
+			first_attack = false;
+		} else {
+			
+			if(attack_delay >= ATTACK_DELAY) {
+				attack_delay = 0;
+				attack();
+			}
+		}
+	} else { 
+		first_attack = true;
+	}
+	
+	if(!first_attack) {
+		attack_delay += dt;
 	}
 	
 	if (countTime)
@@ -158,7 +171,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	
 	if (attackBusy) {
 		if (Collider::rect_vs_rect(this->attackCollider, player.get_collider())) {
-			if (attackActiveTime > 555)
+			if (attackActiveTime > 450)
 				player.get_hurt(dt);
 		}
 	}
@@ -166,6 +179,8 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	//----------Invincible And Respawn Count-----------
 	if (invincible_timer > 0)
 		invincible_timer -= dt;
+	if(invincible_timer <= 360)
+		hurting = false;
 	if (dead) {
 		if (invincible_timer <= 0) {
 			respawn();
@@ -223,10 +238,15 @@ void Skeleton::attack() {
 	}
 }
 
-void Skeleton::endAttack() {
+void Skeleton::stop_attack()
+{
 	attackBusy = false;
 	countTime = false;
 	attackActiveTime = 0;
+}
+
+void Skeleton::endAttack() {
+	stop_attack();
 	sprite->play_animation("Idle");
 }
 
@@ -236,8 +256,10 @@ void Skeleton::get_hurt(r32 dt) {
 			sprite->play_animation("Hurt", 1);
 			invincible_timer = INVINCIBLE_TIME;
 			health -= 45.f;
+			stop_attack();
 		}
 		if (health <= 0 && !dead) {
+			stop_attack();
 			die();
 			invincible_timer = RESPAWN_TIME;
 		}
