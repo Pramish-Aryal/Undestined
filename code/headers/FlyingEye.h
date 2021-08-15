@@ -29,7 +29,7 @@ class FlyingEye : public Enemy {
 	
 	private:
 	void setup_animations() override;
-	void respawn();
+	void respawn(Vec2f posi = {700, 200});
 	void draw_health(Graphics& graphics);
 	
 	private:

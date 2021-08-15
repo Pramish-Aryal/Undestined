@@ -153,7 +153,7 @@ void Game::draw(Graphics &graphics, Font &font) {
 		player->draw(graphics, player_scale);
 		if (DEBUG)
 			player->debug_draw(graphics, scale);
-		menu->draw_score(graphics, font, 5);
+		menu->draw_score(graphics, font, Enemy::get_score());
 	}
 	graphics.display();
 }

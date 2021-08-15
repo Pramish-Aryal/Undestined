@@ -26,7 +26,7 @@ class Skeleton : public Enemy
 	
 	private:
 	void setup_animations() override;
-	void respawn();
+	void respawn(Vec2f posi = {700, 200});
 	void endAttack();
 	void stop_attack();
 	void draw_health(Graphics& graphics);

@@ -11,6 +11,9 @@
 
 using namespace types;
 
+//Didn't want to create a whole new file for just one static variable
+u32 Enemy::score;
+
 namespace {
 	const r32 RESPAWN_TIME = 560;        // 5 seconds
 	const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
@@ -20,23 +23,8 @@ namespace {
 Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
 	sprite = new AnimatedSprite(graphics, "data\\Skeleton.png");
 	setup_animations();
-	pos = posi;
-	
-	vel = {0, 0};
-	accn = {0, 0};
-	vMax = {.3, 9.0f};
-	
-	gravity = 0.0045f;
 	//enemy size = 45 x 51, 60 x 50
-	offsets = {60.f, 50.f};
-	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-	collider.size = {30.f * scale, 51.f * scale};
-	
-	attackCollider.pos = {pos.x + offsets.x * scale + 45 * 1.5f, pos.y + offsets.y * scale + 3};
-	attackCollider.size = {40.f * scale, 35.f * scale};
-	
-	Vec2f screen_size = {1280.f, 720.f};
-	sprite->play_animation("Idle");
+	respawn(posi);
 }
 
 void Skeleton::draw(Graphics &graphics, r32 scale) {
@@ -291,8 +279,12 @@ Rect Skeleton::get_collider() {
 	return collider;
 }
 
-void Skeleton::respawn() {
-	pos = {700, 200};
+void Skeleton::respawn(Vec2f posi) {
+	
+	if(dead)
+		score++;
+	
+	pos = posi;
 	health = 100.0f;
 	time_to_respawn = 0.f;
 	invincible_timer = 0;
@@ -307,9 +299,13 @@ void Skeleton::respawn() {
 	gravity = 0.0045f;
 	//enemy size = 45 x 51, 60 x 50
 	offsets = {60.f, 50.f};
+	
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-	collider.size = {45.f * scale, 51.f * scale};
-	Vec2f screen_size = {1280.f, 720.f};
+	collider.size = {30.f * scale, 51.f * scale};
+	
+	attackCollider.pos = {pos.x + offsets.x * scale + 45 * 1.5f, pos.y + offsets.y * scale + 3};
+	attackCollider.size = {40.f * scale, 35.f * scale};
+	
 	sprite->play_animation("Idle");
 }
 

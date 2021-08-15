@@ -11,15 +11,15 @@ class Player;
 
 class Enemy
 {
-public:
+	public:
 	virtual void draw(Graphics &, types::r32) = 0;
 	virtual void debug_draw(Graphics &graphics, types::u8 scale = 10) = 0;
 	virtual void simulate(types::r32 dt, Map &map, Player& player) = 0;
 	virtual void update(types::r32 dt) = 0;
-
+	
 	//collision
 	virtual Rect get_collider() = 0;
-
+	
 	//player movement
 	virtual void move_left() = 0;
 	virtual void move_right() = 0;
@@ -27,7 +27,9 @@ public:
 	virtual void attack() = 0;
 	virtual void get_hurt(types::r32 dt) = 0;
 	virtual void die() = 0;
-
-private:
+	
+	static types::u32 score;
+	static types::u32 get_score() { return score;}
+	private:
 	virtual void setup_animations() = 0;
 };
