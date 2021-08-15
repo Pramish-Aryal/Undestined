@@ -170,10 +170,10 @@ void Game::handle_input(Input &input) {
 		if (input.key_held(SDL_SCANCODE_E))
 			player->attack();
 		if (input.key_held(SDL_SCANCODE_R))
-			enemylist[6]->attack();
+			enemylist[6]->stop_moving();
 		
 		if (input.key_held(SDL_SCANCODE_Q))
-			enemylist[0]->attack();
+			enemylist[6]->attack();
 		
 		if (input.key_held(SDL_SCANCODE_D) && !input.key_held(SDL_SCANCODE_A))
 			player->move_right();

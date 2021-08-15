@@ -28,7 +28,7 @@ FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi) {
   hoverPos.x += 200;
   vel = {0, 0};
   accn = {0, 0};
-  vMax = {.3, 9.0f};
+  vMax = {.15, .15};
 
   flight_angle = 0;
   //enemy size = 45 x 51, 60 x 50
@@ -65,40 +65,91 @@ static bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, f
 void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
   float dirX;
 
-  if (ABS((player.get_pos() - hoverPos).x) >= 150) {
-    if ((player.get_pos() - hoverPos).normal().x > 0)
-      move_right();
-    else if ((player.get_pos() - hoverPos).normal().x < 0)
-      move_left();
-  } else
-    stop_moving();
+  if (!attacking) {
+    if (ABS((player.get_pos() - hoverPos).x) >= 150) {
+      if ((player.get_pos() - 95 - hoverPos).normal().x > 0)
+        move_right();
+      else if ((player.get_pos() - 95 - hoverPos).normal().x < 0)
+        move_left();
+    }
 
-  if ((player.get_pos() - pos).normal().x > 0)
-    sprite->set_flip(false);
-  else if ((player.get_pos() - pos).normal().x < 0)
-    sprite->set_flip(true);
+    if (((player.get_pos() - hoverPos).y) >= 175) {
+      if ((player.get_pos() - hoverPos).normal().y > 0)
+        move_down();
+    }
+    if (((player.get_pos() - hoverPos).y) < -25) {
+      if ((player.get_pos() - hoverPos).normal().y < 0)
+        move_up();
+    }
+
+    if ((player.get_pos() - pos).normal().x > 0)
+      sprite->set_flip(false);
+    else if ((player.get_pos() - pos).normal().x < 0)
+      sprite->set_flip(true);
+
+  } else {
+    //---------------------Bat swing down physics------------
+    if (buffer) {  //buffering target
+      playerBufferedPos = player.get_pos();
+      buffer = false;
+      if ((playerBufferedPos - pos).normal().x > 0) {
+        sprite->set_flip(false);
+        dirx = 1;
+      } else if ((playerBufferedPos - pos).normal().x < 0) {
+        sprite->set_flip(true);
+        dirx = -1;
+      }
+      endAttackTargetPos = playerBufferedPos;
+      endAttackTargetPos.x += 500 * dirx;
+    }
+    if (dirx > 0)
+      move_right();
+    if (dirx < 0)
+      move_left();
+
+    if (((playerBufferedPos - pos).y - 70) > 15) {
+      move_down();
+    } else if (((playerBufferedPos - pos).y - 70) < 15) {
+      move_up();
+    }
+    if (((dirx * (playerBufferedPos.x - pos.x))+75 ) < 0 && !midway) {
+      playerBufferedPos.y -= 150;
+      midway = true;
+    }
+    hoverPos = pos;
+  }
 
   vel += accn * dt;
 
   // friction
   if (vel.x != 0) {
-    dirX = (vel.x / abs(vel.x));
+    dirX = SIGNOF(vel.x);
     float friction = (abs(.0012f * dt) <= abs(vel.x)) ? abs(.0012f * dt) : abs(vel.x);
     vel.x -= dirX * friction;
   }
+  if (vel.y != 0) {
+    dirX = SIGNOF(vel.y);
+    float friction = (abs(.0012f * dt) <= abs(vel.y)) ? abs(.0012f * dt) : abs(vel.y);
+    vel.y -= dirX * friction;
+  }
 
   //clampers
-  vel.x = (vel.x < vMax.x) ? vel.x : vMax.x;
-  vel.x = (-vel.x < vMax.x) ? vel.x : -vMax.x;
+  vel.x = (ABS(vel.x) < vMax.x) ? vel.x : (vMax.x * SIGNOF(vel.x));
+  vel.y = (ABS(vel.y) < vMax.y) ? vel.y : (vMax.y * SIGNOF(vel.y));
 
   //pos update
-  float bias =  ( player.get_pos().y - 95 - hoverPos.y)/15.0f;
+
   if (!dead) {
-    hoverPos.x += vel.x * dt;
-    hoverPos.y += bias;
+    if (!attacking)
+      hoverPos += vel * dt;
+    else
+      pos += vel * dt;
+
     flight_angle += ANGULAR_VELOCITY * dt;
-    pos.y =  hoverPos.y + (65.5f * sinf(flight_angle * 3.141592f / 180.0f));
-    pos.x = hoverPos.x + (15.5f * sinf((flight_angle-90) * 3.141592f / 180.0f));
+    if (!attacking) {
+      pos.y = hoverPos.y + (65.5f * sinf(flight_angle * 3.141592f / 180.0f));
+      pos.x = hoverPos.x + (15.5f * sinf((flight_angle - 90) * 3.141592f / 180.0f));
+    }
   }
 
   //just for fun, might need to comment them out (tf is this comment bro)
@@ -127,25 +178,58 @@ void FlyingEye::setup_animations() {
 }
 
 void FlyingEye::move_left() {
-  if (!dead) {
-    accn.x -= 0.003f;
-    sprite->set_flip(true);
+  std::vector<std::string> PossibleStates = {"Idle", "Hurt", "Attack"};
+  if (contain(PossibleStates, sprite->current_animation)) {
+    if (!dead) {
+      accn.x -= 0.003f;
+      sprite->set_flip(true);
+    }
   }
 }
 
 void FlyingEye::move_right() {
-  if (!dead) {
-    accn.x += 0.003f;
-    sprite->set_flip(false);
+  std::vector<std::string> PossibleStates = {"Idle", "Hurt", "Attack"};
+  if (contain(PossibleStates, sprite->current_animation)) {
+    if (!dead) {
+      accn.x += 0.003f;
+      sprite->set_flip(false);
+    }
+  }
+}
+void FlyingEye::move_up() {
+  std::vector<std::string> PossibleStates = {"Idle", "Hurt", "Attack"};
+  if (contain(PossibleStates, sprite->current_animation)) {
+    if (!dead) {
+      accn.y -= 0.003f;
+    }
+  }
+}
+void FlyingEye::move_down() {
+  std::vector<std::string> PossibleStates = {"Idle", "Hurt", "Attack"};
+  if (contain(PossibleStates, sprite->current_animation)) {
+    if (!dead) {
+      accn.y += 0.003f;
+    }
   }
 }
 
 void FlyingEye::stop_moving() {
-  idle = true;
+  std::vector<std::string> PossibleStates = {"Run", "Fall", "Attack"};
+  if (contain(PossibleStates, sprite->current_animation)) {
+    attacking = false;
+    buffer = false;
+    sprite->play_animation("Idle");
+  }
 }
 
 void FlyingEye::attack() {
-  sprite->play_animation("Attack");
+  std::vector<std::string> PossibleStates = {"Idle"};
+  if (contain(PossibleStates, sprite->current_animation)) {
+    sprite->play_animation("Attack");
+    attacking = true;
+    buffer = true;
+    midway = false;
+  }
 }
 
 void FlyingEye::get_hurt(types::r32 dt) {
@@ -176,6 +260,7 @@ Rect FlyingEye::get_collider() {
 
 void FlyingEye::respawn() {
   pos = {700, 200};
+  hoverPos = {700, 200};
   health = 100.0f;
   invincible_timer = 0;
   dead = false;
@@ -183,7 +268,7 @@ void FlyingEye::respawn() {
   idle = true;
   vel = {0, 0};
   accn = {0, 0};
-  vMax = {.3, 9.0f};
+
   dead = false;
 
   //enemy size = 45 x 51, 60 x 50

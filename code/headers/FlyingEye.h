@@ -18,6 +18,9 @@ class FlyingEye : public Enemy {
   //player movement
   void move_left() override;
   void move_right() override;
+  void move_up();
+  void move_down();
+
   void stop_moving() override;
   void attack() override;
   void get_hurt(types::r32 dt) override;
@@ -25,11 +28,13 @@ class FlyingEye : public Enemy {
 
  private:
   void setup_animations() override;
-  void respawn(); 
+  void respawn();
 
  private:
   Vec2f pos;
   Vec2f hoverPos;
+  Vec2f playerBufferedPos;
+  Vec2f endAttackTargetPos;
   Vec2f cameraBuffer;
   Rect collider;
 
@@ -45,8 +50,11 @@ class FlyingEye : public Enemy {
   types::r32 health = 100.f;
 
   bool idle = true;
+  int dirx = 0;
   bool dead = false;
   bool hurting = false;
-  bool pursuit = false;
+  bool attacking = false;
+  bool buffer = false;
+  bool midway = false;
   bool other = false;
 };
