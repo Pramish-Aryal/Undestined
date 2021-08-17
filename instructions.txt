@@ -1,0 +1,30 @@
+This project has two major dependencies, SDL2 and stb_image.
+As stb_image is a header only library, no need to do anything except get the include paths right. but you can get the stb headers from https://github.com/nothings/stb.
+In order to compile, you can either directly run the build.ps1/build.bat scripts or you can follow the given instructions to compile the project yourself.
+The directories are structured in the following way:
+	parent directory (i.e. the root directory)
+	 │
+         ├── code
+	 │    ├── headers
+	 │    │    └── *.h
+	 │    ├── extern
+	 │    │    ├── SDL2
+	 │    │    └── stb_image.h
+	 │    └── *.cpp
+	 ├── data (assets)
+	 └── build (will be generated)
+And the way the internal and external header files are included in the code,
+we'll have to set two separate include paths one to (relative to the parent directory)
+./code/extern/
+./code/headers/
+
+Where the .lib files (for msvc and clang) or .a (files for mingw) is up to your discretion and you can get the lib files for SDL2 from https://www.libsdl.org/
+so you'll have to link against SDL2.lib and SDL2main.lib
+and the windows only .lib files are Shell32.lib and User32.lib
+meaning the total headers you'll have to link against is
+- SDL2.lib
+- SDL2main.lib
+- Shell32.lib
+- User32.lib
+
+Now onto the compilation,

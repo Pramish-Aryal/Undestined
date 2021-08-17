@@ -91,6 +91,13 @@ void Game::game_loop() {
 			
 			if (event.type == SDL_KEYUP)
 				input.key_up_event(event);
+			
+			if(event.type == SDL_MOUSEBUTTONDOWN)
+				input.mouse_down_event();
+			
+			
+			if(event.type == SDL_MOUSEBUTTONUP)
+				input.mouse_up_event();
 		}
 		
 		handle_input(input);
@@ -167,7 +174,7 @@ void Game::handle_input(Input &input) {
 	}
 	
 	if (game_state == PLAY) {
-		if (input.key_held(SDL_SCANCODE_E))
+		if (input.key_held(SDL_SCANCODE_E) || input.mouse_pressed())
 			player->attack();
 		if (input.key_held(SDL_SCANCODE_R))
 			enemylist[6]->stop_moving();
