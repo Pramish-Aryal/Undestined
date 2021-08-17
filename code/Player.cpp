@@ -229,6 +229,15 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
 		Camera::get_instance().get_pos().y = 0;
 	if (Camera::get_instance().get_pos().y > 32 * 16 * 2 - screen_size.y)  //2 is map scale?
 		Camera::get_instance().get_pos().y = 32 * 16 * 2 - screen_size.y;
+	
+	if(Enemy::get_score() % 10 == 0) {
+		if(!healed)
+			health += 25;
+		health = health >= 100.f ? 100.f : health;
+		healed = true;
+	} else {
+		healed = false;
+	}
 }
 
 void Player::setup_animations() {

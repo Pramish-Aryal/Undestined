@@ -62,6 +62,9 @@ class Player
 	
 	bool cameraMovingx = false;
 	bool cameraMovingy = false;
+	
+	bool healed = false;
+	
 	//Nisans anim/player state identifiers
 	
 	bool falling = false;
