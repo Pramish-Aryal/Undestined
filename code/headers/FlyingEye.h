@@ -12,6 +12,8 @@ class FlyingEye : public Enemy {
 	void simulate(types::r32 dt, Map &map, Player &player) override;
 	void update(types::r32 dt) override;
 	
+	void set_spawn_points(std::vector<Vec2f>& spawns);
+	
 	//collision
 	Rect get_collider() override;
 	
@@ -39,6 +41,8 @@ class FlyingEye : public Enemy {
 	Vec2f endAttackTargetPos;
 	Vec2f cameraBuffer;
 	Rect collider;
+	
+	std::vector<Vec2f> possible_spawn_points;
 	
 	AnimatedSprite *sprite;
 	Vec2f vel;

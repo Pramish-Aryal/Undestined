@@ -7,10 +7,6 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 int main(int argc, char **argv)
 #endif
 {
-	try {
-		Game game;
-	} catch(...) {
-		
-	}
+	Game game;
 	return 0;
 }

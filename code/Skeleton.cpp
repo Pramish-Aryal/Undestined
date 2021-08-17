@@ -8,6 +8,7 @@
 #include "Graphics.h"
 #include "Map.h"
 #include "Player.h"
+#include "Random.h"
 
 using namespace types;
 
@@ -24,6 +25,7 @@ Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
 	sprite = new AnimatedSprite(graphics, "data\\Skeleton.png");
 	setup_animations();
 	//enemy size = 45 x 51, 60 x 50
+	possible_spawn_points = { {100, 200}, {900, 100}, {400, 300}, {300,200}};
 	respawn(posi);
 }
 
@@ -278,13 +280,15 @@ void Skeleton::die() {
 Rect Skeleton::get_collider() {
 	return collider;
 }
+#include <iostream>
 
 void Skeleton::respawn(Vec2f posi) {
 	
 	if(dead)
 		score++;
 	
-	pos = posi;
+	int index = ;
+	pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
 	health = 100.0f;
 	time_to_respawn = 0.f;
 	invincible_timer = 0;
@@ -307,6 +311,11 @@ void Skeleton::respawn(Vec2f posi) {
 	attackCollider.size = {40.f * scale, 35.f * scale};
 	
 	sprite->play_animation("Idle");
+}
+
+void Skeleton::set_spawn_points(std::vector<Vec2f>& spawns)
+{
+	possible_spawn_points = spawns;
 }
 
 Skeleton::~Skeleton() {

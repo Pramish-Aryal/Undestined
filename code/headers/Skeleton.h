@@ -13,6 +13,8 @@ class Skeleton : public Enemy
 	void simulate(types::r32 dt, Map &map, Player& player) override;
 	void update(types::r32 dt) override;
 	
+	void set_spawn_points(std::vector<Vec2f>& spawns) override;
+	
 	//collision
 	Rect get_collider() override;
 	
@@ -34,7 +36,7 @@ class Skeleton : public Enemy
 	Vec2f pos;
 	Rect collider;
 	Rect attackCollider;
-	
+	std::vector<Vec2f> possible_spawn_points;
 	AnimatedSprite *sprite;
 	Vec2f vel;
 	Vec2f accn;

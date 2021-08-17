@@ -13,29 +13,29 @@
 using namespace types;
 
 namespace {
-const r32 ANGULAR_VELOCITY = 120.0f / 1000.0f;
-const r32 RESPAWN_TIME = 560;        // 5 seconds
-const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
-const r32 HOVER_DISTANCE = 250.0f;
-const r32 ATTACK_DELAY = (1.9f * 1000.f);  //1.75 seconds
+	const r32 ANGULAR_VELOCITY = 120.0f / 1000.0f;
+	const r32 RESPAWN_TIME = 560;        // 5 seconds
+	const r32 INVINCIBLE_TIME = 530.0f;  // 3 frames
+	const r32 HOVER_DISTANCE = 250.0f;
+	const r32 ATTACK_DELAY = (1.9f * 1000.f);  //1.75 seconds
 }  // namespace
 
 FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi) {
-  sprite = new AnimatedSprite(graphics, "data\\FlyingEye.png");
-  setup_animations();
-  pos = posi;
-  hoverPos = posi;
-  hoverPos.x += 200;
-  vel = {0, 0};
-  accn = {0, 0};
-  vMax = {.15, .3};
-
-  flight_angle = 0;
-  //enemy size = 45 x 51, 60 x 50
-  offsets = {60.f, 50.f};
-  collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-  collider.size = {45.f * scale, 51.f * scale};
-  sprite->play_animation("Idle");
+	sprite = new AnimatedSprite(graphics, "data\\FlyingEye.png");
+	setup_animations();
+	pos = posi;
+	hoverPos = posi;
+	hoverPos.x += 200;
+	vel = {0, 0};
+	accn = {0, 0};
+	vMax = {.15, .3};
+	
+	flight_angle = 0;
+	//enemy size = 45 x 51, 60 x 50
+	offsets = {60.f, 50.f};
+	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
+	collider.size = {45.f * scale, 51.f * scale};
+	sprite->play_animation("Idle");
 }
 
 void FlyingEye::draw(Graphics &graphics, r32 scale)
@@ -298,18 +298,18 @@ void FlyingEye::stop_moving()
 }
 
 void FlyingEye::endAttack() {
-  std::vector<std::string> PossibleStates = {"Idle", "Attack", "Hurt"};
-  if (contain(PossibleStates, sprite->current_animation)) {
-    hoverPos = pos;
-    hoverPos.y -= 65.5f;
-    attacking = false;
-    buffer = false;
-    hit = true;
-    midway = true;
-    flight_angle = 90;
-    attack_delay = 0;
-    sprite->play_animation("Idle");
-  }
+	std::vector<std::string> PossibleStates = {"Idle", "Attack", "Hurt"};
+	if (contain(PossibleStates, sprite->current_animation)) {
+		hoverPos = pos;
+		hoverPos.y -= 65.5f;
+		attacking = false;
+		buffer = false;
+		hit = true;
+		midway = true;
+		flight_angle = 90;
+		attack_delay = 0;
+		sprite->play_animation("Idle");
+	}
 }
 void FlyingEye::attack()
 {
@@ -365,7 +365,7 @@ void FlyingEye::respawn(Vec2f posi)
 {
 	score++;
 	
-	pos = posi;
+	pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];;
 	hoverPos = posi;
 	health = 100.0f;
 	invincible_timer = 0;
@@ -384,7 +384,15 @@ void FlyingEye::respawn(Vec2f posi)
 	sprite->play_animation("Idle");
 }
 
+
+void FlyingEye::set_spawn_points(std::vector<Vec2f>& spawns)
+{
+	possible_spawn_points = spawns;
+}
+
+
 FlyingEye::~FlyingEye()
 {
 	delete sprite;
 }
+

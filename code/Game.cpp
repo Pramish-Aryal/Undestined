@@ -1,7 +1,6 @@
 #include "Game.h"
 
 #include <SDL2/SDL.h>
-
 #include <cstdlib>
 #include <iostream>
 
@@ -53,7 +52,7 @@ void Game::game_loop() {
 	enemylist.push_back(new Skeleton(graphics));
 	enemylist.push_back(new Skeleton(graphics, {100, 200}));
 	enemylist.push_back(new Skeleton(graphics, {900, 100}));
-	enemylist.push_back(new Skeleton(graphics, {400, 3000}));
+	enemylist.push_back(new Skeleton(graphics, {400, 300}));
 	enemylist.push_back(new Skeleton(graphics, {300, 200}));
 	enemylist.push_back(new FlyingEye(graphics));
 	// enemylist.push_back(new FlyingEye(graphics, {150, 200}));
