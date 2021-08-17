@@ -5,7 +5,7 @@
 class Skeleton : public Enemy
 {
 	public:
-	Skeleton(Graphics &graphics, Vec2f pos = {700, 200});
+	Skeleton(Graphics &graphics);
 	~Skeleton();
 	
 	void draw(Graphics &graphics, types::r32 scale = 3.f) override;
@@ -28,7 +28,7 @@ class Skeleton : public Enemy
 	
 	private:
 	void setup_animations() override;
-	void respawn(Vec2f posi = {700, 200});
+	void respawn();
 	void endAttack();
 	void stop_attack();
 	void draw_health(Graphics& graphics);

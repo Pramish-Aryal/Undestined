@@ -21,12 +21,12 @@ namespace {
 	const r32 ATTACK_DELAY = 2.f * 1000.f; //2 seconds
 }  // namespace
 
-Skeleton::Skeleton(Graphics &graphics, Vec2f posi) {
+Skeleton::Skeleton(Graphics &graphics) {
 	sprite = new AnimatedSprite(graphics, "data\\Skeleton.png");
 	setup_animations();
 	//enemy size = 45 x 51, 60 x 50
 	possible_spawn_points = { {100, 200}, {900, 100}, {400, 300}, {300,200}};
-	respawn(posi);
+	respawn();
 }
 
 void Skeleton::draw(Graphics &graphics, r32 scale) {
@@ -280,14 +280,12 @@ void Skeleton::die() {
 Rect Skeleton::get_collider() {
 	return collider;
 }
-#include <iostream>
 
-void Skeleton::respawn(Vec2f posi) {
+void Skeleton::respawn() {
 	
 	if(dead)
 		score++;
 	
-	int index = ;
 	pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
 	health = 100.0f;
 	time_to_respawn = 0.f;

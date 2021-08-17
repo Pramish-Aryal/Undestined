@@ -4,7 +4,7 @@
 
 class FlyingEye : public Enemy {
 	public:
-	FlyingEye(Graphics &graphics, Vec2f pos = {700, 200});
+	FlyingEye(Graphics &graphics);
 	~FlyingEye();
 	
 	void draw(Graphics &graphics, types::r32 scale = 3.f) override;
@@ -31,7 +31,7 @@ class FlyingEye : public Enemy {
 	
 	private:
 	void setup_animations() override;
-	void respawn(Vec2f posi = {700, 200});
+	void respawn();
 	void draw_health(Graphics& graphics);
 	
 	private:

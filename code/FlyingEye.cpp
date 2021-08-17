@@ -9,6 +9,7 @@
 #include "Graphics.h"
 #include "Map.h"
 #include "Player.h"
+#include "Random.h"
 
 using namespace types;
 
@@ -20,15 +21,19 @@ namespace {
 	const r32 ATTACK_DELAY = (1.9f * 1000.f);  //1.75 seconds
 }  // namespace
 
-FlyingEye::FlyingEye(Graphics &graphics, Vec2f posi) {
+FlyingEye::FlyingEye(Graphics &graphics) {
 	sprite = new AnimatedSprite(graphics, "data\\FlyingEye.png");
 	setup_animations();
-	pos = posi;
-	hoverPos = posi;
+	possible_spawn_points = { {100, 200}, {900, 100}, {400, 300}, {300,200}};
+	pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
+	hoverPos = pos;
 	hoverPos.x += 200;
 	vel = {0, 0};
 	accn = {0, 0};
-	vMax = {.15, .3};
+	vMax = {
+		Random::get_random(0, 100) / 500.f,
+		.3
+	};
 	
 	flight_angle = 0;
 	//enemy size = 45 x 51, 60 x 50
@@ -361,12 +366,12 @@ Rect FlyingEye::get_collider()
 	return collider;
 }
 
-void FlyingEye::respawn(Vec2f posi)
+void FlyingEye::respawn()
 {
 	score++;
 	
 	pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];;
-	hoverPos = posi;
+	hoverPos = pos;
 	health = 100.0f;
 	invincible_timer = 0;
 	dead = false;
