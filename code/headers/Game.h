@@ -11,6 +11,7 @@ class Backdrop;
 class Background;
 class Enemy;
 class Font;
+class Food;
 class Menu;
 
 #include "utils.h"
@@ -41,6 +42,6 @@ class Game
 	Background* background;
 	bool m_game_is_running;
 	std::vector<Enemy*> enemylist;
-	
+	Food *food;
 	enum { MENU, PLAY, PAUSE} game_state = MENU;
 };

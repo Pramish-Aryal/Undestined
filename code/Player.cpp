@@ -6,6 +6,7 @@
 #include "AnimatedSprite.h"
 #include "Camera.h"
 #include "Enemy.h"
+#include "Food.h"
 #include "Graphics.h"
 #include "Map.h"
 
@@ -79,6 +80,12 @@ bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, float> &
 }
 
 void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) {
+    /*
+  if (Collider::rect_vs_rect(this->collider, food.get_collider()) && food.get_status()) {
+    food.get_eaten();
+    this->health += 75.0f;
+  }
+*/
   float dirX;
 
   //---------- Attack Handling ---------
@@ -103,7 +110,6 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
     float friction = (abs(.0012f * dt) <= abs(vel.x)) ? abs(.0012f * dt) : abs(vel.x);
     vel.x -= dirX * friction;
   }
-
 
   //--------velocity clampers-------------
   vel.x = (ABS(vel.x) < vMax.x) ? vel.x : (vMax.x * SIGNOF(vel.x));
