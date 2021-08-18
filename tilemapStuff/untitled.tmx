@@ -5,7 +5,7 @@
  </editorsettings>
  <tileset firstgid="1" source="base.tsx"/>
  <tileset firstgid="73" source="../data/Stringstar field.tsx"/>
- <layer id="3" name="Backdrop" width="64" height="32">
+ <layer id="3" name="BG" width="64" height="32">
   <data encoding="csv">
    <chunk x="0" y="0" width="16" height="16">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -153,7 +153,7 @@
 </chunk>
   </data>
  </layer>
- <layer id="1" name="Bounding Map" width="64" height="32">
+ <layer id="1" name="Bound" width="64" height="32">
   <data encoding="csv">
    <chunk x="0" y="0" width="16" height="16">
 50,40,62,62,62,62,62,62,62,62,62,62,62,62,62,62,

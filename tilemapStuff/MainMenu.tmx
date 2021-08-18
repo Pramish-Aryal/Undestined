@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <editorsettings>
+  <export target="../data/MainMenu.csv" format="csv"/>
+ </editorsettings>
  <tileset firstgid="1" source="../data/Stringstar field.tsx"/>
- <layer id="1" name="Tile Layer 1" width="40" height="23">
+ <layer id="1" name="Bound" width="40" height="23">
   <data encoding="csv">
 39,78,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,79,81,82,39,
 57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,57,
