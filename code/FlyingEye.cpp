@@ -24,7 +24,7 @@ const r32 ATTACK_DELAY = (1.9f * 1000.f);  //1.75 seconds
 FlyingEye::FlyingEye(Graphics &graphics) {
   sprite = new AnimatedSprite(graphics, "data\\FlyingEye.png");
   setup_animations();
-  possible_spawn_points = {{100, 200}, {900, 100}, {400, 300}, {300, 200}};
+  possible_spawn_points = {{10*32, 11*32}, {62*32, 11*32}, {20*32, 23*32}, {48*32, 23*32}, {48*32, 23*32}};
   pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
   hoverPos = pos;
   hoverPos.x += 200;
@@ -302,7 +302,6 @@ void FlyingEye::get_hurt(types::r32 dt) {
 
 void FlyingEye::die() {
   dead = true;
-  idle = false;
   hurting = false;
   sprite->play_animation("Die", 1);
 }
@@ -313,18 +312,15 @@ Rect FlyingEye::get_collider() {
 
 void FlyingEye::respawn() {
   score++;
-
   pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
-  ;
   hoverPos = pos;
   health = 100.0f;
   invincible_timer = 0;
   dead = false;
   hurting = false;
-  idle = true;
   vel = {0, 0};
   accn = {0, 0};
-
+  attacking = false;
   dead = false;
 
   //enemy size = 45 x 51, 60 x 50

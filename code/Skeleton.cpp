@@ -25,7 +25,7 @@ Skeleton::Skeleton(Graphics &graphics) {
   sprite = new AnimatedSprite(graphics, "data\\Skeleton.png");
   setup_animations();
   //enemy size = 45 x 51, 60 x 50
-  possible_spawn_points = {{100, 200}, {900, 100}, {400, 300}, {300, 200}};
+  possible_spawn_points = {{19 * 32, 5 * 32}, {16 * 32, 8 * 32}, {11 * 32, 13 * 32}, {32 * 32, 3 * 32}, {32 * 32, 17 * 32}, {32 * 32, 17 * 32}};
   respawn();
 }
 
@@ -75,7 +75,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 
   //r32 limit = sprite->get_flip() ?
 
-  if (ABS(distance.x) <= 250 && ABS(distance.x) >= 100 && ABS(distance.y) <= 250) {
+  if (ABS(distance.x) <= 300 && ABS(distance.x) >= 90 && ABS(distance.y) <= 275) {
     if (distance.normal().x > 0)
       move_right();
     else if (distance.normal().x < 0)
@@ -178,7 +178,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
   //----------Invincible And Respawn Count-----------
   if (invincible_timer > 0)
     invincible_timer -= dt;
-  if (invincible_timer <= 360)
+  if (invincible_timer <= 0)
     hurting = false;
   if (dead) {
     if (invincible_timer <= 0) {
@@ -264,9 +264,7 @@ void Skeleton::get_hurt(r32 dt) {
 
 void Skeleton::die() {
   dead = true;
-  idle = false;
   hurting = false;
-  running = false;
   sprite->play_animation("Die", 1);
 }
 
@@ -278,22 +276,20 @@ void Skeleton::respawn() {
   if (dead)
     score++;
 
-  pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
+  dead = false;
+  hurting = false;
   health = 100.0f;
   time_to_respawn = 0.f;
   invincible_timer = 0;
-  dead = false;
-  hurting = false;
-  running = false;
-  idle = true;
   vel = {0, 0};
   accn = {0, 0};
-  vMax = {Random::get_random(100, 225) / 1000.f, 9.0f};
-  dead = false;
   gravity = 0.0045f;
+
+  vMax = {Random::get_random(150, 300) / 1000.f, 9.0f};
   //enemy size = 45 x 51, 60 x 50
   offsets = {60.f, 50.f};
 
+  pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {30.f * scale, 51.f * scale};
 

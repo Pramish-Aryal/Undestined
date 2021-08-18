@@ -58,7 +58,7 @@ class FlyingEye : public Enemy {
 	bool first_attack;
 	types::r32 attack_delay = 0.f;
 	
-	bool idle = true;
+	
 	int dirx = 0;
 	bool dead = false;
 	bool hurting = false;

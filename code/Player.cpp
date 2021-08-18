@@ -23,7 +23,7 @@ Player::Player(Graphics &graphics)
 {
 	sprite = new AnimatedSprite(graphics, "data\\HeroKnight.png");
 	setup_animations();
-	pos = {36 * 16 * 2, 10 * 16 * 2};
+	pos = {34 * 16 * 2, 12 * 16 * 2};
 	sprite->play_animation("Idle");
 	vel = {0, 0};
 	accn = {0, 0};
@@ -239,15 +239,15 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 	r32 delx = cameraBuffer.x - Camera::get_instance().get_pos().x;
 	r32 dely = cameraBuffer.y - Camera::get_instance().get_pos().y;
 	
-	if (Camera::get_instance().follow && (abs(delx) > 500))
+	if (Camera::get_instance().follow && (abs(delx) > 475))
 		cameraMovingx = true;
-	if (Camera::get_instance().follow && (abs(dely) > 100))
+	if ( (pos.y - Camera::get_instance().get_pos().y ) >528 || (abs(dely) > 192))
 		cameraMovingy = true;
 	
 	if (cameraMovingx)
-		Camera::get_instance().get_pos().x += (abs(delx / 20) > 2) ? (delx / 20) : 2 * SIGNOF(delx);
+		Camera::get_instance().get_pos().x += (abs(delx / 23) > 1) ? (delx / 23) : 1 * SIGNOF(delx);
 	if (cameraMovingy)
-		Camera::get_instance().get_pos().y += (abs(dely / 8) > 2) ? (dely / 8) : 2 * SIGNOF(dely);
+		Camera::get_instance().get_pos().y += (abs(dely / 9) > 1) ? (dely / 9) : 1 * SIGNOF(dely);
 	
 	if (abs(delx) < 40)
 		cameraMovingx = false;
