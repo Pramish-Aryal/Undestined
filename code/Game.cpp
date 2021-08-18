@@ -110,9 +110,15 @@ void Game::game_loop() {
 			}
 			
 			update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
+		} else {
+			i32 x,y;
+			graphics.get_mouse(x,y);
+			menu->update_menu(Vec2f(x, y), &game_state, input.mouse_pressed());
 		}
 		
 		draw(graphics, font);
+		
+		if(game_state == QUIT) set_game_running(false);
 		
 		if ((SDL_GetTicks() - current_time_ms) < FRAME_TIME)
 			SDL_Delay(FRAME_TIME - (SDL_GetTicks() - current_time_ms));
@@ -151,7 +157,7 @@ void Game::draw(Graphics &graphics, Font &font) {
 		menu->draw_menu(graphics, font);
 	} else if (game_state == PAUSE) {
 		menu->draw_pause(graphics, font);
-	} else {
+	} else if(game_state == PLAY) {
 		if (DEBUG)
 			map->debug_draw(graphics, scale);
 		
@@ -169,14 +175,14 @@ void Game::draw(Graphics &graphics, Font &font) {
 }
 
 void Game::handle_input(Input &input) {
-	if (input.key_held(SDL_SCANCODE_ESCAPE))
-		set_game_running(false);
-	if (game_state == PLAY) {
-		if (input.key_held(SDL_SCANCODE_P))
-			game_state = PAUSE;
+	
+	if (input.key_pressed(SDL_SCANCODE_ESCAPE)) { 
+		if(game_state == MENU) set_game_running(false);
+		else if (game_state == PAUSE) game_state = MENU;
+		else game_state = PAUSE;
 	}
 	
-	if (game_state == PLAY) {
+	if (game_state == PLAY || game_state == TUTORIAL) {
 		if (input.key_held(SDL_SCANCODE_E) || input.mouse_pressed())
 			player->attack();
 		if (input.key_held(SDL_SCANCODE_R))
@@ -193,19 +199,9 @@ void Game::handle_input(Input &input) {
 		if (input.key_held(SDL_SCANCODE_SPACE))
 			player->jump();
 		
-		if (input.key_pressed(SDL_SCANCODE_I))
-			if (scale < 255)
-			scale++;
-		if (input.key_pressed(SDL_SCANCODE_O))
-			if (scale > 0)
-			scale--;
-		
 		if (input.key_pressed(SDL_SCANCODE_X))
 			DEBUG = !DEBUG;
 		
-	} else {
-		if (input.key_pressed(SDL_SCANCODE_RETURN))
-			game_state = PLAY;
 	}
 }
 

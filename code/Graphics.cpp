@@ -86,9 +86,24 @@ SDL_Renderer *Graphics::get_renderer()
 	return m_renderer;
 }
 
+SDL_Window* Graphics::get_window()
+{
+	return m_window;
+}
+
 void Graphics::blit_surface(SDL_Texture *texture, SDL_Rect src_rect, SDL_Rect dest_rect, SDL_Point center, bool flip)
 {
 	SDL_RenderCopyEx(m_renderer, texture, &src_rect, &dest_rect, 0, &center, flip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+}
+
+void Graphics::get_mouse(i32& x, i32& y)
+{
+	SDL_GetMouseState(&x,&y);
+	Vec2f window = get_display_resolution();
+	Vec2f new_mouse = { x / window.x * 1280.f, y / window.y * 720.f};
+	x = (i32)new_mouse.x;
+	y = (i32)new_mouse.y;
+	
 }
 
 Vec2f Graphics::get_display_resolution()

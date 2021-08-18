@@ -2,8 +2,8 @@
 
 #include "utils.h"
 #include "Graphics.h"
+#include "Collision.h"
 #include <SDL2/SDL.h>
-using namespace types;
 
 #include <sstream>
 
@@ -19,33 +19,24 @@ class Font
 	SDL_Texture* atlas;
 	i32 width, height;
 	SDL_Rect glyph_table[128 - 32];
-	void render_char(Graphics& graphics, char c, Vec2f pos, float scale);
-	void render_text_sized(Graphics& graphics, const char* text, size_t text_size, Vec2f pos, float scale);
+	void render_char(Graphics& graphics, char c, Vec2f pos, types::r32 scale);
+	void render_text_sized(Graphics& graphics, const char* text, size_t text_size, Vec2f pos, types::r32 scale, types::u32 color = 0xffffffff);
+	void set_font_color(SDL_Texture* texture, types::u32 color);
 	public:
 	Font(Graphics& graphics);
-	void render_text(Graphics& graphics, const char* text, Vec2f pos, float scale);
+	void render_text(Graphics& graphics, const char* text, Vec2f pos, types::r32 scale, types::u32 color = 0xffffffff);
 };
-#include <iostream>
+
 class Menu
 {
+	u32 start_color = 0xffffffff, tutorial_color = 0xffffffff, quit_color = 0xffffffff;
+	Rect start_collider = { Vec2f(1280, 720) / 2  + Vec2f( -55, 150), {87, 28}}, 
+	tutorial_collider = { Vec2f(1280, 720) / 2  + Vec2f( -90, 200), {168, 28}}, 
+	quit_collider = { Vec2f(1280, 720) / 2  + Vec2f( -55, 250), {82, 28}};
 	public:
-	void draw_menu(Graphics& graphics, Font& font)
-	{
-		font.render_text(graphics, "Undestined", Vec2f(1280, 720) / 2 - Vec2f(200, 0), 5);
-		font.render_text(graphics, "Press Enter to begin", Vec2f(1280, 720) / 2  + Vec2f( -225, 150), 3);
-	}
-	
-	void draw_score(Graphics& graphics, Font& font, i32 score)
-	{
-		std::stringstream ss;
-		ss << "Kill Count: " << score;
-		font.render_text(graphics, ss.str().c_str(), Vec2f(1280 - 250, 5), 2);
-	}
-	
-	void draw_pause(Graphics& graphics, Font& font)
-	{
-		font.render_text(graphics, "Paused", Vec2f(1280, 720) / 2 - Vec2f(125, 0), 5);
-		font.render_text(graphics, "Press Enter to resume", Vec2f(1280, 720) / 2 + Vec2f( -225, 150), 3);
-		font.render_text(graphics, "Press Escape to Quit", Vec2f(1280, 720) / 2 + Vec2f( -225, 200), 3);
-	}
+	void update_menu(Vec2f mouse, void* game_state, bool clicked);
+	void draw_menu(Graphics& graphics, Font& font);
+	void draw_score(Graphics& graphics, Font& font, i32 score);
+	void draw_pause(Graphics& graphics, Font& font);
+	void draw_gameover(Graphics& graphics, Font& font);
 };

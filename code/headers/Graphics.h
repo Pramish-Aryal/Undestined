@@ -28,8 +28,10 @@ class Graphics
 	void Graphics::blit_surface(SDL_Texture *texture, SDL_Rect src_rect, SDL_Rect dest_rect, SDL_Point center, bool flip = false);
 	
 	SDL_Renderer *get_renderer();
+	SDL_Window* get_window();
 	SDL_Texture* load_image(std::string path, types::i32& width, types::i32& height);
 	SDL_Texture* load_image_surface(std::string path, i32& width, i32& height, bool key = false);
+	void get_mouse(types::i32& x, types::i32& y);
 	void display();
 	Vec2f get_display_resolution();
 	private:
