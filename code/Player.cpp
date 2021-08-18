@@ -85,7 +85,7 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   if (countTime)
     attackActiveTime += dt;
 
-  if (attackActiveTime > 700) {
+  if (attackActiveTime > 650) {
     endAttack();
   }
 
@@ -95,6 +95,7 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
 
   //------------ Actual Physics ------------
   vel += accn * dt;
+  vel.y += gravity * dt;  // gravity ofc
 
   //-------------friction------------
   if (vel.x != 0) {
@@ -103,13 +104,10 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
     vel.x -= dirX * friction;
   }
 
-  vel.y += gravity * dt;  // gravity ofc
 
   //--------velocity clampers-------------
-  vel.x = (vel.x < vMax.x) ? vel.x : vMax.x;
-  vel.x = (-vel.x < vMax.x) ? vel.x : -vMax.x;
-  vel.y = (vel.y < vMax.y) ? vel.y : vMax.y;
-  vel.y = (-vel.y < vMax.y) ? vel.y : -vMax.y;
+  vel.x = (ABS(vel.x) < vMax.x) ? vel.x : (vMax.x * SIGNOF(vel.x));
+  vel.y = (ABS(vel.y) < vMax.y) ? vel.y : (vMax.y * SIGNOF(vel.y));
 
   //----------- Ground check for jumps? (@pramish tell me what the following code does )---------------
   Vec2f cp, cn;

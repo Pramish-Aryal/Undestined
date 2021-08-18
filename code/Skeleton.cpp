@@ -100,11 +100,8 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
 	vel.y += gravity * dt;
 	
 	//clampers
-	vel.x = (vel.x < vMax.x) ? vel.x : vMax.x;
-	vel.x = (-vel.x < vMax.x) ? vel.x : -vMax.x;
-	
-	vel.y = (vel.y < vMax.y) ? vel.y : vMax.y;
-	vel.y = (-vel.y < vMax.y) ? vel.y : -vMax.y;
+	vel.x = (ABS(vel.x) < vMax.x) ? vel.x : (vMax.x * SIGNOF(vel.x));
+  vel.y = (ABS(vel.y) < vMax.y) ? vel.y : (vMax.y * SIGNOF(vel.y));
 	
 	Vec2f cp, cn;
 	r32 t;
