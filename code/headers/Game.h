@@ -19,29 +19,36 @@ class Menu;
 
 class Game
 {
-	public:
+public:
 	Game();
 	~Game();
-	
-	private:
+
+private:
 	void game_loop();
 	void simulate(types::r32 dt);
 	void update(types::r32 dt);
-	void draw(Graphics &graphics, Font& font);
+	void draw(Graphics &graphics, Font &font);
 	void handle_input(Input &input);
 	bool is_game_running();
 	void set_game_running(bool value);
-	
-	private:
+
+private:
 	SDL_Window *_window;
 	SDL_Renderer *_renderer;
 	Player *player;
-	Map* map;
-	Menu* menu;
-	Backdrop* backdrop;
-	Background* background;
+	Map *map;
+	Menu *menu;
+	Backdrop *backdrop;
+	Background *background;
 	bool m_game_is_running;
-	std::vector<Enemy*> enemylist;
+	std::vector<Enemy *> enemylist;
 	Food *food;
-	enum { MENU = 1, PLAY = 2, PAUSE = 3, TUTORIAL = 4, QUIT = 5} game_state = MENU;
+	enum
+	{
+		MENU = 1,
+		PLAY = 2,
+		PAUSE = 3,
+		TUTORIAL = 4,
+		QUIT = 5
+	} game_state = MENU;
 };

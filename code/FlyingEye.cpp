@@ -30,9 +30,7 @@ FlyingEye::FlyingEye(Graphics &graphics) {
   hoverPos.x += 200;
   vel = {0, 0};
   accn = {0, 0};
-  vMax = {
-      Random::get_random(0, 100) / 500.f,
-      .3};
+  vMax = {Random::get_random(100, 225) / 1000.f, .3};
 
   flight_angle = 0;
   //enemy size = 45 x 51, 60 x 50
@@ -59,12 +57,12 @@ void FlyingEye::draw_health(Graphics &graphics) {
   r32 o_x = Camera::get_instance().get_pos().x;
   r32 o_y = Camera::get_instance().get_pos().y;
 
-  SDL_Rect rect = {(i32)(collider.pos.x - o_x ), (i32)(collider.pos.y - o_y), 50, 5};
+  SDL_Rect rect = {(i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y), 50, 5};
   SDL_SetRenderDrawColor(graphics.get_renderer(), 18, 18, 18, 255);
   SDL_RenderDrawRect(graphics.get_renderer(), &rect);
 
   i32 health_width = (health / 100.f) > 0 ? 50.f * (health / 100.f) : 0;
-  rect = {(i32)(collider.pos.x - o_x ), (i32)(collider.pos.y - o_y), health_width, 5};
+  rect = {(i32)(collider.pos.x - o_x), (i32)(collider.pos.y - o_y), health_width, 5};
   SDL_SetRenderDrawColor(graphics.get_renderer(), 200, 18, 18, 255);
   SDL_RenderFillRect(graphics.get_renderer(), &rect);
 }
@@ -82,7 +80,7 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
 
   Vec2f distance = player.get_collider().pos + player.get_collider().size / 2 - collider.pos - collider.size / 2;
 
-  if (!attacking) {
+  if (!attacking && ABS(distance.x) <= 530) {
     if (ABS((player.get_pos() - hoverPos).x) >= 150) {
       if ((player.get_pos() - 95 - hoverPos).normal().x > 0)
         move_right();
