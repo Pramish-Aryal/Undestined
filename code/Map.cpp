@@ -12,10 +12,10 @@ Map::Map(Graphics &graphics) : tile_set(Sprite(graphics, "data\\tileset.png")) {
 void Map::load_map(std::string path, r32 scale)
 {
 	i8 map_data[] = {
-#include "..\\data\\map.data"
+#include "..\\data\\map_bounding.data"
 	};
 	
-#define MAP_WIDTH 64
+#define MAP_WIDTH 70
 #define TILE_SIZE 16
 	for (i32 i = 0; i < COUNT(map_data); i++)
 	{

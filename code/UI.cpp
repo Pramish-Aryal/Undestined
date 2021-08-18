@@ -47,28 +47,36 @@ void Font::render_text(Graphics& graphics, const char* text, Vec2f pos, r32 scal
 	render_text_sized(graphics, text, strlen(text), pos, scale, color);
 }
 
-#include <iostream>
-#include <ios>
-
 void Font::set_font_color(SDL_Texture* texture, u32 color)
 {
 	SDL_SetTextureColorMod(texture, (color >> 24) & 0xff, (color >> 16) & 0xff, (color >> 8) & 0xff);
 	SDL_SetTextureAlphaMod(texture, (color) & 0xff);
 }
 
+//MENU
+
+Menu::Menu(Graphics& graphics)
+{
+	tutorial_sprite = new Sprite(graphics, "data\\tutorial.png");
+}
+
+Menu::~Menu()
+{
+	delete tutorial_sprite;
+}
+
 void Menu::draw_menu(Graphics& graphics, Font& font)
 {
-	font.render_text(graphics, "Undestined", Vec2f(1280, 720) / 2 - Vec2f(200, 0), 5);
-	font.render_text(graphics, "Play",  Vec2f(1280, 720) / 2  + Vec2f( -55, 150), 3, start_color);
-	font.render_text(graphics, "Tutorial", Vec2f(1280, 720) / 2  + Vec2f( -90, 200), 3, tutorial_color);
-	font.render_text(graphics, "Quit", Vec2f(1280, 720) / 2  + Vec2f( -55, 250), 3, quit_color);
+	font.render_text(graphics, "Undestined", Vec2f(1280, 720) / 2 - Vec2f(180, 225), 5);
+	font.render_text(graphics, "Play",  Vec2f(1280, 720) / 2  + Vec2f( -55, -75), 3, start_color);
+	font.render_text(graphics, "Tutorial", Vec2f(1280, 720) / 2  + Vec2f( -90, -25), 3, tutorial_color);
+	font.render_text(graphics, "Quit", Vec2f(1280, 720) / 2  + Vec2f( -55, 25), 3, quit_color);
 }
 
 void Menu::draw_gameover(Graphics& graphics, Font& font)
 {
-	font.render_text(graphics, "Game Over", Vec2f(1280, 720) / 2 - Vec2f(200, 0), 5);
-	font.render_text(graphics, "Return",  Vec2f(1280, 720) / 2  + Vec2f( -55, 150), 3, start_color);
-	font.render_text(graphics, "Quit", Vec2f(1280, 720) / 2  + Vec2f( -55, 250), 3, quit_color);
+	font.render_text(graphics, "Undestined", Vec2f(1280, 720) / 2 - Vec2f(200, 225), 5);
+	font.render_text(graphics, "Menu",  Vec2f(1280, 720) / 2  + Vec2f( -55, -75), 3, start_color);
 }
 
 void Menu::draw_score(Graphics& graphics, Font& font, i32 score)
@@ -80,33 +88,52 @@ void Menu::draw_score(Graphics& graphics, Font& font, i32 score)
 
 void Menu::draw_pause(Graphics& graphics, Font& font)
 {
-	font.render_text(graphics, "Paused", Vec2f(1280, 720) / 2 - Vec2f(125, 0), 5);
-	font.render_text(graphics, "Resume", Vec2f(1280, 720) / 2 + Vec2f( -225, 150), 3);
-	font.render_text(graphics, "Menu", Vec2f(1280, 720) / 2 + Vec2f( -225, 200), 3);
+	font.render_text(graphics, "Paused", Vec2f(1280, 720) / 2 - Vec2f(110, 225), 5);
+	font.render_text(graphics, "Resume",  Vec2f(1280, 720) / 2  + Vec2f( -75, -75), 3, start_color);
+	font.render_text(graphics, "Menu", Vec2f(1280, 720) / 2  + Vec2f( -55, -25), 3, tutorial_color);
 }
 
 void Menu::update_menu(Vec2f mouse, void* game_state, bool clicked)
 {
-	
-	if(Collider::point_vs_rect(mouse, start_collider)) {
-		start_color = 0xff0000ff;
-		if(clicked) *(i32*)game_state = 2; //PLAY
-	} else {
-		start_color = 0xffffffff;
+	if((*(i32*)game_state) == 1) {
+		if(Collider::point_vs_rect(mouse, start_collider)) {
+			start_color = 0xff0000ff;
+			if(clicked) *(i32*)game_state = 2; //PLAY
+		} else {
+			start_color = 0xffffffff;
+		}
+		
+		if(Collider::point_vs_rect(mouse, tutorial_collider)) {
+			tutorial_color = 0xff0000ff;
+			if(clicked) *(i32*)game_state = 4; //TUTORIAL
+		} else {
+			tutorial_color = 0xffffffff;
+		}
+		
+		if(Collider::point_vs_rect(mouse, quit_collider)) {
+			quit_color = 0xff0000ff;
+			if(clicked) *(i32*)game_state = 5;
+		} else {
+			quit_color = 0xffffffff;
+		}
+	} else if ((*(i32*)game_state) == 3) {
+		if(Collider::point_vs_rect(mouse, start_collider)) {
+			start_color = 0xff0000ff;
+			if(clicked) *(i32*)game_state = 2; //PLAY
+		} else {
+			start_color = 0xffffffff;
+		}
+		
+		if(Collider::point_vs_rect(mouse, tutorial_collider)) {
+			tutorial_color = 0xff0000ff;
+			if(clicked) *(i32*)game_state = 1; //MENU
+		} else {
+			tutorial_color = 0xffffffff;
+		}
 	}
-	
-	if(Collider::point_vs_rect(mouse, tutorial_collider)) {
-		tutorial_color = 0xff0000ff;
-		if(clicked) *(i32*)game_state = 4; //TUTORIAL
-	} else {
-		tutorial_color = 0xffffffff;
-	}
-	
-	if(Collider::point_vs_rect(mouse, quit_collider)) {
-		quit_color = 0xff0000ff;
-		if(clicked) *(i32*)game_state = 5;
-	} else {
-		quit_color = 0xffffffff;
-	}
-	
+}
+
+void Menu::draw_tutorial(Graphics& graphics)
+{
+	tutorial_sprite->static_draw(graphics, {0, 0, 1280, 720}, {0, 0, 1280, 720}, 1);
 }
