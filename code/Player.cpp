@@ -33,8 +33,8 @@ Player::Player(Graphics &graphics) {
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   collider.size = {28.f * scale, 41.f * scale};
 
-  attackCollider.pos = {pos.x + offsets.x * scale + 28 * 1.5f, pos.y + offsets.y * scale + 3};
-  attackCollider.size = {30.f * scale, 35.f * scale};
+  attackCollider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale + 3};
+  attackCollider.size = {58.f * scale, 35.f * scale};
 
   jump_timer = JUMP_TIMER_MAX;
 
@@ -80,7 +80,7 @@ bool sort_func_ptr(const std::pair<int, float> &a, const std::pair<int, float> &
 }
 
 void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) {
-    /*
+  /*
   if (Collider::rect_vs_rect(this->collider, food.get_collider()) && food.get_status()) {
     food.get_eaten();
     this->health += 75.0f;
@@ -162,15 +162,22 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist) 
   if (vel.x == 0 && vel.y == 0 && !is_jumping && !falling)
     stop_moving();
 
+//RUN!
+  if (vel.x != 0) {
+    std::vector<std::string> PossibleStates = {"Idle"};
+    if (contain(PossibleStates, sprite->current_animation)) {
+      sprite->play_animation("Run");
+    }
+  }
   //---------Collider updates-------------
   collider.size = {28.f * scale, 41.f * scale};
   collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
   if (!sprite->get_flip()) {
-    attackCollider.size = {30.f * scale, 35.f * scale};
-    attackCollider.pos = {pos.x + offsets.x * scale + 28 * 1.5f, pos.y + offsets.y * scale + 3};
+    attackCollider.size = {58.f * scale, 35.f * scale};
+    attackCollider.pos = {pos.x + offsets.x * scale + 5, pos.y + offsets.y * scale + 3};
   } else {
-    attackCollider.size = {30.f * scale, 35.f * scale};
-    attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
+    attackCollider.size = {58.f * scale, 35.f * scale};
+    attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x + collider.size.x - 5, pos.y + offsets.y * scale + 3};
   }
 
   //--------TODO: Attack  ----------
@@ -273,10 +280,6 @@ void Player::move_left() {
   if (contain(PossibleStates, sprite->current_animation)) {
     accn.x -= 0.003f;
   }
-  PossibleStates = {"Idle"};
-  if (contain(PossibleStates, sprite->current_animation)) {
-    sprite->play_animation("Run");
-  }
 }
 
 void Player::move_right() {
@@ -284,10 +287,6 @@ void Player::move_right() {
   std::vector<std::string> PossibleStates = {"Idle", "Run", "Jump", "Fall"};
   if (contain(PossibleStates, sprite->current_animation)) {
     accn.x += 0.003f;
-  }
-  PossibleStates = {"Idle"};
-  if (contain(PossibleStates, sprite->current_animation)) {
-    sprite->play_animation("Run");
   }
 }
 
@@ -360,7 +359,8 @@ void Player::jump() {
   }
   PossibleStates = {"Idle", "Run"};
   if (contain(PossibleStates, sprite->current_animation)) {
-    sprite->play_animation("Jump");
+    if (!is_jumping && jump_timer >= JUMP_TIMER_MAX)
+      sprite->play_animation("Jump");
   }
 }
 
@@ -423,20 +423,6 @@ void Player::respawn() {
 
   dead = false;
   hurting = false;
-
-  // //player size = 28 x 42, 36 x 13
-  // offsets = {36.f, 13.f};
-
-  // collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
-  // collider.size = {28.f * scale, 41.f * scale};
-
-  // attackCollider.pos = {pos.x + offsets.x * scale + 28 * 1.5f, pos.y + offsets.y * scale + 3};
-  // attackCollider.size = {30.f * scale, 35.f * scale};
-
-  // Vec2f screen_size = {1280.f, 720.f};
-  // Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
-  // Camera::get_instance().get_pos().y = -1 * (screen_size.y * 5.7f / 10.0f - pos.y);
-  // cameraBuffer = Camera::get_instance().get_pos();
 
   sprite->play_animation("Idle");
 }
