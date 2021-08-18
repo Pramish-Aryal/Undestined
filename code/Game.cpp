@@ -40,7 +40,6 @@ Game::~Game() {
 	for (size_t i = 0; i < enemylist.size(); i++)
 		delete enemylist[i];
 	delete map;
-	delete backdrop;
 	delete background;
 	delete menu;
 	SDL_Quit();
@@ -66,12 +65,16 @@ void Game::game_loop() {
 	map = new Map(graphics);
 	map->load_map("", 2);
 	
-	backdrop = new Backdrop(graphics);
-	backdrop->load_backdrop("", 2);
+	Backdrop* backdrops[2];
+	backdrops[0] = new Backdrop(graphics);
+	backdrops[0]->load_backdrop_menu("", 2);
+	
+	backdrops[1] = new Backdrop(graphics);
+	backdrops[1]->load_backdrop_game("", 2);
 	
 	background = new Background(graphics);
 	
-	menu = new Menu;
+	menu = new Menu(graphics);
 	
 	Camera::get_instance().get_pos() = graphics.get_display_resolution() / 2 - Vec2f(225, 250);
 	
@@ -116,6 +119,12 @@ void Game::game_loop() {
 			menu->update_menu(Vec2f(x, y), &game_state, input.mouse_pressed());
 		}
 		
+		if(game_state == MENU || game_state == PAUSE) {
+			backdrop = backdrops[0];
+			Camera::get_instance().get_pos() = {0, 0};
+		}
+		else backdrop = backdrops[1];
+		
 		draw(graphics, font);
 		
 		if(game_state == QUIT) set_game_running(false);
@@ -128,6 +137,8 @@ void Game::game_loop() {
 		last_time_ms = current_time_ms;
 		//delta_time /= 5.0f;
 	}
+	delete backdrops[0];
+	delete backdrops[1];
 }
 
 void Game::simulate(r32 dt) {
@@ -151,13 +162,16 @@ void Game::draw(Graphics &graphics, Font &font) {
 	graphics.clear_screen(50, 100, 120);
 	background->draw(graphics);
 	backdrop->draw(graphics);
-	map->draw(graphics);
-	food->draw(graphics);
+	
 	if (game_state == MENU) {
 		menu->draw_menu(graphics, font);
 	} else if (game_state == PAUSE) {
 		menu->draw_pause(graphics, font);
+	} else if (game_state == TUTORIAL) {
+		menu->draw_tutorial(graphics);
 	} else if(game_state == PLAY) {
+		map->draw(graphics);
+		food->draw(graphics);
 		if (DEBUG)
 			map->debug_draw(graphics, scale);
 		
@@ -178,7 +192,7 @@ void Game::handle_input(Input &input) {
 	
 	if (input.key_pressed(SDL_SCANCODE_ESCAPE)) { 
 		if(game_state == MENU) set_game_running(false);
-		else if (game_state == PAUSE) game_state = MENU;
+		else if (game_state == PAUSE || game_state == TUTORIAL) game_state = MENU;
 		else game_state = PAUSE;
 	}
 	

@@ -28,19 +28,19 @@ Player::Player(Graphics &graphics)
 	vel = {0, 0};
 	accn = {0, 0};
 	vMax = {.3, 9.0f};
-
+	
 	gravity = 0.0045f;
 	//player size = 28 x 42, 36 x 13
 	offsets = {36.f, 13.f};
-
+	
 	collider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale};
 	collider.size = {28.f * scale, 41.f * scale};
-
+	
 	attackCollider.pos = {pos.x + offsets.x * scale, pos.y + offsets.y * scale + 3};
 	attackCollider.size = {58.f * scale, 35.f * scale};
-
+	
 	jump_timer = JUMP_TIMER_MAX;
-
+	
 	Vec2f screen_size = {1280.f, 720.f};
 	Camera::get_instance().get_pos().x = -1 * (screen_size.x / 3.0f - pos.x);
 	Camera::get_instance().get_pos().y = -1 * (screen_size.y * 5.7f / 10.0f - pos.y);
@@ -70,7 +70,7 @@ void Player::draw_health(Graphics &graphics)
 	SDL_Rect rect = {10, 10, 200, 10};
 	SDL_SetRenderDrawColor(graphics.get_renderer(), 18, 18, 18, 255);
 	SDL_RenderDrawRect(graphics.get_renderer(), &rect);
-
+	
 	i32 health_width = 200 * (health / 100.f);
 	rect = {10, 10, health_width, 10};
 	SDL_SetRenderDrawColor(graphics.get_renderer(), 200, 18, 18, 255);
@@ -96,25 +96,25 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 		health = health > 100.f ? 100.f : health;
 	}
 	float dirX;
-
+	
 	//---------- Attack Handling ---------
 	if (countTime)
 		attackActiveTime += dt;
-
+	
 	if (attackActiveTime > 650)
 	{
 		endAttack();
 	}
-
+	
 	if (attackActiveTime > 400)
 	{
 		setupCombo();
 	}
-
+	
 	//------------ Actual Physics ------------
 	vel += accn * dt;
 	vel.y += gravity * dt; // gravity ofc
-
+	
 	//-------------friction------------
 	if (vel.x != 0)
 	{
@@ -122,38 +122,38 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 		float friction = (abs(.0012f * dt) <= abs(vel.x)) ? abs(.0012f * dt) : abs(vel.x);
 		vel.x -= dirX * friction;
 	}
-
+	
 	//--------velocity clampers-------------
 	vel.x = (ABS(vel.x) < vMax.x) ? vel.x : (vMax.x * SIGNOF(vel.x));
 	vel.y = (ABS(vel.y) < vMax.y) ? vel.y : (vMax.y * SIGNOF(vel.y));
-
+	
 	//----------- Ground check for jumps? (@pramish tell me what the following code does )---------------
 	Vec2f cp, cn;
 	r32 t;
-
+	
 	std::vector<std::pair<int, float>> z;
 	bool is_on_ground = false;
-
+	
 	for (int i = 0; i < map.bounding_boxes.size(); i++)
 	{
 		if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[i], cp, cn, t, dt))
 		{
 			z.push_back({i, t});
-
+			
 			if (cn.y <= 0)
 				is_jumping = false;
-
+			
 			if (cn.y == -1)
 				is_on_ground = true;
 		}
 		//vel += cn * Vec2f(ABS(vel.x), ABS(vel.y))  * ( 1 - t);
 	}
-
+	
 	jump_timer += dt;
-
+	
 	//std::sort(z.begin(), z.end(), [](const std::pair<int, float> &a, const std::pair<int, float> &b) { return a.second < b.second; });
 	std::sort(z.begin(), z.end(), sort_func_ptr);
-
+	
 	for (i32 i = 0; i < z.size(); i++)
 	{
 		if (Collider::dynamic_rect_vs_rect(&collider, vel, &map.bounding_boxes[z[i].first], cp, cn, t, dt))
@@ -161,14 +161,14 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 			vel += cn * Vec2f(ABS(vel.x), ABS(vel.y)) * (1 - t);
 		}
 	}
-
+	
 	//-----------Positon Update (overloading hehe)---------
 	pos += vel * dt;
-
+	
 	//---- final resets and anim state handling -----
 	accn.x = 0;
 	accn.y = 0;
-
+	
 	if (is_jumping && !falling && vel.y >= 0.0f)
 		fall();
 	if (!is_on_ground && !is_jumping)
@@ -177,7 +177,7 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 		stop_falling();
 	if (vel.x == 0 && vel.y == 0 && !is_jumping && !falling)
 		stop_moving();
-
+	
 	//RUN!
 	if (vel.x != 0)
 	{
@@ -200,9 +200,9 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 		attackCollider.size = {58.f * scale, 35.f * scale};
 		attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x + collider.size.x - 5, pos.y + offsets.y * scale + 3};
 	}
-
+	
 	//--------TODO: Attack  ----------
-
+	
 	if (attackBusy)
 	{
 		for (i32 i = 0; i < enemylist.size(); i++)
@@ -211,7 +211,7 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 				enemylist[i]->get_hurt(dt);
 		}
 	}
-
+	
 	//------------Invincible And Respawn Count----------------------------------
 	if (invincible_timer > 0)
 		invincible_timer -= dt;
@@ -222,11 +222,11 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 			respawn();
 		}
 	}
-
+	
 	// -----------Camera Settings--------------
-
+	
 	Vec2f screen_size = {1280.f, 720.f};
-
+	
 	Vec2f img_rect_size = {100.f, 100.f};
 	static Vec2f img_rect_pos = pos - img_rect_size / 2;
 	//if(Camera::get_instance().follow && img_rect_pos.x > pos.x || img_rect_pos.x + img_rect_size.w <  pos.x + collider.size.x)
@@ -235,36 +235,36 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 	else
 		cameraBuffer.x = pos.x - screen_size.x / 3.0f;
 	cameraBuffer.y = pos.y - (screen_size.y * 0.57f);
-
+	
 	r32 delx = cameraBuffer.x - Camera::get_instance().get_pos().x;
 	r32 dely = cameraBuffer.y - Camera::get_instance().get_pos().y;
-
+	
 	if (Camera::get_instance().follow && (abs(delx) > 500))
 		cameraMovingx = true;
 	if (Camera::get_instance().follow && (abs(dely) > 100))
 		cameraMovingy = true;
-
+	
 	if (cameraMovingx)
 		Camera::get_instance().get_pos().x += (abs(delx / 20) > 2) ? (delx / 20) : 2 * SIGNOF(delx);
 	if (cameraMovingy)
 		Camera::get_instance().get_pos().y += (abs(dely / 8) > 2) ? (dely / 8) : 2 * SIGNOF(dely);
-
+	
 	if (abs(delx) < 40)
 		cameraMovingx = false;
 	if (abs(dely) < 20)
 		cameraMovingy = false;
-
+	
 	//Bound Camera
 	if (Camera::get_instance().get_pos().x < 0)
 		Camera::get_instance().get_pos().x = 0;
 	if (Camera::get_instance().get_pos().x > 64 * 16 * 2 - screen_size.x) //2 is map scale?
 		Camera::get_instance().get_pos().x = 64 * 16 * 2 - screen_size.x;
-
+	
 	if (Camera::get_instance().get_pos().y < 0)
 		Camera::get_instance().get_pos().y = 0;
 	if (Camera::get_instance().get_pos().y > 32 * 16 * 2 - screen_size.y) //2 is map scale?
 		Camera::get_instance().get_pos().y = 32 * 16 * 2 - screen_size.y;
-
+	
 	if (Enemy::get_score() % 10 == 0)
 	{
 		if (!healed)
@@ -281,24 +281,24 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 void Player::setup_animations()
 {
 	sprite->add_animation("Idle", 0, 0, 100, 55, 8, 7);
-
+	
 	sprite->add_animation("Run", 8, 0, 100, 55, 10, 15);
-
+	
 	sprite->add_animation("Attack 1", 8, 1, 100, 55, 6, 12);
 	sprite->add_animation("Attack 2", 4, 2, 100, 55, 6, 12);
 	sprite->add_animation("Attack 3", 0, 3, 100, 55, 8, 16);
-
+	
 	sprite->add_animation("Jump", 8, 3, 100, 55, 4, 10);
 	sprite->add_animation("Fall", 1, 4, 100, 55, 4, 10);
-
+	
 	sprite->add_animation("Hurt", 5, 4, 100, 55, 3, 10);
 	sprite->add_animation("Die", 8, 4, 100, 55, 10, 10);
-
+	
 	sprite->add_animation("Block Idle", 8, 5, 100, 55, 8, 10);
 	sprite->add_animation("Block", 6, 6, 100, 55, 5, 10);
-
+	
 	sprite->add_animation("Roll", 2, 7, 100, 55, 9, 10);
-
+	
 	//sprite->add_animation("Wall Slide", 5, 8, 100, 55, 5, 10);
 }
 
@@ -354,17 +354,17 @@ void Player::attack()
 			attackActiveTime = 0;
 			switch (attackState)
 			{
-			case 1:
+				case 1:
 				sprite->play_animation("Attack 1");
 				break;
-			case 2:
+				case 2:
 				sprite->play_animation("Attack 2");
 				break;
-			case 3:
+				case 3:
 				sprite->play_animation("Attack 3");
 				attackState = 0;
 				break;
-			default:
+				default:
 				break;
 			}
 		}
@@ -478,13 +478,13 @@ void Player::respawn()
 	accn = {0, 0};
 	// vMax = {.3, 9.0f};
 	// gravity = 0.0045f;
-
+	
 	health = 100.0f;
 	invincible_timer = 0;
-
+	
 	dead = false;
 	hurting = false;
-
+	
 	sprite->play_animation("Idle");
 }
 
