@@ -30,6 +30,7 @@ class Player
 	void attack();
 	void endAttack();
 	void setupCombo();
+	void freeAttack();
 	void jump();
 	void fall();
 	void roll();
