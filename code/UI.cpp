@@ -57,7 +57,7 @@ void Font::set_font_color(SDL_Texture* texture, u32 color)
 
 Menu::Menu(Graphics& graphics)
 {
-	tutorial_sprite = new Sprite(graphics, "data\\tutorial.png");
+	tutorial_sprite = new Sprite(graphics, "data\\controls.png");
 }
 
 Menu::~Menu()
