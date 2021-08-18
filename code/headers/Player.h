@@ -8,6 +8,7 @@ class AnimatedSprite;
 class Graphics;
 class Map;
 class Enemy;
+class Food;
 
 class Player
 {
@@ -17,7 +18,7 @@ class Player
 	
 	void draw(Graphics &graphics, types::r32 scale = 3.f);
 	void debug_draw(Graphics &graphics, types::u8 scale = 10);
-	void simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist);
+	void simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, Food& food);
 	void update(types::r32 dt);
 	
 	Vec2f get_pos();
