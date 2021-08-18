@@ -257,8 +257,8 @@ void Player::simulate(types::r32 dt, Map &map, std::vector<Enemy *> &enemylist, 
 	//Bound Camera
 	if (Camera::get_instance().get_pos().x < 0)
 		Camera::get_instance().get_pos().x = 0;
-	if (Camera::get_instance().get_pos().x > 64 * 16 * 2 - screen_size.x) //2 is map scale?
-		Camera::get_instance().get_pos().x = 64 * 16 * 2 - screen_size.x;
+	if (Camera::get_instance().get_pos().x > 70 * 16 * 2 - screen_size.x) //2 is map scale?
+		Camera::get_instance().get_pos().x = 70 * 16 * 2 - screen_size.x;
 
 	if (Camera::get_instance().get_pos().y < 0)
 		Camera::get_instance().get_pos().y = 0;
