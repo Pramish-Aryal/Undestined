@@ -347,19 +347,18 @@ void Player::endAttack() {
 }
 
 void Player::jump() {
-  std::vector<std::string> PossibleStates = {"Idle", "Run", "Attack 1", "Attack 2", "Attack 3"};
-  if (contain(PossibleStates, sprite->current_animation)) {
-    if (!is_jumping && jump_timer >= JUMP_TIMER_MAX) {
+  if (!is_jumping && jump_timer >= JUMP_TIMER_MAX) {
+    std::vector<std::string> PossibleStates = {"Idle", "Run", "Attack 1", "Attack 2", "Attack 3"};
+    if (contain(PossibleStates, sprite->current_animation)) {
       vel.y = -1.25f;
       is_jumping = true;
       falling = false;
       jump_timer = 0.f;
     }
-  }
-  PossibleStates = {"Idle", "Run"};
-  if (contain(PossibleStates, sprite->current_animation)) {
-    if (!is_jumping && jump_timer >= JUMP_TIMER_MAX)
+    PossibleStates = {"Idle", "Run"};
+    if (contain(PossibleStates, sprite->current_animation)) {
       sprite->play_animation("Jump");
+    }
   }
 }
 
@@ -437,7 +436,6 @@ void Player::endGame() {
   hurting = false;
   endState = true;
   sprite->play_animation("Idle");
-
 }
 bool Player::get_endState() {
   return endState;
