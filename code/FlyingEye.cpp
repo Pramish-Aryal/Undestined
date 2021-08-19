@@ -24,7 +24,7 @@ const r32 ATTACK_DELAY = (1.9f * 1000.f);  //1.75 seconds
 FlyingEye::FlyingEye(Graphics &graphics) {
   sprite = new AnimatedSprite(graphics, "data\\FlyingEye.png");
   setup_animations();
-  possible_spawn_points = {{10*32, 11*32}, {62*32, 11*32}, {20*32, 23*32}, {48*32, 23*32}, {48*32, 23*32}};
+  possible_spawn_points = {{10*32, 11*32}, {58*32, 11*32}, {20*32, 23*32}, {45*32, 23*32}, {46*32, 23*32}};
   pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
   hoverPos = pos;
   hoverPos.x += 200;
