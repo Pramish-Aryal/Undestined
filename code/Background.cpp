@@ -13,6 +13,6 @@ Background::Background(Graphics &graphics, std::string path) : tile_set(Sprite(g
 void Background::draw(Graphics &graphics, r32 scale)
 {
 	SDL_Rect rect = {0, 0, 288, 180};
-	SDL_Rect dest_rect = { - 1280, -720, 1280 * 4, 720 * 4};
-	tile_set.draw(graphics, rect, dest_rect, scale);
+	SDL_Rect dest_rect = { 0, 0, 1280, 720};
+	tile_set.static_draw(graphics, rect, dest_rect, scale);
 }
