@@ -38,7 +38,6 @@ class Menu
 	Menu(Graphics& graphics);
 	~Menu();
 	void update_menu(Vec2f mouse, void* game_state, bool clicked);
-	void update_gameover(Vec2f mouse, void* game_state, bool clicked);
 	void draw_tutorial(Graphics& graphics);
 	void draw_menu(Graphics& graphics, Font& font);
 	void draw_score(Graphics& graphics, Font& font, i32 score);
