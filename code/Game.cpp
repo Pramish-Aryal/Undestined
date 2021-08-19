@@ -132,7 +132,6 @@ void Game::game_loop() {
 			game_state = GAMEOVER;
 			threshold = 2;
 			lastInc = 0;
-			Enemy::set_score(0);
 			playing = false;
 		}
 		
@@ -180,10 +179,6 @@ void Game::update(r32 dt) {
 		enemylist[i]->update(dt);
 }
 
-bool DEBUG = false;
-u8 scale = 10;
-r32 player_scale = 1.5f;
-
 void Game::draw(Graphics &graphics, Font &font) {
 	graphics.clear_screen(50, 100, 120);
 	background->draw(graphics);
@@ -197,21 +192,13 @@ void Game::draw(Graphics &graphics, Font &font) {
 	} else if (game_state == TUTORIAL) {
 		menu->draw_tutorial(graphics);
 	} else if (game_state == GAMEOVER) {
-		menu->draw_gameover(graphics, font);
+		menu->draw_gameover(graphics, font, Enemy::get_score());
 	} else if (game_state == PLAY) {
 		map->draw(graphics);
 		food->draw(graphics);
-		if (DEBUG)
-			map->debug_draw(graphics, scale);
-		
 		for (size_t i = 0; i < enemylist.size(); i++)
-			enemylist[i]->draw(graphics, player_scale);
-		if (DEBUG)
-			for (size_t i = 0; i < enemylist.size(); i++)
-			enemylist[i]->debug_draw(graphics, 3.f);
-		player->draw(graphics, player_scale);
-		if (DEBUG)
-			player->debug_draw(graphics, scale);
+			enemylist[i]->draw(graphics, 1.5f);
+		player->draw(graphics, 1.5f);
 		menu->draw_score(graphics, font, Enemy::get_score());
 	}
 	graphics.display();
@@ -221,7 +208,7 @@ void Game::handle_input(Input &input) {
 	if (input.key_pressed(SDL_SCANCODE_ESCAPE)) {
 		if (game_state == MENU)
 			set_game_running(false);
-		else if (game_state == PAUSE || game_state == TUTORIAL)
+		else if (game_state == PAUSE || game_state == TUTORIAL || game_state == GAMEOVER)
 			game_state = MENU;
 		else
 			game_state = PAUSE;
@@ -243,9 +230,6 @@ void Game::handle_input(Input &input) {
 		
 		if (input.key_held(SDL_SCANCODE_SPACE))
 			player->jump();
-		
-		if (input.key_pressed(SDL_SCANCODE_X))
-			DEBUG = !DEBUG;
 	}
 }
 

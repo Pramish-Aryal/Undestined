@@ -14,7 +14,7 @@ Graphics::Graphics()
 {
 	m_screen_width = 1280;
 	m_screen_height = 720;
-	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height,  SDL_WINDOW_RESIZABLE /*| SDL_WINDOW_FULLSCREEN*/);
+	m_window = SDL_CreateWindow("Undestined", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen_width, m_screen_height,  SDL_WINDOW_RESIZABLE /*| SDL_WINDOW_FULLSCREEN*/);
 	if (!m_window)
 		Fatal::fatal_error("Couldn't create Window");
 	//SDL_SetWindowBordered(m_window, SDL_FALSE);
@@ -42,8 +42,9 @@ SDL_Texture* Graphics::load_image(std::string path, i32& width, i32& height)
 		int n;
 		u8* pixels = NULL;
 		pixels = stbi_load(path.c_str(), &width, &height, &n, 4);
-		if (!pixels)
-			Fatal::fatal_error("Can't load image");
+		if (!pixels) 
+			Fatal::fatal_error("Can't load image " + path);
+		
 		SDL_Texture* texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
 		SDL_UpdateTexture(texture, 0, pixels, width * 4);
 		stbi_image_free(pixels);

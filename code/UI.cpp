@@ -61,10 +61,14 @@ void Menu::draw_menu(Graphics& graphics, Font& font) {
 	font.render_text(graphics, "Tutorial", Vec2f(1280, 720) / 2 + Vec2f(-90, -25), 3, tutorial_color);
 	font.render_text(graphics, "Quit", Vec2f(1280, 720) / 2 + Vec2f(-55, 25), 3, quit_color);
 }
-
-void Menu::draw_gameover(Graphics& graphics, Font& font) {
+#include <iostream>
+void Menu::draw_gameover(Graphics& graphics, Font& font, i32 score) {
 	font.render_text(graphics, "Game Over", Vec2f(1280, 720) / 2 - Vec2f(150, 225), 5);
 	font.render_text(graphics, "Menu", Vec2f(1280, 720) / 2 + Vec2f(-55, -75), 3, start_color);
+	std::stringstream ss;
+	ss << "Your score: " << score;
+	std::cout << ss.str() << std::endl;
+	font.render_text(graphics, ss.str().c_str(), Vec2f(1280, 720) / 2 + Vec2f(-105, -115), 2);
 }
 
 void Menu::draw_score(Graphics& graphics, Font& font, i32 score) {

@@ -48,7 +48,7 @@ command_list =
         .cursor_at_end = false,
         .cmd =
         {
-            { "build\\game.exe", .os = "win" },
+            { "build\\Undestined.exe", .os = "win" },
             { "echo Linux run command not implemented for 4coder project.", .os = "linux" },
         },
     },
@@ -61,7 +61,7 @@ command_list =
         .cursor_at_end = false,
         .cmd =
         {
-            { "pwsh -nop .\build.ps1 && build\\game.exe", .os = "win" },
+            { "pwsh -nop .\build.ps1 && build\\Undestined.exe", .os = "win" },
             { "echo Linux build_and_run command not implemented for 4coder project.", .os = "linux" },
         },
     },
