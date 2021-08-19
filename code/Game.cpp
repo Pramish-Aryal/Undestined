@@ -23,23 +23,20 @@
 
 using namespace types;
 
-namespace
-{
-  const r32 FPS = 60.0f;
-  const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
-  const r32 FRAME_TIME = 1000.0f / FPS;
-} // anonymous namespace
+namespace {
+const r32 FPS = 60.0f;
+const r32 MAX_FRAME_TIME = 5 * 1000.0f / FPS;
+const r32 FRAME_TIME = 1000.0f / FPS;
+}  // anonymous namespace
 
-Game::Game()
-{
+Game::Game() {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     Fatal::fatal_error("Couldn't init SDL");
   set_game_running(true);
   game_loop();
 }
 
-Game::~Game()
-{
+Game::~Game() {
   delete player;
   for (size_t i = 0; i < enemylist.size(); i++)
     delete enemylist[i];
@@ -49,8 +46,7 @@ Game::~Game()
   SDL_Quit();
 }
 
-void Game::game_loop()
-{
+void Game::game_loop() {
   Input input;
   Graphics graphics;
   Font font(graphics);
@@ -84,13 +80,12 @@ void Game::game_loop()
   r32 current_time_ms = SDL_GetTicks();
   r32 last_time_ms = current_time_ms;
 
-  while (is_game_running())
-  {
-
+  //MAIN LOOP
+  while (is_game_running()) {
     input.begin_new_frame();
     SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
+    //Even polls
+    while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT)
         m_game_is_running = false;
 
@@ -107,47 +102,62 @@ void Game::game_loop()
         input.mouse_up_event();
     }
 
-    handle_input(input);
+    handle_input(input);  //Input Checking
 
+    //Enemy Spawning
     int score = Enemy::get_score();
-    if (score - lastInc == threshold && score != 0)
-    {
+    if (score - lastInc == threshold && score != 0) {
       (Random::get_random(0, 2)) ? enemylist.push_back(new Skeleton(graphics)) : enemylist.push_back(new FlyingEye(graphics));
       lastInc = Enemy::get_score();
       if (threshold < 8)
         threshold++;
     }
-
-    if (game_state == PLAY)
-    {
+    //gamestates checking stuff for newgame
+    //Physics Simulation & Anim change
+    if (game_state == PLAY) {
       accumulator += delta_time;
-      while (accumulator >= fixed_delta_time)
-      {
+      while (accumulator >= fixed_delta_time) {
         simulate(fixed_delta_time);
         accumulator -= fixed_delta_time;
       }
 
       update(delta_time < MAX_FRAME_TIME ? delta_time : MAX_FRAME_TIME);
-    }
-    else
-    {
+    } else if (game_state == GAMEOVER) {
+      i32 x, y;
+      graphics.get_mouse(x, y);
+      menu->update_gameover(Vec2f(x, y), &game_state, input.mouse_pressed());
+    } else {
       i32 x, y;
       graphics.get_mouse(x, y);
       menu->update_menu(Vec2f(x, y), &game_state, input.mouse_pressed());
     }
 
-    if (game_state == MENU || game_state == PAUSE)
-    {
+    if (player->get_endState() && playing) {
+      game_state = GAMEOVER;
+      threshold = 2;
+      lastInc = 0;
+      Enemy::set_score(0);
+      playing = false;
+    }
+
+    if (game_state == PLAY && !playing) {
+      enemylist.clear();
+      enemylist.push_back(new Skeleton(graphics));
+      enemylist.push_back(new FlyingEye(graphics));
+      Enemy::set_score(0);
+      player->respawn();
+      playing = true;
+    }
+    if (game_state == QUIT)
+      set_game_running(false);
+
+    if (game_state == MENU || game_state == PAUSE) {
       backdrop = backdrops[0];
       Camera::get_instance().get_pos() = {0, 0};
-    }
-    else
+    } else
       backdrop = backdrops[1];
 
     draw(graphics, font);
-
-    if (game_state == QUIT)
-      set_game_running(false);
 
     if ((SDL_GetTicks() - current_time_ms) < FRAME_TIME)
       SDL_Delay(FRAME_TIME - (SDL_GetTicks() - current_time_ms));
@@ -161,16 +171,14 @@ void Game::game_loop()
   delete backdrops[1];
 }
 
-void Game::simulate(r32 dt)
-{
+void Game::simulate(r32 dt) {
   player->simulate(dt, *map, enemylist, *food);
   food->simulate(dt);
   for (size_t i = 0; i < enemylist.size(); i++)
     enemylist[i]->simulate(dt, *map, *player);
 }
 
-void Game::update(r32 dt)
-{
+void Game::update(r32 dt) {
   player->update(dt);
   for (size_t i = 0; i < enemylist.size(); i++)
     enemylist[i]->update(dt);
@@ -180,26 +188,21 @@ bool DEBUG = false;
 u8 scale = 10;
 r32 player_scale = 1.5f;
 
-void Game::draw(Graphics &graphics, Font &font)
-{
+void Game::draw(Graphics &graphics, Font &font) {
   graphics.clear_screen(50, 100, 120);
   background->draw(graphics);
   backdrop->draw(graphics);
 
-  if (game_state == MENU)
-  {
+  //Draw frame per game state
+  if (game_state == MENU) {
     menu->draw_menu(graphics, font);
-  }
-  else if (game_state == PAUSE)
-  {
+  } else if (game_state == PAUSE) {
     menu->draw_pause(graphics, font);
-  }
-  else if (game_state == TUTORIAL)
-  {
+  } else if (game_state == TUTORIAL) {
     menu->draw_tutorial(graphics);
-  }
-  else if (game_state == PLAY)
-  {
+  } else if (game_state == GAMEOVER) {
+    menu->draw_gameover(graphics, font);
+  } else if (game_state == PLAY) {
     map->draw(graphics);
     food->draw(graphics);
     if (DEBUG)
@@ -218,11 +221,8 @@ void Game::draw(Graphics &graphics, Font &font)
   graphics.display();
 }
 
-void Game::handle_input(Input &input)
-{
-
-  if (input.key_pressed(SDL_SCANCODE_ESCAPE))
-  {
+void Game::handle_input(Input &input) {
+  if (input.key_pressed(SDL_SCANCODE_ESCAPE)) {
     if (game_state == MENU)
       set_game_running(false);
     else if (game_state == PAUSE || game_state == TUTORIAL)
@@ -231,8 +231,7 @@ void Game::handle_input(Input &input)
       game_state = PAUSE;
   }
 
-  if (game_state == PLAY || game_state == TUTORIAL)
-  {
+  if (game_state == PLAY) {
     if (input.key_held(SDL_SCANCODE_E) || input.mouse_pressed())
       player->attack();
     if (input.key_held(SDL_SCANCODE_R))
@@ -254,12 +253,10 @@ void Game::handle_input(Input &input)
   }
 }
 
-bool Game::is_game_running()
-{
+bool Game::is_game_running() {
   return m_game_is_running;
 }
 
-void Game::set_game_running(bool value)
-{
+void Game::set_game_running(bool value) {
   m_game_is_running = value;
 }

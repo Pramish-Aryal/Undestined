@@ -40,6 +40,8 @@ class Player
 	void block();
 	void block_idle();
 	void respawn();
+	void endGame();
+	bool get_endState();
 	
 	private:
 	void setup_animations();
@@ -66,6 +68,7 @@ class Player
 	bool cameraMovingy = false;
 	
 	bool healed = false;
+	bool endState = false;
 	
 	//Nisans anim/player state identifiers
 	

@@ -41,6 +41,7 @@ private:
 	Backdrop *backdrop;
 	Background *background;
 	bool m_game_is_running;
+	bool playing = true;
 	std::vector<Enemy *> enemylist;
 	Food *food;
 	enum
@@ -49,6 +50,7 @@ private:
 		PLAY = 2,
 		PAUSE = 3,
 		TUTORIAL = 4,
-		QUIT = 5
+		QUIT = 5,
+		GAMEOVER = 6
 	} game_state = MENU;
 };

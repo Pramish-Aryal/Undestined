@@ -141,7 +141,7 @@ void Skeleton::simulate(types::r32 dt, Map &map, Player &player) {
     attackCollider.pos = {pos.x + offsets.x * scale - attackCollider.size.x, pos.y + offsets.y * scale + 3};
   }
 
-  if (ABS(distance.x) <= 100 && ABS(distance.y) <= 10) {
+  if (ABS(distance.x) <= 100 && ABS(distance.y) <= 50) {
     if (first_attack) {
       attack();
       first_attack = false;
@@ -274,7 +274,7 @@ Rect Skeleton::get_collider() {
 
 void Skeleton::respawn() {
   if (dead)
-    score++;
+    inc_score(1);
 
   dead = false;
   hurting = false;

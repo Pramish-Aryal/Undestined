@@ -28,8 +28,10 @@ class Enemy
 	virtual void get_hurt(types::r32 dt) = 0;
 	virtual void die() = 0;
 	
-	static types::u32 score;
 	static types::u32 get_score() { return score;}
+	static void set_score(types::u32 value) {score = value;}
+	static void inc_score(types::u32 value) {score++;}
 	private:
+	static types::u32 score;
 	virtual void setup_animations() = 0;
 };

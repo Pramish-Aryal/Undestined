@@ -101,7 +101,7 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
       sprite->set_flip(false);
     else if ((player.get_pos() - pos).normal().x < 0)
       sprite->set_flip(true);
-  } else {
+  } else if(attacking) {
     //---------------------Bat swing down physics------------
     if (buffer) {  //buffering target
       playerBufferedPos = player.get_pos();
@@ -134,7 +134,10 @@ void FlyingEye::simulate(types::r32 dt, Map &map, Player &player) {
 
     if (midway && (playerBufferedPos.y + 10) > pos.y)
       endAttack();
+  } else{
+    stop_moving();
   }
+
 
   vel += accn * dt;
 
@@ -251,6 +254,7 @@ void FlyingEye::move_down() {
 void FlyingEye::stop_moving() {
   // std::vector<std::string> PossibleStates = {};
   // if (contain(PossibleStates, sprite->current_animation)) {
+    vel = 0;
   sprite->play_animation("Idle");
   // }
 }
@@ -311,7 +315,7 @@ Rect FlyingEye::get_collider() {
 }
 
 void FlyingEye::respawn() {
-  score++;
+  inc_score(1);
   pos = possible_spawn_points[Random::get_random(0, possible_spawn_points.size() - 1)];
   hoverPos = pos;
   health = 100.0f;
