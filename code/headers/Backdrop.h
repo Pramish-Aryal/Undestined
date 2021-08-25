@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Sprite.h"
-#include <string>
 #include <vector>
 #include <SDL2/SDL.h>
 #include "Collision.h"
@@ -15,7 +14,7 @@ class Backdrop {
 	std::vector<Rect> positions;
 	public:
 	Backdrop(Graphics& graphics);
-	void load_backdrop_menu(std::string path, types::r32 scale = 1.f);
-	void load_backdrop_game(std::string path, types::r32 scale = 1.f);
+	void load_backdrop_menu(types::r32 scale = 1.f);
+	void load_backdrop_game(types::r32 scale = 1.f);
 	void draw(Graphics& graphics, types::r32 scale = 1.f);
 };

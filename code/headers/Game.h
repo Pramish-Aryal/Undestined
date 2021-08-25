@@ -19,20 +19,21 @@ class Menu;
 
 class Game
 {
-public:
+	public:
 	Game();
 	~Game();
-
-private:
+	
 	void game_loop();
+	
+	private:
 	void simulate(types::r32 dt);
 	void update(types::r32 dt);
 	void draw(Graphics &graphics, Font &font);
 	void handle_input(Input &input);
 	bool is_game_running();
 	void set_game_running(bool value);
-
-private:
+	
+	private:
 	SDL_Window *_window;
 	SDL_Renderer *_renderer;
 	Player *player;

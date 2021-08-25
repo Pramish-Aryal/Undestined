@@ -9,7 +9,7 @@ using namespace types;
 
 Map::Map(Graphics &graphics) : tile_set(Sprite(graphics, "data\\tileset.png")) {}
 
-void Map::load_map(std::string path, r32 scale)
+void Map::load_map(r32 scale)
 {
 	i8 map_data[] = {
 #include "..\\data\\map_bounding.data"

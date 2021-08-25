@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Sprite.h"
-#include <string>
 #include <vector>
 #include <SDL2/SDL.h>
 #include "Collision.h"
@@ -15,7 +14,7 @@ class Map {
 	public:
 	std::vector<Rect> bounding_boxes;
 	Map(Graphics& graphics);
-	void load_map(std::string path, types::r32 scale = 1.f);
+	void load_map(types::r32 scale = 1.f);
 	void draw(Graphics& graphics, types::r32 scale = 1.f);
 	void debug_draw(Graphics& graphics, types::u8 scale = 10);
 };

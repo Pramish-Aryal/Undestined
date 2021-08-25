@@ -10,7 +10,7 @@ using namespace types;
 
 Backdrop::Backdrop(Graphics &graphics) : tile_set(Sprite(graphics, "data\\stringstar.png")) {}
 
-void Backdrop::load_backdrop_game(std::string path, r32 scale)
+void Backdrop::load_backdrop_game(r32 scale)
 {
 	i16 map_data[] = {
 #include "..\\data\\map_bg.data"
@@ -40,7 +40,7 @@ void Backdrop::load_backdrop_game(std::string path, r32 scale)
 
 
 
-void Backdrop::load_backdrop_menu(std::string path, r32 scale)
+void Backdrop::load_backdrop_menu(r32 scale)
 {
 	i16 map_data[] = {
 #include "..\\data\\menu_bg.data"

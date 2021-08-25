@@ -8,5 +8,6 @@ int main(int argc, char **argv)
 #endif
 {
 	Game game;
+	game.game_loop();
 	return 0;
 }

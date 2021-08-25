@@ -33,7 +33,6 @@ Game::Game() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		Fatal::fatal_error("Couldn't init SDL");
 	set_game_running(true);
-	game_loop();
 }
 
 Game::~Game() {
@@ -59,14 +58,14 @@ void Game::game_loop() {
 	player = new Player(graphics);
 	food = new Food(graphics);
 	map = new Map(graphics);
-	map->load_map("", 2);
+	map->load_map(2);
 	
 	Backdrop *backdrops[2];
 	backdrops[0] = new Backdrop(graphics);
-	backdrops[0]->load_backdrop_menu("", 2);
+	backdrops[0]->load_backdrop_menu(2);
 	
 	backdrops[1] = new Backdrop(graphics);
-	backdrops[1]->load_backdrop_game("", 2);
+	backdrops[1]->load_backdrop_game(2);
 	
 	background = new Background(graphics);
 	
