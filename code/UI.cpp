@@ -24,7 +24,7 @@ void Font::render_char(Graphics& graphics, char c, Vec2f pos, r32 scale) {
 		(i32)(FONT_CHAR_HEIGHT * scale)};
 	
 	size_t index = '?' - 32;
-	if (c >= 32 && c < 128) index = c - 32;
+	if ((c >= 32) && (c <= 127)) index = c - 32;
 	SDL_RenderCopy(graphics.get_renderer(), this->atlas, &this->glyph_table[index], &dest);
 }
 
@@ -58,7 +58,7 @@ Menu::~Menu() {
 void Menu::draw_menu(Graphics& graphics, Font& font) {
 	font.render_text(graphics, "Undestined", Vec2f(1280, 720) / 2 - Vec2f(180, 225), 5);
 	font.render_text(graphics, "Play", Vec2f(1280, 720) / 2 + Vec2f(-55, -75), 3, start_color);
-	font.render_text(graphics, "Tutorial", Vec2f(1280, 720) / 2 + Vec2f(-90, -25), 3, tutorial_color);
+	font.render_text(graphics, "Controls", Vec2f(1280, 720) / 2 + Vec2f(-90, -25), 3, tutorial_color);
 	font.render_text(graphics, "Quit", Vec2f(1280, 720) / 2 + Vec2f(-55, 25), 3, quit_color);
 }
 #include <iostream>

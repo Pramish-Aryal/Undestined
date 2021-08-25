@@ -1,6 +1,6 @@
 #include "Game.h"
 
-#ifdef WINDOW
+#ifndef CONSOLE
 #include <Windows.h>
 int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #else

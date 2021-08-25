@@ -77,7 +77,7 @@ class Player
 	bool blocking = false;
 	bool dead = false;
 	bool hurting = false;
-	bool other = false;
+	bool attackCooldown = false;
 	
 	bool attackBusy = false;
 	bool comboReady = false;

@@ -17,6 +17,7 @@ class Enemy
 	virtual void simulate(types::r32 dt, Map &map, Player& player) = 0;
 	virtual void update(types::r32 dt) = 0;
 	virtual void set_spawn_points(std::vector<Vec2f>& spawns) = 0;
+	virtual ~Enemy() {}
 	//collision
 	virtual Rect get_collider() = 0;
 	

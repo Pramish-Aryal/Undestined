@@ -5,7 +5,7 @@
 
 namespace Fatal
 {
-	static void fatal_error(std::string error)
+	static void fatal_error(const std::string& error)
 	{
 		std::cout << error << std::endl;
 		exit(-1);

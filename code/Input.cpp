@@ -1,4 +1,4 @@
-#include "input.h"
+#include "Input.h"
 
 void Input::begin_new_frame()
 {
