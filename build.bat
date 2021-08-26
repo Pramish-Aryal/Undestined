@@ -48,5 +48,5 @@ goto Finished
 :SkipCLANG
 echo CLANG not found, please setup clang.
 :Finished
-xcopy "data" "build/data" /E /C /I
+if not exist "build/data" xcopy "data" "build/data" /E /C /I
 echo -------------------
