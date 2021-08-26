@@ -22,6 +22,10 @@ Graphics::Graphics()
 	if (!m_renderer)
 		Fatal::fatal_error("Couldn't create the renderer");
 	SDL_RenderSetLogicalSize(m_renderer, m_screen_width, m_screen_height);
+	
+	icon = SDL_LoadBMP("data\\Undestined_logo.bmp");
+	if(icon != NULL)
+		SDL_SetWindowIcon(m_window, icon);
 }
 
 Graphics::~Graphics()
@@ -33,6 +37,7 @@ Graphics::~Graphics()
 	
 	if (m_renderer) SDL_DestroyRenderer(m_renderer);
 	if (m_window) SDL_DestroyWindow(m_window);
+	if(icon) SDL_FreeSurface(icon);
 }
 
 SDL_Texture* Graphics::load_image(std::string path, i32& width, i32& height)

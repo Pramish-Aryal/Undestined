@@ -7,6 +7,7 @@ struct SDL_Renderer;
 struct SDL_Texture;
 struct SDL_Rect;
 struct SDL_Point;
+struct SDL_Surface;
 
 using namespace types;
 
@@ -35,6 +36,7 @@ class Graphics
 	void display();
 	Vec2f get_display_resolution();
 	private:
+	SDL_Surface* icon = NULL;
 	int m_screen_width, m_screen_height;
 	SDL_Window *m_window;
 	SDL_Renderer *m_renderer;
